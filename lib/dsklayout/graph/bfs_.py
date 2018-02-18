@@ -17,12 +17,9 @@ class Bfs(traversal_.Traversal):
 
     def __call__(self, graph, start_nodes, **kw):
         trail = trail_.Trail(graph)
-        enter_func = kw.get('enter_func', self.enter_func)
-        leave_func = kw.get('leave_func', self.leave_func)
-        backedge_func = kw.get('backedge_func', self.backedge_func)
         for start_node in start_nodes:
             if not trail.node_explored(start_node):
-                if self._bfs(trail, start_node, enter_func, leave_func, backedge_func):
+                if self._bfs(trail, start_node, **self.callbacks(**kw)):
                     break
         return trail
 

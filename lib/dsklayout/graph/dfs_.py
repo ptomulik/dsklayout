@@ -17,13 +17,10 @@ class Dfs(traversal_.Traversal):
 
     def __call__(self, graph, start_nodes, **kw):
         trail = trail_.Trail(graph)
-        enter_func = kw.get('enter_func', self.enter_func)
-        leave_func = kw.get('leave_func', self.leave_func)
-        backedge_func = kw.get('backedge_func', self.backedge_func)
         stop = False
         for start_node in start_nodes:
             if not stop and not trail.node_explored(start_node):
-                stop = self._dfs(trail, start_node, None, enter_func, leave_func, backedge_func)
+                stop = self._dfs(trail, start_node, None, **self.callbacks(**kw))
         return trail
 
     def _dfs(self, trail, node, last_edge, enter_func, leave_func, backedge_func):

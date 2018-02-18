@@ -89,6 +89,11 @@ class Traversal(object, metaclass=abc.ABCMeta):
         """Returns edges outward to given node"""
         return graph.outward(node)
 
+    def callbacks(self, **kw):
+        """Returns a dictionary of callbacks from kw, defaulting to callbacks defined by object"""
+        callbacks = ( 'enter_func', 'leave_func', 'backedge_func' )
+        return { k : kw.get(k, getattr(self,k)) for k in callbacks }
+
     @abc.abstractmethod
     def __call__(self, graph, startpoint, *args, **kw):
         pass

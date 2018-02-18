@@ -45,11 +45,11 @@ class Edges(elems_.Elems):
 
     def successors(self, node):
         """Returns a set of successors of a given node"""
-        return self._select_node_related(self._successors_dict, self._predecessors_dict, node)
+        return self._select_node_related_elems(self._successors_dict, self._predecessors_dict, node)
 
     def predecessors(self, node):
         """Returns a set of predecessors of a given node"""
-        return self._select_node_related(self._predecessors_dict, self._successors_dict, node)
+        return self._select_node_related_elems(self._predecessors_dict, self._successors_dict, node)
 
     def neighbors(self, node):
         """Returns a set of nodes that are connected to a given node"""
@@ -57,11 +57,11 @@ class Edges(elems_.Elems):
 
     def outward(self, node):
         """Returns a set of outward edges for given node"""
-        return set([ (node,s) for s in self.successors(node) ])
+        return { (node,s) for s in self.successors(node) }
 
     def inward(self, node):
         """Returns a set of inward edges for given node"""
-        return set([ (p,node) for p in self.predecessors(node) ])
+        return { (p,node) for p in self.predecessors(node) }
 
     def incident(self, node):
         """Returns a set of edges incident (outward or inward) to a given node"""
@@ -116,7 +116,7 @@ class Edges(elems_.Elems):
             del self[edge]
 
     @classmethod
-    def _select_node_related(cls, related, opposite, node):
+    def _select_node_related_elems(cls, related, opposite, node):
         try:
             nodes = related[node]
         except KeyError:
