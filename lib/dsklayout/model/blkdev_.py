@@ -2,6 +2,8 @@
 
 from . import exceptions_
 
+import copy
+
 __all__ = ( 'BlkDev', )
 
 class BlkDev(object):
@@ -14,7 +16,7 @@ class BlkDev(object):
     _converters = {
 #            'name'          : str,
 #            'kname'         : str,
-#            'maj-min'       : str,
+#            'maj:min'       : str,
 #            'fstype'        : str,
 #            'mountpoint'    : str,
 #            'label'         : str,
@@ -56,6 +58,52 @@ class BlkDev(object):
 #            'subsystems'    : str,
 #            'rev'           : str,
 #            'vendor'        : str
+    }
+    _property_map = {
+            'name'          : 'name',
+            'kname'         : 'kname',
+            'maj_min'       : 'maj:min',
+            'fstype'        : 'fstype',
+            'mountpoint'    : 'mountpoint',
+            'label'         : 'label',
+            'uuid'          : 'uuid',
+            'parttype'      : 'parttype',
+            'partlabel'     : 'partlabel',
+            'partuuid'      : 'partuuid',
+            'partflags'     : 'partflags',
+            'ra'            : 'ra',
+            'ro'            : 'ro',
+            'rm'            : 'rm',
+            'hotplug'       : 'hotplug',
+            'model'         : 'model',
+            'serial'        : 'serial',
+            'size'          : 'size',
+            'state'         : 'state',
+            'owner'         : 'owner',
+            'group'         : 'group',
+            'mode'          : 'mode',
+            'alignment'     : 'alignment',
+            'min_io'        : 'min-io',
+            'opt_io'        : 'opt-io',
+            'phy_sec'       : 'phy-sec',
+            'log_sec'       : 'log-sec',
+            'rota'          : 'rota',
+            'sched'         : 'sched',
+            'rq_size'       : 'rq-size',
+            'type'          : 'type',
+            'disc_aln'      : 'disc-aln',
+            'disc_gran'     : 'disc-gran',
+            'disc_max'      : 'disc-max',
+            'disc_zero'     : 'disc-zero',
+            'wsame'         : 'wsame',
+            'wwn'           : 'wwn',
+            'rand'          : 'rand',
+            'pkname'        : 'pkname',
+            'hctl'          : 'hctl',
+            'tran'          : 'tran',
+            'subsystems'    : 'subsystems',
+            'rev'           : 'rev',
+            'vendor'        : 'vendor',
     }
 
     def __init__(self, properties = (), **kw):
@@ -110,226 +158,8 @@ class BlkDev(object):
                         (k, repr(self._properties.get(k)), repr(v))
                 raise exceptions_.InconsistentDataError(msg)
 
-    @property
-    def name(self):
-        """Device name"""
-        return self._properties['name']
-
-    @property
-    def kname(self):
-        """Internal kernel device name"""
-        return self._properties['kname']
-
-    @property
-    def maj_min(self):
-        """Major:minor device number"""
-        return self._properties['maj:min']
-
-    @property
-    def fstype(self):
-        """Filesystem type"""
-        return self._properties['fstype']
-
-    @property
-    def mountpoint(self):
-        """Where the device is mounted"""
-        return self._properties['mountpoint']
-
-    @property
-    def label(self):
-        """Filesystem LABEL"""
-        return self._properties['label']
-
-    @property
-    def uuid(self):
-        """Filesystem UUID"""
-        return self._properties['uuid']
-
-    @property
-    def parttype(self):
-        """Partition type UUID"""
-        return self._properties['parttype']
-
-    @property
-    def partlabel(self):
-        """Partition LABEL"""
-        return self._properties['partlabel']
-
-    @property
-    def partuuid(self):
-        """Partition UUID"""
-        return self._properties['partuuid']
-
-    @property
-    def partflags(self):
-        """Partition flags"""
-        return self._properties['partflags']
-
-    @property
-    def ra(self):
-        """Read-ahead of the device"""
-        return self._properties['ra']
-
-    @property
-    def ro(self):
-        """Read-only device"""
-        return self._properties['ro']
-
-    @property
-    def rm(self):
-        """Removable device"""
-        return self._properties['rm']
-
-    @property
-    def hotplug(self):
-        """Removable or hotplug device (usb, pcmcia, ...)"""
-        return self._properties['hotplug']
-
-    @property
-    def model(self):
-        """Device identifier"""
-        return self._properties['model']
-
-    @property
-    def serial(self):
-        """Disk serial number"""
-        return self._properties['serial']
-
-    @property
-    def size(self):
-        """Size of the device"""
-        return self._properties['size']
-
-    @property
-    def state(self):
-        """State of the device"""
-        return self._properties['state']
-
-    @property
-    def owner(self):
-        """User name"""
-        return self._properties['owner']
-
-    @property
-    def group(self):
-        """Group name"""
-        return self._properties['group']
-
-    @property
-    def mode(self):
-        """Device node permissions"""
-        return self._properties['mode']
-
-    @property
-    def alignment(self):
-        """Alignment offset"""
-        return self._properties['alignment']
-
-    @property
-    def min_io(self):
-        """Minimum I/O size"""
-        return self._properties['min-io']
-
-    @property
-    def opt_io(self):
-        """Optimal I/O size"""
-        return self._properties['opt-io']
-
-    @property
-    def phy_sec(self):
-        """Physical sector size"""
-        return self._properties['phy-sec']
-
-    @property
-    def log_sec(self):
-        """Logical sector size"""
-        return self._properties['log-sec']
-
-    @property
-    def rota(self):
-        """Rotational device"""
-        return self._properties['rota']
-
-    @property
-    def sched(self):
-        """I/O scheduler name"""
-        return self._properties['sched']
-
-    @property
-    def rq_size(self):
-        """Request queue size"""
-        return self._properties['rq-size']
-
-    @property
-    def type(self):
-        """Device type"""
-        return self._properties['type']
-
-    @property
-    def disc_aln(self):
-        """Discard alignment offset"""
-        return self._properties['disc-aln']
-
-    @property
-    def disc_gran(self):
-        """Discard granularity"""
-        return self._properties['disc-gran']
-
-    @property
-    def disc_max(self):
-        """Discard max bytes"""
-        return self._properties['disc-max']
-
-    @property
-    def disc_zero(self):
-        """Discard zeroes data"""
-        return self._properties['disc-zero']
-
-    @property
-    def wsame(self):
-        """Write same max bytes"""
-        return self._properties['wsame']
-
-    @property
-    def wwn(self):
-        """Unique storage identifier"""
-        return self._properties['wwn']
-
-    @property
-    def rand(self):
-        """Adds randomness"""
-        return self._properties['rand']
-
-    @property
-    def pkname(self):
-        """Internal parent kernel device name"""
-        return self._properties['pkname']
-
-    @property
-    def hctl(self):
-        """Host:Channel:Target:Lun for SCSI"""
-        return self._properties['hctl']
-
-    @property
-    def tran(self):
-        """Device transport type"""
-        return self._properties['tran']
-
-    @property
-    def subsystems(self):
-        """De-duplicated chain of subsystems"""
-        return self._properties['subsystems']
-
-    @property
-    def rev(self):
-        """Device revision"""
-        return self._properties['rev']
-
-    @property
-    def vendor(self):
-        """Device vendor"""
-        return self._properties['vendor']
-
+for attr,key in BlkDev._property_map.items():
+    setattr(BlkDev, attr, property(lambda self, key=key: self._properties[key]))
 
 
 # vim: set ft=python et ts=4 sw=4:
