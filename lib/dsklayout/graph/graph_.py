@@ -122,15 +122,15 @@ class Graph(object):
 
     def roots(self):
         """Returns a set of root nodes (having no predecessors)"""
-        return self._filter_nodes(lambda n : not self.has_predecessors(n))
+        return self._select_nodes_not_satisfying(self.has_predecessors)
 
     def leafs(self):
         """Returns a set of leaf nodes (having no successors)"""
-        return self._filter_nodes(lambda n : not self.has_successors(n))
+        return self._select_nodes_not_satisfying(self.has_successors)
 
     def isolated(self):
         """Returns a set of isolated nodes (having no neighbors)"""
-        return self._filter_nodes(lambda n : not self.has_neighbors(n))
+        return self._select_nodes_not_satisfying(self.has_neighbors)
 
     def _consistency(self, nodes, edges):
         """Checks provided nodes and edges for consistency"""
@@ -150,7 +150,7 @@ class Graph(object):
             elems = () # otherwise it was an isolated node
         return set(elems)
 
-    def _filter_nodes(self, condition):
-        return { n for n in self._nodes if condition(n) }
+    def _select_nodes_not_satisfying(self, condition):
+        return { n for n in self._nodes if not condition(n) }
 
 # vim: set ft=python et ts=4 sw=4:
