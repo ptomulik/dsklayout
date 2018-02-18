@@ -93,36 +93,27 @@ class Graph(object):
 
     def successors(self, node):
         """Returns successors of the given node."""
-        return self._select_node_related(self._edges.successors, node)
+        return self._select_node_related_elems(self._edges.successors, node)
 
     def predecessors(self, node):
         """Returns predecessors of the given node."""
-        return self._select_node_related(self._edges.predecessors, node)
+        return self._select_node_related_elems(self._edges.predecessors, node)
 
     def neighbors(self, node):
         """Returns a set of nodes that are connected to a given node"""
-        return self._select_node_related(self._edges.neighbors, node)
+        return self._select_node_related_elems(self._edges.neighbors, node)
 
     def outward(self, node):
         """Returns edges outward to given node"""
-        return self._select_node_related(self._edges.outward, node)
+        return self._select_node_related_elems(self._edges.outward, node)
 
     def inward(self, node):
         """Returns edges inward to given node"""
-        return self._select_node_related(self._edges.inward, node)
+        return self._select_node_related_elems(self._edges.inward, node)
 
     def incident(self, node):
         """Returns edges incident to given node"""
-        return self._select_node_related(self._edges.incident, node)
-
-    def _select_node_related(self, selector, node):
-        """Helper used to select node-related elements (nodes, edges)"""
-        try:
-            elems = selector(node)
-        except KeyError:
-            self._nodes[node] # rethrow if we have no such node
-            elems = () # otherwise it was an isolated node
-        return set(elems)
+        return self._select_node_related_elems(self._edges.incident, node)
 
     @classmethod
     def adjacent(cls, node, edge):
@@ -131,15 +122,15 @@ class Graph(object):
 
     def roots(self):
         """Returns a set of root nodes (having no predecessors)"""
-        return { n for n in self._nodes if not self.has_predecessors(n) }
+        return self._filter_nodes(lambda n : not self.has_predecessors(n))
 
     def leafs(self):
         """Returns a set of leaf nodes (having no successors)"""
-        return { n for n in self._nodes if not self.has_successors(n) }
+        return self._filter_nodes(lambda n : not self.has_successors(n))
 
     def isolated(self):
-        """Returns a set of isolated nodes"""
-        return { n for n in self._nodes if not self.has_predecessors(n) and not self.has_successors(n) }
+        """Returns a set of isolated nodes (having no neighbors)"""
+        return self._filter_nodes(lambda n : not self.has_neighbors(n))
 
     def _consistency(self, nodes, edges):
         """Checks provided nodes and edges for consistency"""
@@ -150,5 +141,16 @@ class Graph(object):
             if right not in nodes:
                 raise KeyError(right)
 
+    def _select_node_related_elems(self, selector, node):
+        """Helper used to select node-related elements (nodes, edges)"""
+        try:
+            elems = selector(node)
+        except KeyError:
+            self._nodes[node] # rethrow if we have no such node
+            elems = () # otherwise it was an isolated node
+        return set(elems)
+
+    def _filter_nodes(self, condition):
+        return { n for n in self._nodes if condition(n) }
 
 # vim: set ft=python et ts=4 sw=4:
