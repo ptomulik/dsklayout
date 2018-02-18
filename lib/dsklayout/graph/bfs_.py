@@ -16,38 +16,57 @@ class Bfs(traversal_.Traversal):
         super().__init__(**kw)
 
     def __call__(self, graph, start_nodes, **kw):
-        trail = trail_.Trail(graph)
+        trail = trail_.Trail(graph, **self.callbacks(**kw))
         for start_node in start_nodes:
-            if not trail.node_explored(start_node):
-                if self._bfs(trail, start_node, **self.callbacks(**kw)):
-                    break
+            if trail.node_explored(start_node):
+                continue
+            if self._bfs(trail, start_node):
+                break
         return trail
 
-    def _bfs(self, trail, start_node, enter_func, leave_func, backedge_func):
+    def _bfs(self, trail, start_node):
         trail.enqueue((start_node,None))
         trail.explore_node(start_node)
         while not trail.queue_empty():
-            (dequeued_node, dequeued_edge) = trail.dequeue()
-            trail.append_node(dequeued_node)
-            if dequeued_edge is not None:
-                trail.append_edge(dequeued_edge)
-            stop = bool(enter_func(trail.graph, dequeued_node, dequeued_edge))
-            stop |= bool(leave_func(trail.graph, dequeued_node, dequeued_edge))
-            if stop:
-                trail.result = dequeued_node
+            (node, edge) = trail.dequeue()
+            if self._handle_dequeued(trail, node, edge):
                 return True
-            for edge in self.select_edges(trail.graph, dequeued_node):
-                adjacent_node = trail.graph.adjacent(dequeued_node, edge)
-                if not trail.node_explored(adjacent_node):
-                    trail.explore_edge(edge)
-                    trail.explore_node(adjacent_node)
-                    trail.enqueue((adjacent_node, edge))
-                else:
-                    if not trail.edge_explored(edge):
-                        trail.explore_and_append_backedge(edge)
-                        if backedge_func(trail.graph, edge):
-                            trail.result = edge
-                            return True
+            if self._enqueue_adjacent_nodes(trail, node):
+                return True
+        return False
+
+    def _handle_dequeued(self, trail, node, edge):
+        trail.append_node(node)
+        if edge is not None:
+            trail.append_edge(edge)
+        stop = bool(trail.enter_func(trail.graph, node, edge))
+        stop |= bool(trail.leave_func(trail.graph, node, edge))
+        if stop:
+            trail.result = node
+        return stop
+
+    def _enqueue_adjacent_nodes(self, trail, node):
+        for edge in self.select_edges(trail.graph, node):
+            adjacent_node = trail.graph.adjacent(node, edge)
+            if self._handle_adjacent_node(trail, adjacent_node, edge):
+                return True
+        return False
+
+    def _handle_adjacent_node(self, trail, node, edge):
+        if not trail.node_explored(node):
+            trail.explore_edge(edge)
+            trail.explore_node(node)
+            trail.enqueue((node, edge))
+            return False
+        else:
+            return self._handle_backedge(trail, edge)
+
+    def _handle_backedge(self, trail, edge):
+        if not trail.edge_explored(edge):
+            trail.explore_and_append_backedge(edge)
+            if trail.backedge_func(trail.graph, edge):
+                trail.result = edge
+                return True
         return False
 
 # vim: set ft=python et ts=4 sw=4:

@@ -130,33 +130,46 @@ class BlkDev(object):
 
     def appear(self, properties):
         """Method called when node appears for the first time in lsblk output"""
-        if self._convert:
-            self._properties = self.convert_values(properties)
-        else:
-            self._properties = dict(properties)
-        for k in self._evolving_properties:
-            if k in properties:
-                if properties[k] is None:
-                    self._properties[k] = []
-                else:
-                    self._properties[k] = [ properties[k] ]
+        self._properties = self._convert_if_enabled(properties)
+        self._handle_evolving_properties(self._assign_evolving_property, properties)
 
     def reappear(self, properties):
         """Method called when node appears again in lsblk output"""
+        properties = self._convert_if_enabled(properties)
+
+        # first verify input
+        for key in (set(properties) - set(self._evolving_properties)):
+            if self._properties.get(key) == properties[key]:
+                continue
+            msg = "Conflicting values for property %s: %s vs %s" % \
+                    (key, repr(self._properties.get(key)), repr(properties[key]))
+            raise exceptions_.InconsistentDataError(msg)
+
+        # then update evolving properties
+        self._handle_evolving_properties(self._update_evolving_property, properties)
+
+    def _convert_if_enabled(self, properties):
         if self._convert:
-            properties = self.convert_values(properties)
+            return self.convert_values(properties)
         else:
-            properties = dict(properties)
-        for k, v in properties.items():
-            if k in self._evolving_properties:
-                if k not in self._properties:
-                    self._properties[k] = []
-                if v is not None and v not in self._properties[k]:
-                    self._properties[k].append(v)
-            elif self._properties.get(k) != v:
-                msg = "Conflicting values for property %s: %s vs %s" % \
-                        (k, repr(self._properties.get(k)), repr(v))
-                raise exceptions_.InconsistentDataError(msg)
+            return dict(properties)
+
+    def _handle_evolving_properties(self, func, properties):
+        for key in (set(self._evolving_properties) & set(properties)):
+            func(key, properties[key])
+
+    def _assign_evolving_property(self, key, value):
+        if value is None:
+            self._properties[key] = []
+        else:
+            self._properties[key] = [ value ]
+
+    def _update_evolving_property(self, key, value):
+        if key not in self._properties:
+            self._properties[key] = []
+        if value is not None and value not in self._properties[key]:
+            self._properties[key].append(value)
+
 
 for attr,key in BlkDev._property_map.items():
     setattr(BlkDev, attr, property(lambda self, key=key: self._properties[key]))

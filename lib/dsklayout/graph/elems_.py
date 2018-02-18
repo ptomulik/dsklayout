@@ -4,9 +4,20 @@ import collections.abc
 
 __all__ = ( 'Elems', )
 
-class _missing:
-    """Represents missing argument to function"""
-    pass
+class _missing_meta(type):
+    "Meta-class for the `_missing` class"
+    def __bool__(self):
+        return False
+    __nonzero__ = __bool__
+    def __repr__(cls):
+        return 'MISSING'
+
+class _missing(object):
+    "Represents missing argument to function."
+    __metaclass__ = _missing_meta
+
+MISSING = _missing
+"""Represents missing argument to a function."""
 
 class Elems(collections.abc.MutableMapping):
     """A container for graph elements, either edges or nodes.
@@ -17,15 +28,7 @@ class Elems(collections.abc.MutableMapping):
     def __init__(self, items = (), **kw):
         super().__init__()
         self._data = dict()
-        if hasattr(items, 'items'):
-            items = items.items()
-            data = kw.get('data', True)
-        else:
-            data = kw.get('data', False)
-        if data:
-            for e,d in items: self.add(e,d)
-        else:
-            for e in items: self.add(e)
+        self.update(items,**kw)
 
     @property
     def data(self):
@@ -56,8 +59,8 @@ class Elems(collections.abc.MutableMapping):
     def __delitem__(self, key):
         del self._data[key]
 
-    def add(self, key, data=_missing):
-        if data is _missing:
+    def add(self, key, data=MISSING):
+        if data is MISSING:
             if key not in self._data:
                 self._data[key] = None
         else:
@@ -72,5 +75,22 @@ class Elems(collections.abc.MutableMapping):
 
     def items(self):
         return self._data.items()
+
+    def update(self, items, **kw):
+        has_items = hasattr(items, 'items')
+        if has_items:
+            items = items.items()
+        if kw.get('data', has_items):
+            self._update_with_values(items)
+        else:
+            self._update_without_values(items)
+
+    def _update_with_values(self, items):
+        for e,d in items:
+            self.add(e, d)
+
+    def _update_without_values(self, items):
+        for e in items:
+            self.add(e)
 
 # vim: set ft=python et ts=4 sw=4:

@@ -6,6 +6,8 @@ import collections.abc
 
 __all__ = ( 'Edges', )
 
+MISSING = elems_.MISSING
+
 class Edges(elems_.Elems):
     """An unordered set of graph edges. An edge is a tuple of hashable objects.
 
@@ -99,7 +101,7 @@ class Edges(elems_.Elems):
         self._discard_neighbor(self._successors_dict, left, right)
         self._discard_neighbor(self._predecessors_dict, right, left)
 
-    def add(self, edge, data=elems_._missing):
+    def add(self, edge, data=elems_.MISSING):
         left, right = tedge = tuple(edge)
         super().add(tedge, data)
         self._add_neighbor(self._successors_dict, left, right)

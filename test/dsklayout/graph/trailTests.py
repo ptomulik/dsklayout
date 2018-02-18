@@ -19,6 +19,9 @@ class Test__Trail(unittest.TestCase):
         self.assertEqual(trail.backedges, list())
         self.assertIsNone(trail.result)
         self.assertEqual(trail.queue, collections.deque())
+        self.assertTrue(callable(trail.enter_func))
+        self.assertTrue(callable(trail.leave_func))
+        self.assertTrue(callable(trail.backedge_func))
 
     def test__nodes__1(self):
         trail = trail_.Trail('graph')
@@ -104,6 +107,13 @@ class Test__Trail(unittest.TestCase):
         self.assertIsNone(trail.result)
         trail.result = 'result'
         self.assertEqual(trail.result, 'result')
+
+    def test__callbacks(self):
+        e,l,b = (lambda *args : False, lambda *args : False, lambda *args : False)
+        trail = trail_.Trail('graph', enter_func=e, leave_func=l, backedge_func=b)
+        self.assertIs(trail.enter_func, e)
+        self.assertIs(trail.leave_func, l)
+        self.assertIs(trail.backedge_func, b)
 
 
 if __name__ == '__main__':

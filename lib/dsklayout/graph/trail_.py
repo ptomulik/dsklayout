@@ -6,7 +6,7 @@ __all__ = ( 'Trail', )
 
 class Trail(object):
 
-    def __init__(self, graph):
+    def __init__(self, graph, **kw):
         self._graph = graph
         self._explored_nodes = set()
         self._explored_edges = set()
@@ -15,6 +15,9 @@ class Trail(object):
         self._backedges = list()
         self._result = None
         self._queue = collections.deque()
+        self._enter_func = kw.get('enter_func', lambda *args : False)
+        self._leave_func = kw.get('leave_func', lambda *args : False)
+        self._backedge_func = kw.get('backedge_func', lambda *args : False)
 
     @property
     def explored_nodes(self):
@@ -25,14 +28,6 @@ class Trail(object):
     def explored_edges(self):
         """A set of already explored edges"""
         return self._explored_edges
-
-    def node_explored(self, node):
-        """Returns whether a node was already explored"""
-        return node in self._explored_nodes
-
-    def edge_explored(self, edge):
-        """Returns whether an edge was already explored"""
-        return edge in self._explored_edges
 
     @property
     def nodes(self):
@@ -67,6 +62,29 @@ class Trail(object):
     def graph(self):
         """A graph provided as the argument to __init__()"""
         return self._graph
+
+    @property
+    def enter_func(self):
+        """A callback invoked when a search algorithm enters a node"""
+        return self._enter_func
+
+    @property
+    def leave_func(self):
+        """A callback invoked when a search algorithm leaves a node"""
+        return self._leave_func
+
+    @property
+    def backedge_func(self):
+        """A callback invoked when a search algorithm finds a backedges"""
+        return self._backedge_func
+
+    def node_explored(self, node):
+        """Returns whether a node was already explored"""
+        return node in self._explored_nodes
+
+    def edge_explored(self, edge):
+        """Returns whether an edge was already explored"""
+        return edge in self._explored_edges
 
     def explore_node(self, node):
         """Add node to the set of explored nodes"""

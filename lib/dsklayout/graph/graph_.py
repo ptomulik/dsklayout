@@ -6,7 +6,7 @@ from . import elems_
 
 __all__ = ( 'Graph', )
 
-_missing = elems_._missing
+MISSING = elems_.MISSING
 
 class Graph(object):
     """Represents a directed graph of block devices"""
@@ -34,7 +34,7 @@ class Graph(object):
     def __repr__(self):
         return "%s(%s, %s)" % (self.__class__.__name__, repr(self._nodes), repr(self._edges))
 
-    def add_node(self, node, data=_missing):
+    def add_node(self, node, data=MISSING):
         """Add new node to graph"""
         self._nodes.add(node, data)
 
@@ -56,12 +56,12 @@ class Graph(object):
         """Returns data assigned to node. Same as ``self.nodes[node]``"""
         return self._nodes[node]
 
-    def add_edge(self, edge, data=_missing, **kw):
+    def add_edge(self, edge, data=MISSING, **kw):
         """Add edge and its nodes to graph."""
         left, right = tuple(edge)
         self._edges.add(edge, data)
-        self.add_node(left, kw.get(left, _missing))
-        self.add_node(right, kw.get(right, _missing))
+        self.add_node(left, kw.get(left, MISSING))
+        self.add_node(right, kw.get(right, MISSING))
 
     def del_edge(self, edge):
         """Deletes edge leaving its (possibly isolated) nodes in graph."""

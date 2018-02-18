@@ -16,32 +16,41 @@ class Dfs(traversal_.Traversal):
         super().__init__(**kw)
 
     def __call__(self, graph, start_nodes, **kw):
-        trail = trail_.Trail(graph)
-        stop = False
+        trail = trail_.Trail(graph, **self.callbacks(**kw))
         for start_node in start_nodes:
-            if not stop and not trail.node_explored(start_node):
-                stop = self._dfs(trail, start_node, None, **self.callbacks(**kw))
+            if trail.node_explored(start_node):
+                continue
+            if self._dfs(trail, start_node, None):
+                break
         return trail
 
-    def _dfs(self, trail, node, last_edge, enter_func, leave_func, backedge_func):
+    def _dfs(self, trail, node, last_edge):
         trail.explore_and_append_node(node)
-        stop = self._invoke_elem_callback(enter_func, trail, node, last_edge)
+        stop = self._invoke_callback(trail.enter_func, trail, node, last_edge)
         if not stop:
-            for edge in self.select_edges(trail.graph, node):
-                if not trail.edge_explored(edge):
-                    adjacent_node = trail.graph.adjacent(node, edge)
-                    if not trail.node_explored(adjacent_node):
-                        trail.explore_and_append_edge(edge)
-                        stop = self._dfs(trail, adjacent_node, edge, enter_func, leave_func, backedge_func)
-                    else:
-                        trail.explore_and_append_backedge(edge)
-                        stop = self._invoke_elem_callback(backedge_func, trail, edge)
-                    if stop: break
-        stop |= self._invoke_elem_callback(leave_func, trail, node, last_edge)
+            stop = self._select_edges_and_iterate(trail, node)
+        stop |= self._invoke_callback(trail.leave_func, trail, node, last_edge)
         return stop
 
+    def _select_edges_and_iterate(self, trail, node):
+        for edge in self.select_edges(trail.graph, node):
+            if trail.edge_explored(edge):
+                continue
+            adjacent_node = trail.graph.adjacent(node, edge)
+            if self._handle_adjacent_node(trail, adjacent_node, edge):
+                return True
+        return False
+
+    def _handle_adjacent_node(self, trail, adjacent_node, edge):
+        if not trail.node_explored(adjacent_node):
+            trail.explore_and_append_edge(edge)
+            return self._dfs(trail, adjacent_node, edge)
+        else:
+            trail.explore_and_append_backedge(edge)
+            return self._invoke_callback(trail.backedge_func, trail, edge)
+
     @classmethod
-    def _invoke_elem_callback(cls, func, trail, elem, *args):
+    def _invoke_callback(cls, func, trail, elem, *args):
         if func(trail.graph, elem, *args):
             if trail.result is None:
                 trail.result = elem

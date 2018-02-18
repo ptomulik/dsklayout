@@ -116,6 +116,45 @@ class Test__Elems(unittest.TestCase):
         elems = elems_.Elems({'x1': 'X1', 'x2': 'X2'})
         self.assertEqual(list(elems.items()), list(elems.data.items()))
 
+    def test__update__0(self):
+        elems = elems_.Elems()
+        self.assertEqual(elems.data, dict())
+
+    def test__update__1(self):
+        elems = elems_.Elems()
+        elems.update(['x1', 'x2'])
+        self.assertEqual(elems.data, {'x1': None, 'x2': None})
+
+    def test__update__2(self):
+        elems = elems_.Elems()
+        elems.update(['x1', 'x2', 'x1'])
+        self.assertEqual(elems.data, {'x1': None, 'x2': None})
+
+    def test__update__3(self):
+        elems = elems_.Elems()
+        elems.update([('x1', 'X1'), ('x2', 'X2')])
+        self.assertEqual(elems.data, {('x1','X1'): None, ('x2','X2'): None})
+
+    def test__update__3_data_true(self):
+        elems = elems_.Elems(['x1','x2'])
+        elems.update([('x1', 'X1'), ('x2', 'X2')], data=True)
+        self.assertEqual(elems.data, {'x1': 'X1', 'x2': 'X2'})
+
+    def test__update__4(self):
+        elems = elems_.Elems()
+        elems.update({'x1': 'X1', 'x2': 'X2'})
+        self.assertEqual(elems.data, {'x1': 'X1', 'x2': 'X2'})
+
+    def test__update__4_data_false(self):
+        elems = elems_.Elems()
+        elems.update({'x1': 'X1', 'x2': 'X2'}, data=False)
+        self.assertEqual(elems.data, {('x1','X1'): None, ('x2','X2'): None})
+
+    def test__update__5(self):
+        elems = elems_.Elems({'x1' : 'X1', 'x2':'X2'})
+        elems.update(['x1', 'x2', 'x3'])
+        self.assertEqual(elems.data, {'x1': 'X1', 'x2': 'X2', 'x3' : None})
+
 if __name__ == '__main__':
     unittest.main()
 

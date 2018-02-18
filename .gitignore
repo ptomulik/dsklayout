@@ -24,3 +24,5 @@ __pycache__/
 # Virtualenv
 /.virtualenv/
 /.py*/
+# Docker
+/docker-compose
