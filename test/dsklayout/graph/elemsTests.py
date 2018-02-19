@@ -5,6 +5,12 @@ import unittest
 
 import dsklayout.graph.elems_ as elems_
 
+class Test__MISSING(unittest.TestCase):
+
+    def test__MISSING(self):
+        self.assertFalse(bool(elems_.MISSING))
+        self.assertEqual(str(elems_.MISSING), 'MISSING')
+
 class Test__Elems(unittest.TestCase):
 
     def test__init__0(self):

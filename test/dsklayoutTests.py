@@ -5,7 +5,7 @@ import unittest
 import types
 import dsklayout
 
-class Test__dsklayout__PackageSymbols(unittest.TestCase):
+class Test__PackageSymbols(unittest.TestCase):
 
     def test__graph__symbol(self):
         self.assertIsInstance(dsklayout.graph, types.ModuleType)

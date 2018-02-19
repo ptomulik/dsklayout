@@ -58,7 +58,7 @@ class Test__Dfs(unittest.TestCase):
 
     def test__outward__1(self):
         cb = Callbacks()
-        search = dfs_.Dfs(edge_selector = 'outward', **cb.callbacks)
+        search = dfs_.Dfs(direction = 'outward', **cb.callbacks)
         trail = search(self.graph1(), ['p', 'x'])
         self.assertIsInstance(trail, trail_.Trail)
         self.assertIsNone(trail.result)
@@ -78,7 +78,7 @@ class Test__Dfs(unittest.TestCase):
 
     def test__inward__1(self):
         cb = Callbacks()
-        search = dfs_.Dfs(edge_selector = 'inward', **cb.callbacks)
+        search = dfs_.Dfs(direction = 'inward', **cb.callbacks)
         trail = search(self.graph1(), ['p', 'x'])
         self.assertIsInstance(trail, trail_.Trail)
         self.assertIsNone(trail.result)
@@ -93,7 +93,7 @@ class Test__Dfs(unittest.TestCase):
 
     def test__incident__1(self):
         cb = Callbacks()
-        search = dfs_.Dfs(edge_selector = 'incident', **cb.callbacks)
+        search = dfs_.Dfs(direction = 'incident', **cb.callbacks)
         trail = search(self.graph1(), ['p', 'x'])
         self.assertIsInstance(trail, trail_.Trail)
         self.assertIsNone(trail.result)
@@ -114,7 +114,7 @@ class Test__Dfs(unittest.TestCase):
 
     def test__stop_on_enter(self):
         cb = Callbacks(enter_func = lambda g,n,e: n == 's')
-        search = dfs_.Dfs(edge_selector = 'outward', **cb.callbacks)
+        search = dfs_.Dfs(direction = 'outward', **cb.callbacks)
         trail = search(self.graph1(), ['p', 'x'])
         self.assertIsInstance(trail, trail_.Trail)
         self.assertEqual(trail.result, 's')
@@ -134,7 +134,7 @@ class Test__Dfs(unittest.TestCase):
 
     def test__stop_on_leave(self):
         cb = Callbacks(leave_func = lambda g,n,e: n == 'r')
-        search = dfs_.Dfs(edge_selector = 'outward', **cb.callbacks)
+        search = dfs_.Dfs(direction = 'outward', **cb.callbacks)
         trail = search(self.graph2(), ['p', 'x'])
         self.assertIsInstance(trail, trail_.Trail)
         self.assertEqual(trail.result, 'r')
@@ -155,7 +155,7 @@ class Test__Dfs(unittest.TestCase):
 
     def test__stop_on_backedge(self):
         cb = Callbacks(backedge_func = lambda g,e: e == ('s','p'))
-        search = dfs_.Dfs(edge_selector = 'outward', **cb.callbacks)
+        search = dfs_.Dfs(direction = 'outward', **cb.callbacks)
         trail = search(self.graph2(), ['p','x'])
         self.assertIsInstance(trail, trail_.Trail)
         self.assertEqual(trail.result, ('s','p'))
@@ -184,6 +184,19 @@ class Test__Dfs(unittest.TestCase):
         self.assertEqual(cb.enter_edges, trail.edges)
         self.assertEqual(cb.backedges, trail.backedges)
 
+    def test__repeated_start_nodes_1(self):
+        cb = Callbacks()
+        graph = graph_.Graph(['p', 'q'], [('p', 'q')])
+        search = dfs_.Dfs(direction = 'outward', **cb.callbacks)
+        trail = search(graph, ['p', 'p'])
+        self.assertEqual(trail.nodes, ['p', 'q'])
+        self.assertEqual(trail.edges, [('p','q')])
+        self.assertEqual(trail.backedges, [])
+        self.assertEqual(cb.enter_nodes, ['p', 'q'])
+        self.assertEqual(cb.leave_nodes, ['q', 'p'])
+        self.assertEqual(cb.enter_edges, [('p','q')])
+        self.assertEqual(cb.leave_edges, [('p','q')])
+        self.assertEqual(cb.backedges, [])
 
 if __name__ == '__main__':
     unittest.main()

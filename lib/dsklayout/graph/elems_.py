@@ -12,9 +12,9 @@ class _missing_meta(type):
     def __repr__(cls):
         return 'MISSING'
 
-class _missing(object):
+class _missing(object, metaclass=_missing_meta):
     "Represents missing argument to function."
-    __metaclass__ = _missing_meta
+    pass
 
 MISSING = _missing
 """Represents missing argument to a function."""

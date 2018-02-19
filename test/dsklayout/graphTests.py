@@ -4,7 +4,7 @@
 import unittest
 import dsklayout.graph as graph
 
-class Test__dsklayout_graph__PackageSymbols(unittest.TestCase):
+class Test__graph__PackageSymbols(unittest.TestCase):
 
     def test__bfs__symbols(self):
         self.assertIs(graph.Bfs, graph.bfs_.Bfs)

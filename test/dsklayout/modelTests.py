@@ -4,7 +4,7 @@
 import unittest
 import dsklayout.model as model
 
-class Test__dsklayout_model__PackageSymbols(unittest.TestCase):
+class Test__model__PackageSymbols(unittest.TestCase):
 
     def test__lsblk__symbols(self):
         self.assertIs(model.LsBlk, model.lsblk_.LsBlk)

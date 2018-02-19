@@ -16,7 +16,7 @@ class Traversal(object, metaclass=abc.ABCMeta):
                   '_backedge_func' )
 
     def __init__(self, **kw):
-        self.edge_selector = kw.get('edge_selector')
+        self.edge_selector = kw.get('edge_selector', kw.get('direction'))
         self.enter_func = kw.get('enter_func', lambda g, n, e: False)
         self.leave_func = kw.get('leave_func', lambda g, n, e: False)
         self.backedge_func = kw.get('backedge_func', lambda g,e: False)
@@ -77,13 +77,17 @@ class Traversal(object, metaclass=abc.ABCMeta):
         """Select edges to be tried next"""
         return (self.edge_selector)(graph, node)
 
+    def select_inward_edges(self, graph, node):
+        """Returns edges inward to given node"""
+        return graph.inward(node)
+
     def select_incident_edges(self, graph, node):
         """Returns edges incident to given node"""
         return graph.incident(node)
 
-    def select_inward_edges(self, graph, node):
-        """Returns edges inward to given node"""
-        return graph.inward(node)
+    def select_both_edges(self, graph, node):
+        """Returns edges incident to given node"""
+        return graph.incident(node)
 
     def select_outward_edges(self, graph, node):
         """Returns edges outward to given node"""

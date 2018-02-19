@@ -58,7 +58,7 @@ class Test__Bfs(unittest.TestCase):
 
     def test__outward__1(self):
         cb = Callbacks()
-        search = bfs_.Bfs(edge_selector = 'outward', **cb.callbacks)
+        search = bfs_.Bfs(direction = 'outward', **cb.callbacks)
         trail = search(self.graph1(), ['p', 'x'])
         self.assertIsInstance(trail, trail_.Trail)
         self.assertIsNone(trail.result)
@@ -89,7 +89,7 @@ class Test__Bfs(unittest.TestCase):
 
     def test__inward__1(self):
         cb = Callbacks()
-        search = bfs_.Bfs(edge_selector = 'inward', **cb.callbacks)
+        search = bfs_.Bfs(direction = 'inward', **cb.callbacks)
         trail = search(self.graph1(), ['p', 'x'])
         self.assertIsInstance(trail, trail_.Trail)
         self.assertIsNone(trail.result)
@@ -114,7 +114,7 @@ class Test__Bfs(unittest.TestCase):
 
     def test__incident__1(self):
         cb = Callbacks()
-        search = bfs_.Bfs(edge_selector = 'incident', **cb.callbacks)
+        search = bfs_.Bfs(direction = 'incident', **cb.callbacks)
         trail = search(self.graph2(), ['p', 'x'])
         self.assertIsInstance(trail, trail_.Trail)
         self.assertIsNone(trail.result)
@@ -147,7 +147,7 @@ class Test__Bfs(unittest.TestCase):
         self.stop_on_s_testfun(cb)
 
     def stop_on_s_testfun(self, cb):
-        search = bfs_.Bfs(edge_selector = 'outward', **cb.callbacks)
+        search = bfs_.Bfs(direction = 'outward', **cb.callbacks)
         trail = search(self.graph1(), ['p', 'x'])
         self.assertIsInstance(trail, trail_.Trail)
         self.assertEqual(trail.result, 's')
@@ -178,7 +178,7 @@ class Test__Bfs(unittest.TestCase):
 
     def test__stop_on_backedge(self):
         cb = Callbacks(backedge_func = lambda g,e: e == ('s','p'))
-        search = bfs_.Bfs(edge_selector = 'outward', **cb.callbacks)
+        search = bfs_.Bfs(direction = 'outward', **cb.callbacks)
         trail = search(self.graph1(), ['p', 'x'])
         self.assertIsInstance(trail, trail_.Trail)
         self.assertEqual(trail.result, ('s','p'))
@@ -204,6 +204,20 @@ class Test__Bfs(unittest.TestCase):
         self.assertEqual(cb.enter_nodes, trail.nodes)
         self.assertEqual(cb.enter_edges, trail.edges)
         self.assertEqual(cb.leave_nodes, trail.nodes)
+        self.assertEqual(cb.leave_edges, trail.edges)
+        self.assertEqual(cb.backedges, trail.backedges)
+
+    def test__repeated_start_nodes_1(self):
+        cb = Callbacks()
+        graph = graph_.Graph(['p', 'q'], [('p', 'q')])
+        search = bfs_.Bfs(direction = 'outward', **cb.callbacks)
+        trail = search(graph, ['p', 'p'])
+        self.assertEqual(trail.nodes, ['p', 'q'])
+        self.assertEqual(trail.edges, [('p','q')])
+        self.assertEqual(trail.backedges, [])
+        self.assertEqual(cb.enter_nodes, trail.nodes)
+        self.assertEqual(cb.leave_nodes, trail.nodes)
+        self.assertEqual(cb.enter_edges, trail.edges)
         self.assertEqual(cb.leave_edges, trail.edges)
         self.assertEqual(cb.backedges, trail.backedges)
 

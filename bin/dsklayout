@@ -4,6 +4,6 @@
 from dsklayout.cli import *
 
 try:
-    exit(Main().run())
+    exit(DskLayout().run())
 except KeyboardInterrupt:
     pass
