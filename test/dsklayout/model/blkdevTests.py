@@ -19,45 +19,45 @@ class Test__BlkDev(unittest.TestCase):
 
     def test__properties__1(self):
         # not officially supported, but may be stored
-        blkdev = blkdev_.BlkDev({'foo' : 'FOO', 'bar' : 'BAR'})
-        self.assertEqual(blkdev.properties, {'foo' : 'FOO', 'bar' : 'BAR'})
+        blkdev = blkdev_.BlkDev({'foo':  'FOO', 'bar':  'BAR'})
+        self.assertEqual(blkdev.properties, {'foo':  'FOO', 'bar':  'BAR'})
 
     def test__properties__2(self):
         # officially supported
-        blkdev = blkdev_.BlkDev({'name': '/dev/md2', 'fstype' : 'ext4'})
-        self.assertEqual(blkdev.properties, {'name': '/dev/md2', 'fstype' : 'ext4'})
+        blkdev = blkdev_.BlkDev({'name': '/dev/md2', 'fstype':  'ext4'})
+        self.assertEqual(blkdev.properties, {'name': '/dev/md2', 'fstype':  'ext4'})
 
     def test__properties__3(self):
         # officially supported
-        blkdev = blkdev_.BlkDev({'name': '/dev/md2', 'pkname' : None})
-        self.assertEqual(blkdev.properties, {'name': '/dev/md2', 'pkname' : []})
+        blkdev = blkdev_.BlkDev({'name': '/dev/md2', 'pkname':  None})
+        self.assertEqual(blkdev.properties, {'name': '/dev/md2', 'pkname':  []})
 
     def test__properties__4(self):
         # officially supported
-        blkdev = blkdev_.BlkDev({'name': '/dev/md2', 'pkname' : '/dev/sda2'})
-        self.assertEqual(blkdev.properties, {'name': '/dev/md2', 'pkname' : ['/dev/sda2']})
+        blkdev = blkdev_.BlkDev({'name': '/dev/md2', 'pkname':  '/dev/sda2'})
+        self.assertEqual(blkdev.properties, {'name': '/dev/md2', 'pkname':  ['/dev/sda2']})
 
     def test__appear__1(self):
-        props = {'name': '/dev/md2', 'fstype' : 'ext4'}
+        props = {'name': '/dev/md2', 'fstype':  'ext4'}
         blkdev = blkdev_.BlkDev()
         blkdev.appear(props)
         self.assertEqual(blkdev.properties, props)
         self.assertIsNot(blkdev.properties, props) # should keep its own copy
 
     def test__appear__2(self):
-        blkdev = blkdev_.BlkDev({'name': '/dev/md2', 'fstype' : 'ext4'})
-        blkdev.appear({'fstype' : 'xfs', 'mountpoint' : '/home'})
-        self.assertEqual(blkdev.properties, {'fstype': 'xfs', 'mountpoint': '/home'} )
+        blkdev = blkdev_.BlkDev({'name': '/dev/md2', 'fstype':  'ext4'})
+        blkdev.appear({'fstype':  'xfs', 'mountpoint':  '/home'})
+        self.assertEqual(blkdev.properties, {'fstype': 'xfs', 'mountpoint': '/home'})
 
     def test__appear__3(self):
-        blkdev = blkdev_.BlkDev({'name': '/dev/md2', 'fstype' : 'ext4'})
-        blkdev.appear({'fstype' : 'xfs', 'pkname' : None})
-        self.assertEqual(blkdev.properties, {'fstype': 'xfs', 'pkname': []} )
+        blkdev = blkdev_.BlkDev({'name': '/dev/md2', 'fstype':  'ext4'})
+        blkdev.appear({'fstype':  'xfs', 'pkname':  None})
+        self.assertEqual(blkdev.properties, {'fstype': 'xfs', 'pkname': []})
 
     def test__appear__4(self):
-        blkdev = blkdev_.BlkDev({'name': '/dev/md2', 'fstype' : 'ext4'})
-        blkdev.appear({'fstype' : 'xfs', 'pkname' : '/dev/sda2'})
-        self.assertEqual(blkdev.properties, {'fstype': 'xfs', 'pkname': ['/dev/sda2']} )
+        blkdev = blkdev_.BlkDev({'name': '/dev/md2', 'fstype':  'ext4'})
+        blkdev.appear({'fstype':  'xfs', 'pkname':  '/dev/sda2'})
+        self.assertEqual(blkdev.properties, {'fstype': 'xfs', 'pkname': ['/dev/sda2']})
 
     def test__reappear__0(self):
         props = {'name': '/dev/md2'}
@@ -67,31 +67,31 @@ class Test__BlkDev(unittest.TestCase):
         self.assertEqual("Conflicting values for property name: %s vs %s" % (repr(None),repr('/dev/md2')), str(context.exception))
 
     def test__reappear__1(self):
-        props = {'name': '/dev/md2', 'fstype' : 'ext4', 'parttype': '0xfd'}
+        props = {'name': '/dev/md2', 'fstype':  'ext4', 'parttype': '0xfd'}
         blkdev = blkdev_.BlkDev(props)
         blkdev.reappear(props)
         self.assertEqual(blkdev.properties, props)
         self.assertIsNot(blkdev.properties, props) # should keep its own copy
 
     def test__reappear__1__convert(self):
-        props = {'name': '/dev/md2', 'fstype' : 'ext4', 'parttype': '0xfd'}
+        props = {'name': '/dev/md2', 'fstype':  'ext4', 'parttype': '0xfd'}
         blkdev = blkdev_.BlkDev(props, convert=True)
         blkdev.reappear(props)
         self.assertEqual(blkdev.properties, {'name': '/dev/md2', 'fstype': 'ext4', 'parttype': 0xfd})
 
     def test__reappear__2(self):
-        blkdev = blkdev_.BlkDev({'name': '/dev/md2', 'fstype' : 'ext4', 'mountpoint': '/home'})
+        blkdev = blkdev_.BlkDev({'name': '/dev/md2', 'fstype':  'ext4', 'mountpoint': '/home'})
         with self.assertRaises(exceptions_.InconsistentDataError) as context:
-            blkdev.reappear({'name': '/dev/md2', 'fstype' : 'xfs'})
+            blkdev.reappear({'name': '/dev/md2', 'fstype':  'xfs'})
         self.assertEqual("Conflicting values for property fstype: %s vs %s" % (repr('ext4'),repr('xfs')), str(context.exception))
 
     def test__reappear__3(self):
-        blkdev = blkdev_.BlkDev({'name': '/dev/md2', 'fstype' : 'ext4'})
+        blkdev = blkdev_.BlkDev({'name': '/dev/md2', 'fstype':  'ext4'})
         blkdev.reappear({'pkname': None})
         self.assertEqual(blkdev.properties, {'name': '/dev/md2', 'fstype': 'ext4', 'pkname': []})
 
     def test__reappear__4(self):
-        blkdev = blkdev_.BlkDev({'name': '/dev/md2', 'fstype' : 'ext4'})
+        blkdev = blkdev_.BlkDev({'name': '/dev/md2', 'fstype':  'ext4'})
         blkdev.reappear({'pkname': '/dev/sda2'})
         self.assertEqual(blkdev.properties, {'name': '/dev/md2', 'fstype': 'ext4', 'pkname': ['/dev/sda2']})
         blkdev.reappear({'pkname': '/dev/sdb2'})
@@ -338,7 +338,7 @@ class Test__BlkDev(unittest.TestCase):
     def test__pkname(self):
         blkdev = blkdev_.BlkDev({'pkname': '/dev/sda2'})
         self.assertEqual(blkdev.pkname, ['/dev/sda2'])
-        blkdev.reappear({'pkname' : '/dev/sdb2'})
+        blkdev.reappear({'pkname':  '/dev/sdb2'})
         self.assertEqual(blkdev.pkname, ['/dev/sda2', '/dev/sdb2'])
 
     def test__hctl(self):

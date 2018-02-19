@@ -36,9 +36,9 @@ class Test__App(unittest.TestCase):
     def test__properties(self):
         self.assertEqual(app_.App().properties, dict())
 
-    def test__subparsers_properties(self):
+    def test__subproperties(self):
         main = app_.App()
-        self.assertEqual(main.subparsers_properties['title'], 'commands')
+        self.assertEqual(main.subproperties['title'], 'commands')
 
     def test__subcommands(self):
         self.assertEqual(app_.App().subcommands, [])
@@ -57,7 +57,7 @@ class Test__App(unittest.TestCase):
         subparsers = mock.Mock()
         main = app_.App()
         with mock.patch.object(app_.App, 'add_subcommand') as add_subcommand, \
-             mock.patch.object(app_.App, 'subcommands', [ cmd_klass ]):
+             mock.patch.object(app_.App, 'subcommands', [cmd_klass]):
                  self.assertIsNone(main.add_subcommands(subparsers))
                  add_subcommand.assert_called_once_with(subparsers, cmd_instance)
 

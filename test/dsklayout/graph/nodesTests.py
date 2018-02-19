@@ -86,15 +86,15 @@ class Test__Nodes(unittest.TestCase):
             nodes['x']
 
     def test__setitem__2(self):
-        nodes = nodes_.Nodes({'n1' : 'N1'})
+        nodes = nodes_.Nodes({'n1':  'N1'})
         nodes['n1'] = '_N1_'
         nodes['n2'] = '_N2_'
-        self.assertEqual(nodes.data, {'n1' : '_N1_', 'n2' : '_N2_'})
+        self.assertEqual(nodes.data, {'n1':  '_N1_', 'n2':  '_N2_'})
 
     def test__delitem__1(self):
         nodes = nodes_.Nodes({'n1': 'N1', 'n2': 'N2'})
         del nodes['n1']
-        self.assertEqual(nodes.data, {'n2' : 'N2'})
+        self.assertEqual(nodes.data, {'n2':  'N2'})
 
     def test__delitem__2(self):
         nodes = nodes_.Nodes({'n1': 'N1', 'n2': 'N2'})
@@ -102,26 +102,26 @@ class Test__Nodes(unittest.TestCase):
             del nodes['n3']
 
     def test__add__1(self):
-        nodes = nodes_.Nodes({'n1' : 'N1'})
+        nodes = nodes_.Nodes({'n1':  'N1'})
         nodes.add('n1', '_N1_')
         nodes.add('n2', '_N2_')
-        self.assertEqual(nodes.data, {'n1' : '_N1_', 'n2' : '_N2_'})
+        self.assertEqual(nodes.data, {'n1':  '_N1_', 'n2':  '_N2_'})
 
     def test__add__2(self):
-        nodes = nodes_.Nodes({'n1' : 'N1'})
+        nodes = nodes_.Nodes({'n1':  'N1'})
         nodes.add('n1')
         nodes.add('n2')
-        self.assertEqual(nodes.data, {'n1' : 'N1', 'n2' : None})
+        self.assertEqual(nodes.data, {'n1':  'N1', 'n2':  None})
 
     def test__discard__1(self):
         nodes = nodes_.Nodes({'n1': 'N1', 'n2': 'N2'})
         nodes.discard('n1')
-        self.assertEqual(nodes.data, {'n2' : 'N2'})
+        self.assertEqual(nodes.data, {'n2':  'N2'})
 
     def test__discard__2(self):
         nodes = nodes_.Nodes({'n1': 'N1', 'n2': 'N2'})
         nodes.discard('n3')
-        self.assertEqual(nodes.data, {'n1' : 'N1', 'n2' : 'N2'})
+        self.assertEqual(nodes.data, {'n1':  'N1', 'n2':  'N2'})
 
     def test__clear(self):
         nodes = nodes_.Nodes({'n1': 'N1', 'n2': 'N2'})

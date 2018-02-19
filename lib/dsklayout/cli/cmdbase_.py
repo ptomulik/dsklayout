@@ -6,6 +6,7 @@ import abc
 
 __all__ = ('CmdBase',)
 
+
 class CmdBase(object, metaclass=abc.ABCMeta):
     """An abstract base class for either command or command extension.
 

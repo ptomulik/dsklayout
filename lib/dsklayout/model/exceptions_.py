@@ -1,6 +1,7 @@
 # -*- coding: utf8 -*-
 
-__all__ = ( 'InconsistentDataError', )
+__all__ = ('InconsistentDataError',)
+
 
 class InconsistentDataError(Exception):
     pass

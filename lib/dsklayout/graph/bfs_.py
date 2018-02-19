@@ -5,12 +5,13 @@ from . import traversal_
 
 import collections
 
-__all__ = ( 'Bfs', )
+__all__ = ('Bfs',)
+
 
 class Bfs(traversal_.Traversal):
     """Bread-First Search algorithm"""
 
-    __slots__ = ( )
+    __slots__ = ()
 
     def __init__(self, **kw):
         super().__init__(**kw)
@@ -25,7 +26,7 @@ class Bfs(traversal_.Traversal):
         return trail
 
     def _bfs(self, trail, start_node):
-        trail.enqueue((start_node,None))
+        trail.enqueue((start_node, None))
         trail.explore_node(start_node)
         while not trail.queue_empty():
             (node, edge) = trail.dequeue()

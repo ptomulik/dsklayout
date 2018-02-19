@@ -8,7 +8,8 @@ from . import cmd_
 from . import lsblkext_
 from ..graph import *
 
-__all__ = ('BackupCmd', )
+__all__ = ('BackupCmd',)
+
 
 class BackupCmd(cmd_.Cmd):
 
@@ -24,11 +25,11 @@ class BackupCmd(cmd_.Cmd):
 
     @property
     def properties(self):
-        return { 'description': 'backup disk layout' }
+        return {'description': 'backup disk layout'}
 
     def add_cmd_arguments(self, parser):
-        parser.add_argument( "devices", metavar='DEV', nargs='*',
-                             help="block device to be included in backup" )
+        parser.add_argument("devices", metavar='DEV', nargs='*',
+                            help="block device to be included in backup")
 
     def run(self):
         return 0

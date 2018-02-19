@@ -109,7 +109,7 @@ class Test__Trail(unittest.TestCase):
         self.assertEqual(trail.result, 'result')
 
     def test__callbacks(self):
-        e,l,b = (lambda *args : False, lambda *args : False, lambda *args : False)
+        e,l,b = (lambda *args:  False, lambda *args:  False, lambda *args:  False)
         trail = trail_.Trail('graph', ingress_func=e, egress_func=l, backedge_func=b)
         self.assertIs(trail.ingress_func, e)
         self.assertIs(trail.egress_func, l)

@@ -4,14 +4,15 @@ from . import edges_
 from . import nodes_
 from . import elems_
 
-__all__ = ( 'Graph', )
+__all__ = ('Graph',)
 
 MISSING = elems_.MISSING
+
 
 class Graph(object):
     """Represents a directed graph of block devices"""
 
-    __slots__ = ( '_nodes', '_edges' )
+    __slots__ = ('_nodes', '_edges')
 
     def __init__(self, nodes=(), edges=(), **kw):
         nodes = nodes_.Nodes(nodes, **kw)
@@ -32,7 +33,8 @@ class Graph(object):
         return self._edges
 
     def __repr__(self):
-        return "%s(%s, %s)" % (self.__class__.__name__, repr(self._nodes), repr(self._edges))
+        name = self.__class__.__name__
+        return "%s(%s, %s)" % (name, repr(self._nodes), repr(self._edges))
 
     def add_node(self, node, data=MISSING):
         """Add new node to graph"""
@@ -117,7 +119,7 @@ class Graph(object):
 
     @classmethod
     def adjacent(cls, node, edge):
-        """Given an edge and a node returns the node on the other end of edge"""
+        """Returns a node on the opposite end of edge"""
         return edges_.Edges.adjacent(node, edge)
 
     def roots(self):
@@ -146,11 +148,11 @@ class Graph(object):
         try:
             elems = selector(node)
         except KeyError:
-            self._nodes[node] # rethrow if we have no such node
-            elems = () # otherwise it was an isolated node
+            self._nodes[node]  # rethrow if we have no such node
+            elems = ()         # otherwise it was an isolated node
         return set(elems)
 
     def _select_nodes_not_satisfying(self, condition):
-        return { n for n in self._nodes if not condition(n) }
+        return {n for n in self._nodes if not condition(n)}
 
 # vim: set ft=python et ts=4 sw=4:

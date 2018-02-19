@@ -76,15 +76,15 @@ class Test__Elems(unittest.TestCase):
             elems['x']
 
     def test__setitem__2(self):
-        elems = elems_.Elems({'x1' : 'X1'})
+        elems = elems_.Elems({'x1':  'X1'})
         elems['x1'] = '_X1_'
         elems['x2'] = '_X2_'
-        self.assertEqual(elems.data, {'x1' : '_X1_', 'x2' : '_X2_'})
+        self.assertEqual(elems.data, {'x1':  '_X1_', 'x2':  '_X2_'})
 
     def test__delitem__1(self):
         elems = elems_.Elems({'x1': 'X1', 'x2': 'X2'})
         del elems['x1']
-        self.assertEqual(elems.data, {'x2' : 'X2'})
+        self.assertEqual(elems.data, {'x2':  'X2'})
 
     def test__delitem__2(self):
         elems = elems_.Elems({'x1': 'X1', 'x2': 'X2'})
@@ -92,26 +92,26 @@ class Test__Elems(unittest.TestCase):
             del elems['n3']
 
     def test__add__1(self):
-        elems = elems_.Elems({'x1' : 'X1'})
+        elems = elems_.Elems({'x1':  'X1'})
         elems.add('x1', '_X1_')
         elems.add('x2', '_X2_')
-        self.assertEqual(elems.data, {'x1' : '_X1_', 'x2' : '_X2_'})
+        self.assertEqual(elems.data, {'x1':  '_X1_', 'x2':  '_X2_'})
 
     def test__add__2(self):
-        elems = elems_.Elems({'x1' : 'X1'})
+        elems = elems_.Elems({'x1':  'X1'})
         elems.add('x1')
         elems.add('x2')
-        self.assertEqual(elems.data, {'x1' : 'X1', 'x2' : None})
+        self.assertEqual(elems.data, {'x1':  'X1', 'x2':  None})
 
     def test__discard__1(self):
         elems = elems_.Elems({'x1': 'X1', 'x2': 'X2'})
         elems.discard('x1')
-        self.assertEqual(elems.data, {'x2' : 'X2'})
+        self.assertEqual(elems.data, {'x2':  'X2'})
 
     def test__discard__2(self):
         elems = elems_.Elems({'x1': 'X1', 'x2': 'X2'})
         elems.discard('n3')
-        self.assertEqual(elems.data, {'x1' : 'X1', 'x2' : 'X2'})
+        self.assertEqual(elems.data, {'x1':  'X1', 'x2':  'X2'})
 
     def test__clear(self):
         elems = elems_.Elems({'x1': 'X1', 'x2': 'X2'})
@@ -157,9 +157,9 @@ class Test__Elems(unittest.TestCase):
         self.assertEqual(elems.data, {('x1','X1'): None, ('x2','X2'): None})
 
     def test__update__5(self):
-        elems = elems_.Elems({'x1' : 'X1', 'x2':'X2'})
+        elems = elems_.Elems({'x1':  'X1', 'x2':'X2'})
         elems.update(['x1', 'x2', 'x3'])
-        self.assertEqual(elems.data, {'x1': 'X1', 'x2': 'X2', 'x3' : None})
+        self.assertEqual(elems.data, {'x1': 'X1', 'x2': 'X2', 'x3':  None})
 
 if __name__ == '__main__':
     unittest.main()

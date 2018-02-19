@@ -17,14 +17,14 @@ class Test__Graph(unittest.TestCase):
     def test__init__1(self):
         graph = graph_.Graph(['p', 'q', 'r', 's'],[('p','q'), ('q','r')])
         self.assertIsInstance(graph.nodes, nodes_.Nodes)
-        self.assertEqual(graph.nodes.data, {'p' : None, 'q' : None, 'r' : None, 's' : None})
+        self.assertEqual(graph.nodes.data, {'p':  None, 'q':  None, 'r':  None, 's':  None})
         self.assertIsInstance(graph.edges, edges_.Edges)
-        self.assertEqual(graph.edges.data, {('p','q') : None, ('q','r') : None})
+        self.assertEqual(graph.edges.data, {('p','q'):  None, ('q','r'):  None})
 
     def test__init__2(self):
         graph = graph_.Graph({'p':'P', 'q':'Q', 'r':'R'}, {('p','q'):'1', ('q','r'):'2'})
         self.assertIsInstance(graph.nodes, nodes_.Nodes)
-        self.assertEqual(graph.nodes.data, {'p' : 'P', 'q' : 'Q', 'r' : 'R'})
+        self.assertEqual(graph.nodes.data, {'p':  'P', 'q':  'Q', 'r':  'R'})
         self.assertIsInstance(graph.edges, edges_.Edges)
         self.assertEqual(graph.edges.data, {('p','q'):'1', ('q','r'):'2'})
 
@@ -41,9 +41,9 @@ class Test__Graph(unittest.TestCase):
     def test__init__consistency_false(self):
         graph = graph_.Graph(['p', 'q'], [('p','q'), ('q','r')], consistency=False)
         self.assertIsInstance(graph.nodes, nodes_.Nodes)
-        self.assertEqual(graph.nodes.data, {'p' : None, 'q' : None})
+        self.assertEqual(graph.nodes.data, {'p':  None, 'q':  None})
         self.assertIsInstance(graph.edges, edges_.Edges)
-        self.assertEqual(graph.edges.data, {('p','q') : None, ('q','r') : None})
+        self.assertEqual(graph.edges.data, {('p','q'):  None, ('q','r'):  None})
 
     def test__repr__(self):
         graph = graph_.Graph(['p', 'q', 'r'], [('p','q'), ('q','r')])

@@ -25,10 +25,10 @@ class Test__Traversal(unittest.TestCase):
         ingress_func = lambda *args: False
         egress_func = lambda *args: False
         backedge_func = lambda *args: False
-        traversal = Traversal( edge_selector = edge_selector,
-                               ingress_func    = ingress_func,
-                               egress_func    = egress_func,
-                               backedge_func= backedge_func )
+        traversal = Traversal(edge_selector = edge_selector,
+                              ingress_func = ingress_func,
+                              egress_func = egress_func,
+                              backedge_func = backedge_func)
         self.assertIs(traversal.edge_selector, edge_selector)
         self.assertIs(traversal.ingress_func, ingress_func)
         self.assertIs(traversal.egress_func, egress_func)
@@ -36,7 +36,7 @@ class Test__Traversal(unittest.TestCase):
 
     def test__init__2(self):
         edge_selector = lambda g,n: ()
-        traversal = Traversal( direction = edge_selector )
+        traversal = Traversal(direction = edge_selector)
         self.assertIs(traversal.edge_selector, edge_selector)
 
     def test__edge_selector__setter_1(self):

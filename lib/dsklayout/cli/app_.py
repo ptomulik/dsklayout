@@ -11,14 +11,15 @@ import sys
 
 __all__ = ('App',)
 
+
 class App(object):
     """Abstract base class for a command-line application"""
 
-    __slots__ = ( '_parser', '_subparsers' )
+    __slots__ = ('_parser', '_subparsers')
 
     def __init__(self):
         self._parser = argparse.ArgumentParser(**self.properties)
-        self._subparsers = self._parser.add_subparsers(**self.subparsers_properties)
+        self._subparsers = self._parser.add_subparsers(**self.subproperties)
         self.add_arguments(self._parser)
         self.set_defaults(self._parser)
         self.add_subcommands(self._subparsers)
@@ -39,9 +40,9 @@ class App(object):
         return dict()
 
     @property
-    def subparsers_properties(self):
+    def subproperties(self):
         """Properties used when creating subparsers object"""
-        return { 'title' : 'commands' }
+        return {'title':  'commands'}
 
     @property
     def subcommands(self):

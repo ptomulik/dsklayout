@@ -1,16 +1,17 @@
 # -*- coding: utf8 -*-
 
-from .          import blkdev_
-from ..util     import backtick
-from ..graph    import Graph
+from . import blkdev_
+from ..util import backtick
+from ..graph import Graph
 
 import json
 
-__all__ = ( 'LsBlk', )
+__all__ = ('LsBlk',)
+
 
 class LsBlk(object):
 
-    __slots__ = ( '_content', )
+    __slots__ = ('_content',)
 
     def __init__(self, content):
         self._content = content
@@ -22,11 +23,11 @@ class LsBlk(object):
     def _graph_add(self, graph, device, parent=None, **kw):
         keyattr = kw.get('keyattr', 'kname')
         key = device[keyattr]
-        props = { k : v for (k,v) in device.items() if k != 'children' }
+        props = {k:  v for (k, v) in device.items() if k != 'children'}
         if not graph.has_node(key):
             graph.add_node(key, blkdev_.BlkDev(props))
         else:
-            graph.node(key).reappear(props) # just safely update some properties...
+            graph.node(key).reappear(props)
         if parent is not None:
             graph.add_edge((parent[keyattr], key))
 
@@ -42,20 +43,19 @@ class LsBlk(object):
             self._graph_add_walk(graph, device, **kw)
         return graph
 
-
     @staticmethod
     def run(devices=None, flags=None, **kw):
         """Runs lsblk(8) program for specified devices and returns its output.
 
-        If ``devices`` is missing (or None), the program will be invoked without
-        device arguments. The program is ran with -J, -O, -p flags (json output
-        with all fields and full device paths instead of short names). Additional
-        flags may be provided via ``flags`` parameter.
+        If ``devices`` is missing (or None), the program will be invoked
+        without device arguments. The program is ran with -J, -O, -p flags
+        (json output with all fields and full device paths instead of short
+        names). Additional flags may be provided via ``flags`` parameter.
         """
         if devices is None:
             devices = []
         elif isinstance(devices, str):
-            devices = [ devices ]
+            devices = [devices]
         if flags is None:
             flags = []
         lsblk = kw.get('lsblk', 'lsblk')

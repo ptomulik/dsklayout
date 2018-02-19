@@ -36,21 +36,21 @@ class Callbacks(object):
 
     @property
     def callbacks(self):
-        return { 'ingress_func' : self.ingress_func,
-                 'egress_func' : self.egress_func,
-                 'backedge_func' : self.backedge }
+        return {'ingress_func':  self.ingress_func,
+                'egress_func':  self.egress_func,
+                'backedge_func':  self.backedge}
 
 
 class Test__Bfs(unittest.TestCase):
 
     def graph1(self):
-        nodes = [ 'p','q','r','s','t','u','v','x' ]
-        edges = [ ('p','q'), ('p','r'), ('r','t'), ('t','u'), ('r','s'), ('s','p'), ('v','s')]
+        nodes = ['p','q','r','s','t','u','v','x']
+        edges = [('p','q'), ('p','r'), ('r','t'), ('t','u'), ('r','s'), ('s','p'), ('v','s')]
         return graph_.Graph(nodes, edges)
 
     def graph2(self):
-        nodes = [ 'p','q','r','s','t','x' ]
-        edges = [ ('p','q'), ('q','s'), ('r','p'), ('t','r') ]
+        nodes = ['p','q','r','s','t','x']
+        edges = [('p','q'), ('q','s'), ('r','p'), ('t','r')]
         return graph_.Graph(nodes, edges)
 
     def test__isinstance_Traversal(self):
@@ -65,19 +65,19 @@ class Test__Bfs(unittest.TestCase):
         self.assertEqual(trail.backedges, [('s','p')])
 
         self.assertIn(trail.nodes, [
-            [ 'p','q','r','s','t','u','x'],
-            [ 'p','q','r','t','s','u','x'],
-            [ 'p','r','q','s','t','u','x'],
-            [ 'p','r','q','t','s','u','x']
+            ['p','q','r','s','t','u','x'],
+            ['p','q','r','t','s','u','x'],
+            ['p','r','q','s','t','u','x'],
+            ['p','r','q','t','s','u','x']
         ])
 
-        if trail.nodes == [ 'p','q','r','s','t','u','x']:
+        if trail.nodes == ['p','q','r','s','t','u','x']:
             self.assertEqual(trail.edges, [('p','q'), ('p','r'), ('r','s'), ('r','t'), ('t','u')])
-        elif trail.nodes == [ 'p','q','r','t','s','u','x']:
+        elif trail.nodes == ['p','q','r','t','s','u','x']:
             self.assertEqual(trail.edges, [('p','q'), ('p','r'), ('r','t'), ('r','s'), ('t','u')])
-        elif trail.nodes == [ 'p','r','q','s','t','u','x']:
+        elif trail.nodes == ['p','r','q','s','t','u','x']:
             self.assertEqual(trail.edges, [('p','r'), ('p','q'), ('r','s'), ('r','t'), ('t','u')])
-        elif trail.nodes == [ 'p','r','q','t','s','u','x']:
+        elif trail.nodes == ['p','r','q','t','s','u','x']:
             self.assertEqual(trail.edges, [('p','r'), ('p','q'), ('r','t'), ('r','s'), ('t','u')])
         else:
             self.assertTrue(False) # fail
@@ -96,13 +96,13 @@ class Test__Bfs(unittest.TestCase):
         self.assertEqual(trail.backedges, [('p','r')])
 
         self.assertIn(trail.nodes, [
-            [ 'p','s','r','v','x'],
-            [ 'p','s','v','r','x'],
+            ['p','s','r','v','x'],
+            ['p','s','v','r','x'],
         ])
 
-        if trail.nodes == [ 'p','s','r','v','x']:
+        if trail.nodes == ['p','s','r','v','x']:
             self.assertEqual(trail.edges, [('s','p'), ('r','s'), ('v','s')])
-        elif trail.nodes == [ 'p','s','v','r','x']:
+        elif trail.nodes == ['p','s','v','r','x']:
             self.assertEqual(trail.edges, [('s','p'), ('v','s'), ('r','s')])
         else:
             self.assertTrue(False) # fail
@@ -121,13 +121,13 @@ class Test__Bfs(unittest.TestCase):
         self.assertEqual(trail.backedges, [])
 
         self.assertIn(trail.nodes, [
-            [ 'p', 'q', 'r', 's', 't', 'x' ],
-            [ 'p', 'r', 'q', 't', 's', 'x' ],
+            ['p', 'q', 'r', 's', 't', 'x'],
+            ['p', 'r', 'q', 't', 's', 'x'],
         ])
 
-        if trail.nodes == [ 'p', 'q', 'r', 's', 't', 'x' ]:
+        if trail.nodes == ['p', 'q', 'r', 's', 't', 'x']:
             self.assertEqual(trail.edges, [('p','q'), ('r','p'), ('q','s'), ('t','r')])
-        elif trail.nodes == [ 'p', 'r', 'q', 't', 's', 'x' ]:
+        elif trail.nodes == ['p', 'r', 'q', 't', 's', 'x']:
             self.assertEqual(trail.edges, [('r','p'), ('p','q'), ('t','r'), ('q','s')])
         else:
             self.assertTrue(False) # fail
@@ -154,19 +154,19 @@ class Test__Bfs(unittest.TestCase):
         self.assertEqual(trail.backedges, [])
 
         self.assertIn(trail.nodes, [
-            [ 'p','q','r','s'],
-            [ 'p','q','r','t','s'],
-            [ 'p','r','q','s'],
-            [ 'p','r','q','t','s']
+            ['p','q','r','s'],
+            ['p','q','r','t','s'],
+            ['p','r','q','s'],
+            ['p','r','q','t','s']
         ])
 
-        if trail.nodes == [ 'p','q','r','s',]:
-            self.assertEqual(trail.edges, [('p','q'), ('p','r'), ('r','s') ])
-        elif trail.nodes == [ 'p','q','r','t','s']:
+        if trail.nodes == ['p','q','r','s',]:
+            self.assertEqual(trail.edges, [('p','q'), ('p','r'), ('r','s')])
+        elif trail.nodes == ['p','q','r','t','s']:
             self.assertEqual(trail.edges, [('p','q'), ('p','r'), ('r','t'), ('r','s')])
-        elif trail.nodes == [ 'p','r','q','s']:
+        elif trail.nodes == ['p','r','q','s']:
             self.assertEqual(trail.edges, [('p','r'), ('p','q'), ('r','s')])
-        elif trail.nodes == [ 'p','r','q','t','s']:
+        elif trail.nodes == ['p','r','q','t','s']:
             self.assertEqual(trail.edges, [('p','r'), ('p','q'), ('r','t'), ('r','s')])
         else:
             self.assertTrue(False) # fail
@@ -185,19 +185,19 @@ class Test__Bfs(unittest.TestCase):
         self.assertEqual(trail.backedges, [('s','p')])
 
         self.assertIn(trail.nodes, [
-            [ 'p','q','r','s'],
-            [ 'p','q','r','t','s'],
-            [ 'p','r','q','s'],
-            [ 'p','r','q','t','s']
+            ['p','q','r','s'],
+            ['p','q','r','t','s'],
+            ['p','r','q','s'],
+            ['p','r','q','t','s']
         ])
 
-        if trail.nodes == [ 'p','q','r','s',]:
-            self.assertEqual(trail.edges, [('p','q'), ('p','r'), ('r','s') ])
-        elif trail.nodes == [ 'p','q','r','t','s']:
+        if trail.nodes == ['p','q','r','s',]:
+            self.assertEqual(trail.edges, [('p','q'), ('p','r'), ('r','s')])
+        elif trail.nodes == ['p','q','r','t','s']:
             self.assertEqual(trail.edges, [('p','q'), ('p','r'), ('r','t'), ('r','s')])
-        elif trail.nodes == [ 'p','r','q','s']:
+        elif trail.nodes == ['p','r','q','s']:
             self.assertEqual(trail.edges, [('p','r'), ('p','q'), ('r','s')])
-        elif trail.nodes == [ 'p','r','q','t','s']:
+        elif trail.nodes == ['p','r','q','t','s']:
             self.assertEqual(trail.edges, [('p','r'), ('p','q'), ('r','t'), ('r','s')])
         else:
             self.assertTrue(False) # fail

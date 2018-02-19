@@ -2,15 +2,19 @@
 
 import collections.abc
 
-__all__ = ( 'Elems', )
+__all__ = ('Elems',)
+
 
 class _missing_meta(type):
     "Meta-class for the `_missing` class"
+
     def __bool__(self):
         return False
     __nonzero__ = __bool__
+
     def __repr__(cls):
         return 'MISSING'
+
 
 class _missing(object, metaclass=_missing_meta):
     "Represents missing argument to function."
@@ -19,20 +23,21 @@ class _missing(object, metaclass=_missing_meta):
 MISSING = _missing
 """Represents missing argument to a function."""
 
+
 class Elems(collections.abc.MutableMapping):
     """A container for graph elements, either edges or nodes.
     """
 
-    __slots__ = ( '_data',  )
+    __slots__ = ('_data',)
 
-    def __init__(self, items = (), **kw):
+    def __init__(self, items=(), **kw):
         super().__init__()
         self._data = dict()
-        self.update(items,**kw)
+        self.update(items, **kw)
 
     @property
     def data(self):
-        """Returns a dictionary which maps graph elements onto assigned data objects"""
+        """A {node: value} dictionary, with custom values"""
         return self._data
 
     def __contains__(self, key):
@@ -86,7 +91,7 @@ class Elems(collections.abc.MutableMapping):
             self._update_without_values(items)
 
     def _update_with_values(self, items):
-        for e,d in items:
+        for e, d in items:
             self.add(e, d)
 
     def _update_without_values(self, items):

@@ -2,7 +2,8 @@
 
 import collections
 
-__all__ = ( 'Trail', )
+__all__ = ('Trail',)
+
 
 class Trail(object):
 
@@ -15,9 +16,9 @@ class Trail(object):
         self._backedges = list()
         self._result = None
         self._queue = collections.deque()
-        self._ingress_func = kw.get('ingress_func', lambda *args : False)
-        self._egress_func = kw.get('egress_func', lambda *args : False)
-        self._backedge_func = kw.get('backedge_func', lambda *args : False)
+        self._ingress_func = kw.get('ingress_func', lambda *args:  False)
+        self._egress_func = kw.get('egress_func', lambda *args:  False)
+        self._backedge_func = kw.get('backedge_func', lambda *args:  False)
 
     @property
     def explored_nodes(self):

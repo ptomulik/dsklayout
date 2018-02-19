@@ -5,12 +5,13 @@ from . import traversal_
 
 import collections
 
-__all__ = ( 'Dfs', )
+__all__ = ('Dfs',)
+
 
 class Dfs(traversal_.Traversal):
     """Deep-First Search algorithm"""
 
-    __slots__ = ( )
+    __slots__ = ()
 
     def __init__(self, **kw):
         super().__init__(**kw)
@@ -24,12 +25,12 @@ class Dfs(traversal_.Traversal):
                 break
         return trail
 
-    def _dfs(self, trail, node, last_edge):
+    def _dfs(self, trail, node, edge):
         trail.explore_and_append_node(node)
-        stop = self._invoke_callback(trail.ingress_func, trail, node, last_edge)
+        stop = self._invoke_callback(trail.ingress_func, trail, node, edge)
         if not stop:
             stop = self._select_edges_and_iterate(trail, node)
-        stop |= self._invoke_callback(trail.egress_func, trail, node, last_edge)
+        stop |= self._invoke_callback(trail.egress_func, trail, node, edge)
         return stop
 
     def _select_edges_and_iterate(self, trail, node):

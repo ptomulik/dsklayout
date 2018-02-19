@@ -77,35 +77,35 @@ class Test__LsBlk(unittest.TestCase):
         with patch(backtick, return_value='{"foo":"bar"}') as mock:
             lsblk = lsblk_.LsBlk.new()
             self.assertIsInstance(lsblk, lsblk_.LsBlk)
-            self.assertEqual(lsblk.content, { "foo" : "bar" })
+            self.assertEqual(lsblk.content, {"foo":  "bar"})
             mock.assert_called_once_with(['lsblk', '-J', '-O', '-p'])
 
     def test__new__with_device(self):
         with patch(backtick, return_value='{"foo":"bar"}') as mock:
             lsblk = lsblk_.LsBlk.new('sda')
             self.assertIsInstance(lsblk, lsblk_.LsBlk)
-            self.assertEqual(lsblk.content, { "foo" : "bar" })
+            self.assertEqual(lsblk.content, {"foo":  "bar"})
             mock.assert_called_once_with(['lsblk', '-J', '-O', '-p', 'sda'])
 
     def test__new__with_devices(self):
         with patch(backtick, return_value='{"foo":"bar"}') as mock:
             lsblk = lsblk_.LsBlk.new(['sda', 'sdb'])
             self.assertIsInstance(lsblk, lsblk_.LsBlk)
-            self.assertEqual(lsblk.content, { "foo" : "bar" })
+            self.assertEqual(lsblk.content, {"foo":  "bar"})
             mock.assert_called_once_with(['lsblk', '-J', '-O', '-p', 'sda', 'sdb'])
 
     def test__new__with_devices_and_flags(self):
         with patch(backtick, return_value='{"foo":"bar"}') as mock:
             lsblk = lsblk_.LsBlk.new(['sda', 'sdb'], ['-x', '-y'])
             self.assertIsInstance(lsblk, lsblk_.LsBlk)
-            self.assertEqual(lsblk.content, { "foo" : "bar" })
+            self.assertEqual(lsblk.content, {"foo":  "bar"})
             mock.assert_called_once_with(['lsblk', '-J', '-O', '-p', '-x', '-y',  'sda', 'sdb'])
 
     def test__new__with_custom_lsblk(self):
         with patch(backtick, return_value='{"foo":"bar"}') as mock:
             lsblk = lsblk_.LsBlk.new(['sda', 'sdb'], ['-x', '-y'], lsblk='/opt/bin/lsblk')
             self.assertIsInstance(lsblk, lsblk_.LsBlk)
-            self.assertEqual(lsblk.content, { "foo" : "bar" })
+            self.assertEqual(lsblk.content, {"foo":  "bar"})
             mock.assert_called_once_with(['/opt/bin/lsblk', '-J', '-O', '-p', '-x', '-y',  'sda', 'sdb'])
 
     def test__graph__with_fixtures(self):

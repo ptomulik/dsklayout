@@ -6,10 +6,11 @@ from . import cmdbase_
 
 __all__ = ('Cmd',)
 
+
 class Cmd(cmdbase_.CmdBase):
     """Base class for actual command (subcommand)"""
 
-    __slots__ = ( '_arguments', '_extensions' )
+    __slots__ = ('_arguments', '_extensions')
 
     def __init__(self, **kw):
         super().__init__()
@@ -48,7 +49,7 @@ class Cmd(cmdbase_.CmdBase):
         self.add_ext_arguments(parser)
 
     def add_ext_arguments(self, parser):
-        for key,ext in self._extensions.items():
+        for key, ext in self._extensions.items():
             ext.add_arguments(parser)
 
     def set_defaults(self, parser):
@@ -56,7 +57,7 @@ class Cmd(cmdbase_.CmdBase):
         self.set_ext_defaults(parser)
 
     def set_ext_defaults(self, parser):
-        for key,ext in self._extensions.items():
+        for key, ext in self._extensions.items():
             ext.set_defaults(parser)
 
     def add_cmd_arguments(self, parser):

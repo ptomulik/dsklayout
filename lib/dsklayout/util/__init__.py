@@ -4,7 +4,7 @@ import subprocess
 import importlib
 import sys
 
-__all__ = ( 'backtick', )
+__all__ = ('backtick',)
 
 
 def backtick(cmd, input=None, timeout=None):
@@ -15,12 +15,16 @@ def backtick(cmd, input=None, timeout=None):
     """
     PIPE = subprocess.PIPE
     stdin = PIPE if input is not None else None
-    return subprocess.check_output(cmd, stdin=stdin, stderr=PIPE, universal_newlines=True, timeout=timeout)
+    return subprocess.check_output(cmd, stdin=stdin, stderr=PIPE,
+                                   universal_newlines=True,
+                                   timeout=timeout)
+
 
 def inject_symbols_from_modules(target, modules, module_package=None, **kw):
     """Imports symbols from multiple modules. See inject_symbols_from_module"""
     for module in modules:
         inject_symbols_from_module(target, module, module_package, **kw)
+
 
 def inject_symbols_from_module(target, module, package=None, **kw):
     """Imports all symbols from module to target.
@@ -34,6 +38,7 @@ def inject_symbols_from_module(target, module, package=None, **kw):
     module = importlib.import_module(module, package or target)
     inject_symbols(target_module, module, exportable_symbols(module), **kw)
 
+
 def inject_symbols(target, source, symbols, **kw):
     for symbol in symbols:
         setattr(target, symbol, getattr(source, symbol))
@@ -41,6 +46,7 @@ def inject_symbols(target, source, symbols, **kw):
         if not hasattr(target, '__all__'):
             target.__all__ = ()
         target.__all__ += target.__all__.__class__(symbols)
+
 
 def exportable_symbols(module):
     if hasattr(module, '__all__'):

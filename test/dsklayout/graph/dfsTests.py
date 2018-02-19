@@ -36,21 +36,21 @@ class Callbacks(object):
 
     @property
     def callbacks(self):
-        return { 'ingress_func' : self.ingress_func,
-                 'egress_func' : self.egress_func,
-                 'backedge_func' : self.backedge }
+        return {'ingress_func':  self.ingress_func,
+                 'egress_func':  self.egress_func,
+                 'backedge_func':  self.backedge}
 
 
 class Test__Dfs(unittest.TestCase):
 
     def graph1(self):
-        nodes = [ 'p','q','r','s','x' ]
-        edges = [ ('p','q'), ('q','r'), ('q','s'), ('s','p') ]
+        nodes = ['p','q','r','s','x']
+        edges = [('p','q'), ('q','r'), ('q','s'), ('s','p')]
         return graph_.Graph(nodes, edges)
 
     def graph2(self):
-        nodes = [ 'p','q','r','s','t','u','x' ]
-        edges = [ ('p','q'), ('q','r'), ('q','s'), ('s', 'p'), ('s', 't'), ('r','u') ]
+        nodes = ['p','q','r','s','t','u','x']
+        edges = [('p','q'), ('q','r'), ('q','s'), ('s', 'p'), ('s', 't'), ('r','u')]
         return graph_.Graph(nodes, edges)
 
     def test__isinstance_Traversal(self):

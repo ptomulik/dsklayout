@@ -19,7 +19,7 @@ class Test__BackupCmd(unittest.TestCase):
 
     def test__properties(self):
         cmd = backupcmd_.BackupCmd()
-        self.assertEqual(cmd.properties, { 'description': 'backup disk layout' })
+        self.assertEqual(cmd.properties, {'description': 'backup disk layout'})
 
     def test__add_cmd_arguments(self):
         cmd = backupcmd_.BackupCmd()

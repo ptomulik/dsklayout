@@ -6,9 +6,10 @@ from . import cmdbase_
 
 __all__ = ('CmdExt',)
 
+
 class CmdExt(cmdbase_.CmdBase):
 
-    __slots__ = ( '_parent', )
+    __slots__ = ('_parent',)
 
     @property
     def parent(self):

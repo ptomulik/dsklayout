@@ -330,19 +330,19 @@ class Test__Edges(unittest.TestCase):
         self.assertEqual(repr(('p','q','r')), str(context.exception))
 
     def test__setitem__1(self):
-        edges = edges_.Edges({('p','q') : 'E1'})
+        edges = edges_.Edges({('p','q'):  'E1'})
         edges[('p','q')] = '_E1_'
-        self.assertEqual(edges.data, {('p','q') : '_E1_'})
-        self.assertEqual(edges.successors_dict, {'p' : set(('q',))})
-        self.assertEqual(edges.predecessors_dict, {'q' : set(('p',))})
+        self.assertEqual(edges.data, {('p','q'):  '_E1_'})
+        self.assertEqual(edges.successors_dict, {'p':  set(('q',))})
+        self.assertEqual(edges.predecessors_dict, {'q':  set(('p',))})
 
     def test__setitem__2(self):
-        edges = edges_.Edges({('p','q') : 'E1'})
+        edges = edges_.Edges({('p','q'):  'E1'})
         edges[('p','q')] = '_E1_'
         edges[('q','r')] = '_E2_'
-        self.assertEqual(edges.data, {('p','q') : '_E1_', ('q','r') : '_E2_'})
-        self.assertEqual(edges.successors_dict, {'p' : set(('q',)), 'q' : set(('r',))})
-        self.assertEqual(edges.predecessors_dict, {'q' : set(('p',)), 'r' : set(('q',))})
+        self.assertEqual(edges.data, {('p','q'):  '_E1_', ('q','r'):  '_E2_'})
+        self.assertEqual(edges.successors_dict, {'p':  set(('q',)), 'q':  set(('r',))})
+        self.assertEqual(edges.predecessors_dict, {'q':  set(('p',)), 'r':  set(('q',))})
 
     def test__setitem__ValueError_1(self):
         edges = edges_.Edges()
@@ -365,61 +365,61 @@ class Test__Edges(unittest.TestCase):
     def test__delitem__1(self):
         edges = edges_.Edges({('p','q'): 'E1', ('q','r'): 'E2'})
         del edges[('p','q')]
-        self.assertEqual(edges.data, {('q','r') : 'E2'})
-        self.assertEqual(edges.successors_dict, {'q' : set(('r',)) })
-        self.assertEqual(edges.predecessors_dict, {'r' : set(('q',)) })
+        self.assertEqual(edges.data, {('q','r'):  'E2'})
+        self.assertEqual(edges.successors_dict, {'q':  set(('r',))})
+        self.assertEqual(edges.predecessors_dict, {'r':  set(('q',))})
 
     def test__delitem__KeyError_1(self):
         edges = edges_.Edges({('p','q'): 'E1', ('q','r'): 'E2'})
         with self.assertRaises(KeyError) as context:
             del edges[('r','p')]
         self.assertEqual(repr(('r','p')), str(context.exception))
-        self.assertEqual(edges.data, {('p','q') : 'E1', ('q','r') : 'E2'})
-        self.assertEqual(edges.successors_dict, {'p' : set(('q',)), 'q' : set(('r',)) })
-        self.assertEqual(edges.predecessors_dict, {'q' : set(('p',)), 'r' : set(('q',)) })
+        self.assertEqual(edges.data, {('p','q'):  'E1', ('q','r'):  'E2'})
+        self.assertEqual(edges.successors_dict, {'p':  set(('q',)), 'q':  set(('r',))})
+        self.assertEqual(edges.predecessors_dict, {'q':  set(('p',)), 'r':  set(('q',))})
 
     def test__delitem__KeyError_2(self):
         edges = edges_.Edges({('p','q'): 'E1', ('q','r'): 'E2'})
         with self.assertRaises(KeyError) as context:
             del edges[('q','p')]
         self.assertEqual(repr(('q','p')), str(context.exception))
-        self.assertEqual(edges.data, {('p','q') : 'E1', ('q','r') : 'E2'})
-        self.assertEqual(edges.successors_dict, {'p' : set(('q',)), 'q' : set(('r',)) })
-        self.assertEqual(edges.predecessors_dict, {'q' : set(('p',)), 'r' : set(('q',)) })
+        self.assertEqual(edges.data, {('p','q'):  'E1', ('q','r'):  'E2'})
+        self.assertEqual(edges.successors_dict, {'p':  set(('q',)), 'q':  set(('r',))})
+        self.assertEqual(edges.predecessors_dict, {'q':  set(('p',)), 'r':  set(('q',))})
 
     def test__delitem__KeyError_3(self):
         edges = edges_.Edges({('p','q'): 'E1', ('q','r'): 'E2'})
         with self.assertRaises(KeyError) as context:
             del edges[('p',)]
         self.assertEqual(repr(('p',)), str(context.exception))
-        self.assertEqual(edges.data, {('p','q') : 'E1', ('q','r') : 'E2'})
-        self.assertEqual(edges.successors_dict, {'p' : set(('q',)), 'q' : set(('r',)) })
-        self.assertEqual(edges.predecessors_dict, {'q' : set(('p',)), 'r' : set(('q',)) })
+        self.assertEqual(edges.data, {('p','q'):  'E1', ('q','r'):  'E2'})
+        self.assertEqual(edges.successors_dict, {'p':  set(('q',)), 'q':  set(('r',))})
+        self.assertEqual(edges.predecessors_dict, {'q':  set(('p',)), 'r':  set(('q',))})
 
     def test__delitem__KeyError_4(self):
         edges = edges_.Edges({('p','q'): 'E1', ('q','r'): 'E2'})
         with self.assertRaises(KeyError) as context:
             del edges[('p','q','r')]
         self.assertEqual(repr(('p','q','r')), str(context.exception))
-        self.assertEqual(edges.data, {('p','q') : 'E1', ('q','r') : 'E2'})
-        self.assertEqual(edges.successors_dict, {'p' : set(('q',)), 'q' : set(('r',)) })
-        self.assertEqual(edges.predecessors_dict, {'q' : set(('p',)), 'r' : set(('q',)) })
+        self.assertEqual(edges.data, {('p','q'):  'E1', ('q','r'):  'E2'})
+        self.assertEqual(edges.successors_dict, {'p':  set(('q',)), 'q':  set(('r',))})
+        self.assertEqual(edges.predecessors_dict, {'q':  set(('p',)), 'r':  set(('q',))})
 
     def test__add__1(self):
-        edges = edges_.Edges({('p','q') : 'E1'})
+        edges = edges_.Edges({('p','q'):  'E1'})
         edges.add(('p','q'), '_E1_')
         edges.add(('q','r'), '_E2_')
-        self.assertEqual(edges.data, {('p','q') : '_E1_', ('q','r') : '_E2_'})
-        self.assertEqual(edges.successors_dict, {'p' : set(('q',)), 'q' : set(('r',)) })
-        self.assertEqual(edges.predecessors_dict, {'q' : set(('p',)), 'r' : set(('q',)) })
+        self.assertEqual(edges.data, {('p','q'):  '_E1_', ('q','r'):  '_E2_'})
+        self.assertEqual(edges.successors_dict, {'p':  set(('q',)), 'q':  set(('r',))})
+        self.assertEqual(edges.predecessors_dict, {'q':  set(('p',)), 'r':  set(('q',))})
 
     def test__add__2(self):
-        edges = edges_.Edges({('p','q') : 'E1'})
+        edges = edges_.Edges({('p','q'):  'E1'})
         edges.add(('p','q'))
         edges.add(('q','r'))
-        self.assertEqual(edges.data, {('p','q') : 'E1', ('q','r') : None})
-        self.assertEqual(edges.successors_dict, {'p' : set(('q',)), 'q' : set(('r',)) })
-        self.assertEqual(edges.predecessors_dict, {'q' : set(('p',)), 'r' : set(('q',)) })
+        self.assertEqual(edges.data, {('p','q'):  'E1', ('q','r'):  None})
+        self.assertEqual(edges.successors_dict, {'p':  set(('q',)), 'q':  set(('r',))})
+        self.assertEqual(edges.predecessors_dict, {'q':  set(('p',)), 'r':  set(('q',))})
 
     def test__add__ValueError_1(self):
         edges = edges_.Edges()
@@ -442,16 +442,16 @@ class Test__Edges(unittest.TestCase):
     def test__discard__1(self):
         edges = edges_.Edges({('p','q'): 'E1', ('q','r'): 'E2'})
         edges.discard(('p','q'))
-        self.assertEqual(edges.data, {('q','r') : 'E2'})
-        self.assertEqual(edges.successors_dict, {'q' : set(('r',)) })
-        self.assertEqual(edges.predecessors_dict, {'r' : set(('q',)) })
+        self.assertEqual(edges.data, {('q','r'):  'E2'})
+        self.assertEqual(edges.successors_dict, {'q':  set(('r',))})
+        self.assertEqual(edges.predecessors_dict, {'r':  set(('q',))})
 
     def test__discard__2(self):
         edges = edges_.Edges({('p','q'): 'E1', ('q','r'): 'E2'})
         edges.discard(('r','p'))
-        self.assertEqual(edges.data, {('p','q') : 'E1', ('q','r') : 'E2'})
-        self.assertEqual(edges.successors_dict, {'p' : set(('q',)), 'q' : set(('r',)) })
-        self.assertEqual(edges.predecessors_dict, {'q' : set(('p',)), 'r' : set(('q',)) })
+        self.assertEqual(edges.data, {('p','q'):  'E1', ('q','r'):  'E2'})
+        self.assertEqual(edges.successors_dict, {'p':  set(('q',)), 'q':  set(('r',))})
+        self.assertEqual(edges.predecessors_dict, {'q':  set(('p',)), 'r':  set(('q',))})
 
     def test__clear(self):
         edges = edges_.Edges({('p','q'): 'E1', ('q','r'): 'E2'})
@@ -465,25 +465,25 @@ class Test__Edges(unittest.TestCase):
         self.assertEqual(list(edges.items()), list(edges.data.items()))
 
     def test__del_incident__1(self):
-        edges = edges_.Edges([('p','q'), ('q','r'), ('s', 'q') ])
+        edges = edges_.Edges([('p','q'), ('q','r'), ('s', 'q')])
         edges.del_incident('s')
-        self.assertEqual(edges.data, {('p','q') : None, ('q','r') : None})
-        self.assertEqual(edges.successors_dict, {'p' : set(('q',)), 'q' : set(('r',)) })
-        self.assertEqual(edges.predecessors_dict, {'q' : set(('p',)), 'r' : set(('q',)) })
+        self.assertEqual(edges.data, {('p','q'):  None, ('q','r'):  None})
+        self.assertEqual(edges.successors_dict, {'p':  set(('q',)), 'q':  set(('r',))})
+        self.assertEqual(edges.predecessors_dict, {'q':  set(('p',)), 'r':  set(('q',))})
 
     def test__del_incident__2(self):
-        edges = edges_.Edges([('p','q'), ('q','r'), ('s', 'q') ])
+        edges = edges_.Edges([('p','q'), ('q','r'), ('s', 'q')])
         edges.del_incident('q')
         self.assertEqual(edges.data, dict())
         self.assertEqual(edges.successors_dict, dict())
         self.assertEqual(edges.predecessors_dict, dict())
 
     def test__del_incident__3(self):
-        edges = edges_.Edges([('p','q'), ('q','r'), ('s', 'r') ])
+        edges = edges_.Edges([('p','q'), ('q','r'), ('s', 'r')])
         edges.del_incident('r')
-        self.assertEqual(edges.data, {('p','q') : None })
-        self.assertEqual(edges.successors_dict, {'p' : set(('q',))})
-        self.assertEqual(edges.predecessors_dict, {'q' : set(('p',))})
+        self.assertEqual(edges.data, {('p','q'):  None})
+        self.assertEqual(edges.successors_dict, {'p':  set(('q',))})
+        self.assertEqual(edges.predecessors_dict, {'q':  set(('p',))})
 
     def test__del_incident__KeyError(self):
         edges = edges_.Edges([('p','q'), ('q','r')])

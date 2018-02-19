@@ -4,9 +4,10 @@ from . import elems_
 
 import collections.abc
 
-__all__ = ( 'Edges', )
+__all__ = ('Edges',)
 
 MISSING = elems_.MISSING
+
 
 class Edges(elems_.Elems):
     """An unordered set of graph edges. An edge is a tuple of hashable objects.
@@ -15,12 +16,13 @@ class Edges(elems_.Elems):
        that resemble forward and backward relations between nodes.
     """
 
-    __slots__ = ( '_successors_dict', '_predecessors_dict' )
+    __slots__ = ('_successors_dict', '_predecessors_dict')
 
-    def __init__(self, items = (), **kw):
+    def __init__(self, items=(), **kw):
         self._successors_dict = dict()
         self._predecessors_dict = dict()
-        if 'edgedata' in kw: kw['data'] = kw['edgedata']
+        if 'edgedata' in kw:
+            kw['data'] = kw['edgedata']
         super().__init__(items, **kw)
 
     @property
@@ -43,15 +45,18 @@ class Edges(elems_.Elems):
 
     def has_neighbors(self, node):
         """Returns True if node appears anywhere in edges"""
-        return node in self._successors_dict or node in self._predecessors_dict
+        return (node in self._successors_dict) or \
+               (node in self._predecessors_dict)
 
     def successors(self, node):
         """Returns a set of successors of a given node"""
-        return self._select_node_related_elems(self._successors_dict, self._predecessors_dict, node)
+        return self._select_node_related_elems(self._successors_dict,
+                                               self._predecessors_dict, node)
 
     def predecessors(self, node):
         """Returns a set of predecessors of a given node"""
-        return self._select_node_related_elems(self._predecessors_dict, self._successors_dict, node)
+        return self._select_node_related_elems(self._predecessors_dict,
+                                               self._successors_dict, node)
 
     def neighbors(self, node):
         """Returns a set of nodes that are connected to a given node"""
@@ -59,19 +64,19 @@ class Edges(elems_.Elems):
 
     def outward(self, node):
         """Returns a set of outward edges for given node"""
-        return { (node,s) for s in self.successors(node) }
+        return {(node, s) for s in self.successors(node)}
 
     def inward(self, node):
         """Returns a set of inward edges for given node"""
-        return { (p,node) for p in self.predecessors(node) }
+        return {(p, node) for p in self.predecessors(node)}
 
     def incident(self, node):
-        """Returns a set of edges incident (outward or inward) to a given node"""
+        """Returns a set of edges incident (outward/inward) to a given node"""
         return self.outward(node) | self.inward(node)
 
     @classmethod
     def adjacent(self, node, edge):
-        """Given an edge and a node returns the node on the other end of edge"""
+        """Returns a node on the opposite end of edge"""
         left, right = tuple(edge)
         if left == node:
             return right
@@ -93,7 +98,7 @@ class Edges(elems_.Elems):
         try:
             left, right = tedge = tuple(edge)
         except ValueError:
-            raise KeyError(edge) # it would not be found, anyway
+            raise KeyError(edge)  # it would not be found, anyway
         try:
             super().__delitem__(tedge)
         except KeyError:
@@ -102,12 +107,14 @@ class Edges(elems_.Elems):
         self._discard_neighbor(self._predecessors_dict, right, left)
 
     def add(self, edge, data=elems_.MISSING):
+        """Add edge"""
         left, right = tedge = tuple(edge)
         super().add(tedge, data)
         self._add_neighbor(self._successors_dict, left, right)
         self._add_neighbor(self._predecessors_dict, right, left)
 
     def clear(self):
+        """Removes all edges from container"""
         super().clear()
         self._successors_dict.clear()
         self._predecessors_dict.clear()
@@ -122,8 +129,8 @@ class Edges(elems_.Elems):
         try:
             nodes = related[node]
         except KeyError:
-            opposite[node] # throw, if 'node' doesn't appear in any of the dictionaries
-            nodes = set() # otherwise return an empty set
+            opposite[node]  # node not found in this graph
+            nodes = set()   # otherwise return an empty set
         return nodes
 
     @classmethod

@@ -9,16 +9,17 @@ from . import backupcmd_
 
 __all__ = ('DskLayout',)
 
+
 class DskLayout(app_.App):
 
     @property
     def properties(self):
         """Properties used to create argparse.ArgumentParser"""
-        return { 'description': 'Retrieve and backup layouts of block devices' }
+        return {'description': 'Retrieve and backup layouts of block devices'}
 
     @property
     def subcommands(self):
-        return [ backupcmd_.BackupCmd ]
+        return [backupcmd_.BackupCmd]
 
     def add_arguments(self, parser):
         pass
