@@ -11,24 +11,24 @@ import dsklayout.graph.graph_ as graph_
 class Callbacks(object):
 
     def __init__(self, **kw):
-        self.enter_nodes = list()
-        self.enter_edges = list()
-        self.leave_nodes = list()
-        self.leave_edges = list()
+        self.ingress_nodes = list()
+        self.ingress_edges = list()
+        self.egress_nodes = list()
+        self.egress_edges = list()
         self.backedges = list()
-        self._enter_func = kw.get('enter_func', lambda g,n,e: False)
-        self._leave_func = kw.get('leave_func', lambda g,n,e: False)
+        self._ingress_func = kw.get('ingress_func', lambda g,n,e: False)
+        self._egress_func = kw.get('egress_func', lambda g,n,e: False)
         self._backedge_func = kw.get('backedge_func', lambda g,e: False)
 
-    def enter(self, graph, node, edge):
-        self.enter_nodes.append(node)
-        if edge is not None: self.enter_edges.append(edge)
-        return (self._enter_func)(graph, node, edge)
+    def ingress_func(self, graph, node, edge):
+        self.ingress_nodes.append(node)
+        if edge is not None: self.ingress_edges.append(edge)
+        return (self._ingress_func)(graph, node, edge)
 
-    def leave(self, graph, node, edge):
-        self.leave_nodes.append(node)
-        if edge is not None: self.leave_edges.append(edge)
-        return (self._leave_func)(graph, node, edge)
+    def egress_func(self, graph, node, edge):
+        self.egress_nodes.append(node)
+        if edge is not None: self.egress_edges.append(edge)
+        return (self._egress_func)(graph, node, edge)
 
     def backedge(self, graph, edge):
         self.backedges.append(edge)
@@ -36,8 +36,8 @@ class Callbacks(object):
 
     @property
     def callbacks(self):
-        return { 'enter_func' : self.enter,
-                 'leave_func' : self.leave,
+        return { 'ingress_func' : self.ingress_func,
+                 'egress_func' : self.egress_func,
                  'backedge_func' : self.backedge }
 
 
@@ -81,10 +81,10 @@ class Test__Bfs(unittest.TestCase):
             self.assertEqual(trail.edges, [('p','r'), ('p','q'), ('r','t'), ('r','s'), ('t','u')])
         else:
             self.assertTrue(False) # fail
-        self.assertEqual(cb.enter_nodes, trail.nodes)
-        self.assertEqual(cb.enter_edges, trail.edges)
-        self.assertEqual(cb.leave_nodes, trail.nodes)
-        self.assertEqual(cb.leave_edges, trail.edges)
+        self.assertEqual(cb.ingress_nodes, trail.nodes)
+        self.assertEqual(cb.ingress_edges, trail.edges)
+        self.assertEqual(cb.egress_nodes, trail.nodes)
+        self.assertEqual(cb.egress_edges, trail.edges)
         self.assertEqual(cb.backedges, trail.backedges)
 
     def test__inward__1(self):
@@ -106,10 +106,10 @@ class Test__Bfs(unittest.TestCase):
             self.assertEqual(trail.edges, [('s','p'), ('v','s'), ('r','s')])
         else:
             self.assertTrue(False) # fail
-        self.assertEqual(cb.enter_nodes, trail.nodes)
-        self.assertEqual(cb.enter_edges, trail.edges)
-        self.assertEqual(cb.leave_nodes, trail.nodes)
-        self.assertEqual(cb.leave_edges, trail.edges)
+        self.assertEqual(cb.ingress_nodes, trail.nodes)
+        self.assertEqual(cb.ingress_edges, trail.edges)
+        self.assertEqual(cb.egress_nodes, trail.nodes)
+        self.assertEqual(cb.egress_edges, trail.edges)
         self.assertEqual(cb.backedges, trail.backedges)
 
     def test__incident__1(self):
@@ -132,18 +132,18 @@ class Test__Bfs(unittest.TestCase):
         else:
             self.assertTrue(False) # fail
 
-        self.assertEqual(cb.enter_nodes, trail.nodes)
-        self.assertEqual(cb.enter_edges, trail.edges)
-        self.assertEqual(cb.leave_nodes, trail.nodes)
-        self.assertEqual(cb.leave_edges, trail.edges)
+        self.assertEqual(cb.ingress_nodes, trail.nodes)
+        self.assertEqual(cb.ingress_edges, trail.edges)
+        self.assertEqual(cb.egress_nodes, trail.nodes)
+        self.assertEqual(cb.egress_edges, trail.edges)
         self.assertEqual(cb.backedges, trail.backedges)
 
-    def test__stop_on_enter(self):
-        cb = Callbacks(enter_func = lambda g,n,e: n == 's')
+    def test__stop_on_ingress(self):
+        cb = Callbacks(ingress_func = lambda g,n,e: n == 's')
         self.stop_on_s_testfun(cb)
 
-    def test__stop_on_leave(self):
-        cb = Callbacks(leave_func = lambda g,n,e: n == 's')
+    def test__stop_on_egress(self):
+        cb = Callbacks(egress_func = lambda g,n,e: n == 's')
         self.stop_on_s_testfun(cb)
 
     def stop_on_s_testfun(self, cb):
@@ -170,10 +170,10 @@ class Test__Bfs(unittest.TestCase):
             self.assertEqual(trail.edges, [('p','r'), ('p','q'), ('r','t'), ('r','s')])
         else:
             self.assertTrue(False) # fail
-        self.assertEqual(cb.enter_nodes, trail.nodes)
-        self.assertEqual(cb.enter_edges, trail.edges)
-        self.assertEqual(cb.leave_nodes, trail.nodes)
-        self.assertEqual(cb.leave_edges, trail.edges)
+        self.assertEqual(cb.ingress_nodes, trail.nodes)
+        self.assertEqual(cb.ingress_edges, trail.edges)
+        self.assertEqual(cb.egress_nodes, trail.nodes)
+        self.assertEqual(cb.egress_edges, trail.edges)
         self.assertEqual(cb.backedges, trail.backedges)
 
     def test__stop_on_backedge(self):
@@ -201,10 +201,10 @@ class Test__Bfs(unittest.TestCase):
             self.assertEqual(trail.edges, [('p','r'), ('p','q'), ('r','t'), ('r','s')])
         else:
             self.assertTrue(False) # fail
-        self.assertEqual(cb.enter_nodes, trail.nodes)
-        self.assertEqual(cb.enter_edges, trail.edges)
-        self.assertEqual(cb.leave_nodes, trail.nodes)
-        self.assertEqual(cb.leave_edges, trail.edges)
+        self.assertEqual(cb.ingress_nodes, trail.nodes)
+        self.assertEqual(cb.ingress_edges, trail.edges)
+        self.assertEqual(cb.egress_nodes, trail.nodes)
+        self.assertEqual(cb.egress_edges, trail.edges)
         self.assertEqual(cb.backedges, trail.backedges)
 
     def test__repeated_start_nodes_1(self):
@@ -215,10 +215,10 @@ class Test__Bfs(unittest.TestCase):
         self.assertEqual(trail.nodes, ['p', 'q'])
         self.assertEqual(trail.edges, [('p','q')])
         self.assertEqual(trail.backedges, [])
-        self.assertEqual(cb.enter_nodes, trail.nodes)
-        self.assertEqual(cb.leave_nodes, trail.nodes)
-        self.assertEqual(cb.enter_edges, trail.edges)
-        self.assertEqual(cb.leave_edges, trail.edges)
+        self.assertEqual(cb.ingress_nodes, trail.nodes)
+        self.assertEqual(cb.egress_nodes, trail.nodes)
+        self.assertEqual(cb.ingress_edges, trail.edges)
+        self.assertEqual(cb.egress_edges, trail.edges)
         self.assertEqual(cb.backedges, trail.backedges)
 
 

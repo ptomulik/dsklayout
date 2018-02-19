@@ -16,22 +16,22 @@ class Test__Traversal(unittest.TestCase):
     def test__init__0(self):
         traversal = Traversal()
         self.assertEqual(traversal.edge_selector, traversal.select_incident_edges)
-        self.assertTrue(callable(traversal.enter_func))
-        self.assertTrue(callable(traversal.leave_func))
+        self.assertTrue(callable(traversal.ingress_func))
+        self.assertTrue(callable(traversal.egress_func))
         self.assertTrue(callable(traversal.backedge_func))
 
     def test__init__1(self):
         edge_selector = lambda g,n: ()
-        enter_func = lambda *args: False
-        leave_func = lambda *args: False
+        ingress_func = lambda *args: False
+        egress_func = lambda *args: False
         backedge_func = lambda *args: False
         traversal = Traversal( edge_selector = edge_selector,
-                               enter_func    = enter_func,
-                               leave_func    = leave_func,
+                               ingress_func    = ingress_func,
+                               egress_func    = egress_func,
                                backedge_func= backedge_func )
         self.assertIs(traversal.edge_selector, edge_selector)
-        self.assertIs(traversal.enter_func, enter_func)
-        self.assertIs(traversal.leave_func, leave_func)
+        self.assertIs(traversal.ingress_func, ingress_func)
+        self.assertIs(traversal.egress_func, egress_func)
         self.assertIs(traversal.backedge_func, backedge_func)
 
     def test__init__2(self):
@@ -82,31 +82,31 @@ class Test__Traversal(unittest.TestCase):
             traversal.edge_selector = 'abc'
         self.assertEqual("Invalid edge selector %s" % repr('abc'), str(context.exception))
 
-    def test__enter_func__setter_1(self):
-        enter_func = lambda *args: False
+    def test__ingress_func__setter_1(self):
+        ingress_func = lambda *args: False
         traversal = Traversal()
-        traversal.enter_func = enter_func
-        self.assertIs(traversal.enter_func, enter_func)
+        traversal.ingress_func = ingress_func
+        self.assertIs(traversal.ingress_func, ingress_func)
 
-    def test__enter_func__setter_TypeError(self):
-        enter_func = lambda *args: False
+    def test__ingress_func__setter_TypeError(self):
+        ingress_func = lambda *args: False
         traversal = Traversal()
         with self.assertRaises(TypeError) as context:
-            traversal.enter_func = 123
-        self.assertEqual("enter_func must be callable, int provided", str(context.exception))
+            traversal.ingress_func = 123
+        self.assertEqual("ingress_func must be callable, int provided", str(context.exception))
 
-    def test__leave_func__setter_1(self):
-        leave_func = lambda *args: False
+    def test__egress_func__setter_1(self):
+        egress_func = lambda *args: False
         traversal = Traversal()
-        traversal.leave_func = leave_func
-        self.assertIs(traversal.leave_func, leave_func)
+        traversal.egress_func = egress_func
+        self.assertIs(traversal.egress_func, egress_func)
 
-    def test__leave_func__setter_TypeError(self):
-        leave_func = lambda *args: False
+    def test__egress_func__setter_TypeError(self):
+        egress_func = lambda *args: False
         traversal = Traversal()
         with self.assertRaises(TypeError) as context:
-            traversal.leave_func = 123
-        self.assertEqual("leave_func must be callable, int provided", str(context.exception))
+            traversal.egress_func = 123
+        self.assertEqual("egress_func must be callable, int provided", str(context.exception))
 
     def test__backedge_func__setter_1(self):
         backedge_func = lambda *args: False

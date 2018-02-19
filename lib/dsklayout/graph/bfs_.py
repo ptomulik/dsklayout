@@ -39,8 +39,8 @@ class Bfs(traversal_.Traversal):
         trail.append_node(node)
         if edge is not None:
             trail.append_edge(edge)
-        stop = bool(trail.enter_func(trail.graph, node, edge))
-        stop |= bool(trail.leave_func(trail.graph, node, edge))
+        stop = bool(trail.ingress_func(trail.graph, node, edge))
+        stop |= bool(trail.egress_func(trail.graph, node, edge))
         if stop:
             trail.result = node
         return stop

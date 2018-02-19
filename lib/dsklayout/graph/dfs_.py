@@ -26,10 +26,10 @@ class Dfs(traversal_.Traversal):
 
     def _dfs(self, trail, node, last_edge):
         trail.explore_and_append_node(node)
-        stop = self._invoke_callback(trail.enter_func, trail, node, last_edge)
+        stop = self._invoke_callback(trail.ingress_func, trail, node, last_edge)
         if not stop:
             stop = self._select_edges_and_iterate(trail, node)
-        stop |= self._invoke_callback(trail.leave_func, trail, node, last_edge)
+        stop |= self._invoke_callback(trail.egress_func, trail, node, last_edge)
         return stop
 
     def _select_edges_and_iterate(self, trail, node):

@@ -11,14 +11,14 @@ class Traversal(object, metaclass=abc.ABCMeta):
     """An abstract base class for graph traversal (search) algorithms"""
 
     __slots__ = ( '_edge_selector',
-                  '_enter_func',
-                  '_leave_func',
+                  '_ingress_func',
+                  '_egress_func',
                   '_backedge_func' )
 
     def __init__(self, **kw):
         self.edge_selector = kw.get('edge_selector', kw.get('direction'))
-        self.enter_func = kw.get('enter_func', lambda g, n, e: False)
-        self.leave_func = kw.get('leave_func', lambda g, n, e: False)
+        self.ingress_func = kw.get('ingress_func', lambda g, n, e: False)
+        self.egress_func = kw.get('egress_func', lambda g, n, e: False)
         self.backedge_func = kw.get('backedge_func', lambda g,e: False)
 
     @property
@@ -37,26 +37,26 @@ class Traversal(object, metaclass=abc.ABCMeta):
             raise ValueError('Invalid edge selector %s' % repr(selector))
 
     @property
-    def enter_func(self):
+    def ingress_func(self):
         """Callback function invoked when Traverser enters a node."""
-        return self._enter_func
+        return self._ingress_func
 
-    @enter_func.setter
-    def enter_func(self, func):
+    @ingress_func.setter
+    def ingress_func(self, func):
         if not callable(func):
-            raise TypeError("enter_func must be callable, %s provided" % func.__class__.__name__)
-        self._enter_func = func
+            raise TypeError("ingress_func must be callable, %s provided" % func.__class__.__name__)
+        self._ingress_func = func
 
     @property
-    def leave_func(self):
+    def egress_func(self):
         """Callback function invoked when Traverser leaves a node."""
-        return self._leave_func
+        return self._egress_func
 
-    @leave_func.setter
-    def leave_func(self, func):
+    @egress_func.setter
+    def egress_func(self, func):
         if not callable(func):
-            raise TypeError("leave_func must be callable, %s provided" % func.__class__.__name__)
-        self._leave_func = func
+            raise TypeError("egress_func must be callable, %s provided" % func.__class__.__name__)
+        self._egress_func = func
 
     @property
     def backedge_func(self):
@@ -95,7 +95,7 @@ class Traversal(object, metaclass=abc.ABCMeta):
 
     def callbacks(self, **kw):
         """Returns a dictionary of callbacks from kw, defaulting to callbacks defined by object"""
-        callbacks = ( 'enter_func', 'leave_func', 'backedge_func' )
+        callbacks = ( 'ingress_func', 'egress_func', 'backedge_func' )
         return { k : kw.get(k, getattr(self,k)) for k in callbacks }
 
     @abc.abstractmethod

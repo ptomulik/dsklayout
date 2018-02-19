@@ -15,8 +15,8 @@ class Trail(object):
         self._backedges = list()
         self._result = None
         self._queue = collections.deque()
-        self._enter_func = kw.get('enter_func', lambda *args : False)
-        self._leave_func = kw.get('leave_func', lambda *args : False)
+        self._ingress_func = kw.get('ingress_func', lambda *args : False)
+        self._egress_func = kw.get('egress_func', lambda *args : False)
         self._backedge_func = kw.get('backedge_func', lambda *args : False)
 
     @property
@@ -64,14 +64,14 @@ class Trail(object):
         return self._graph
 
     @property
-    def enter_func(self):
+    def ingress_func(self):
         """A callback invoked when a search algorithm enters a node"""
-        return self._enter_func
+        return self._ingress_func
 
     @property
-    def leave_func(self):
+    def egress_func(self):
         """A callback invoked when a search algorithm leaves a node"""
-        return self._leave_func
+        return self._egress_func
 
     @property
     def backedge_func(self):
