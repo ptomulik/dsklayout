@@ -4,6 +4,9 @@
 Provides the Device class
 """
 
+from ..util import dispatch
+from .. import model
+
 import abc
 
 __all__ = ('Device',)
@@ -14,6 +17,19 @@ class Device(object, metaclass=abc.ABCMeta):
 
     __slots__ = ()
 
+    @classmethod
+    @dispatch.on(1)
+    def new(cls, spec):
+        raise TypeError("%s is not supported by %s" % (type(spec), __qualname__))
+
+    @classmethod
+    @dispatch.when(model.BlkDev)
+    def new(cls, blkdev):
+        return cls.newFromBlkDev(blkdev)
+
+    @classmethod
+    def newFromBlkDev(cls, blkdev):
+        pass
 
 # Local Variables:
 # # tab-width:4

@@ -8,7 +8,7 @@ signle argument only, the one pointed to by @dispatch.on decorator.
 
 Usage example::
 
-    from dsklayout.action import dispatch
+    from dsklayout.util import dispatch
 
     class A:
         def __repr__(self):

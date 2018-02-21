@@ -9,9 +9,6 @@ class Test__action__PackageSymbols(unittest.TestCase):
     def test__action__symbols(self):
         self.assertIs(action.Action, action.action_.Action)
 
-    def test__dispatch__symbols(self):
-        self.assertIs(action.dispatch, action.dispatch_.dispatch)
-
     def test__subject__symbols(self):
         self.assertIs(action.ActionSubject, action.subject_.ActionSubject)
 

@@ -2,57 +2,16 @@
 # -*- coding: utf8 -*-
 
 import unittest
-from unittest.mock import patch
-import types
 
 import dsklayout.util as util
 
 class Test__util__PackageSymbols(unittest.TestCase):
 
-    def test__backtick__symbol(self):
-        self.assertIsInstance(util.backtick, types.FunctionType)
+    def test__subprocess__symbols(self):
+        self.assertIs(util.backtick, util.subprocess_.backtick)
 
-class Test__util__PackageFunctions(unittest.TestCase):
-
-    def test__backtick__with_two_args(self):
-        def side(cmd, **kw):
-            return 'ok'
-        with patch('subprocess.PIPE') as pipe, \
-             patch('subprocess.check_output') as check_output:
-
-            check_output.side_effect = side
-            self.assertIs(util.backtick('cmd', 'input', 'timeout'), 'ok')
-            check_output.assert_called_once_with('cmd', stdin=pipe,
-                                                        stderr=pipe,
-                                                        universal_newlines=True,
-                                                        timeout='timeout')
-
-    def test__backtick__with_one_arg(self):
-        def side(cmd, **kw):
-            return 'ok'
-        with patch('subprocess.PIPE') as pipe, \
-             patch('subprocess.check_output') as check_output:
-
-            check_output.side_effect = side
-            self.assertIs(util.backtick('cmd', 'input'), 'ok')
-            check_output.assert_called_once_with('cmd', stdin=pipe,
-                                                        stderr=pipe,
-                                                        universal_newlines=True,
-                                                        timeout=None)
-
-    def test__backtick__with_no_args(self):
-        def side(cmd, **kw):
-            return 'ok'
-        with patch('subprocess.PIPE') as pipe, \
-             patch('subprocess.check_output') as check_output:
-
-            check_output.side_effect = side
-            self.assertIs(util.backtick('cmd'), 'ok')
-            check_output.assert_called_once_with('cmd', stdin=None,
-                                                        stderr=pipe,
-                                                        universal_newlines=True,
-                                                        timeout=None)
-
+    def test__dispatch__symbols(self):
+        self.assertIs(util.dispatch, util.dispatch_.dispatch)
 
 if __name__ == '__main__':
     unittest.main()

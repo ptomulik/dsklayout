@@ -3,7 +3,6 @@
 from .. import util
 util.inject_symbols_from_modules(__package__, [
         '.action_',
-        '.dispatch_',
         '.subject_'
     ])
 

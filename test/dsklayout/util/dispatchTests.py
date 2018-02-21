@@ -4,7 +4,7 @@
 import unittest
 import unittest.mock as mock
 
-from dsklayout.action.dispatch_ import *
+from dsklayout.util.dispatch_ import *
 
 class Test__Dispatch(unittest.TestCase):
 
