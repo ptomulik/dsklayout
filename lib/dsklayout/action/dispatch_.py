@@ -24,11 +24,11 @@ Usage example::
     def func(x):
         print("func(%s)" % repr(x))
 
-    @func.when(A)
+    @dispatch.when(A)
     def func(x):
         print("func<A>(%s)" % repr(x))
 
-    @func.when(B)
+    @dispatch.when(B)
     def func(x):
         print("func<B>(%s)" % repr(x))
 
@@ -79,6 +79,15 @@ class dispatch(object, metaclass=_DispatchMeta):
             wrapper.on = cls.on
             wrapper.impl = instance  # for debugging/unit testing
             return wrapper
+        return decorator
+
+    @classmethod
+    def when(cls, klass):
+        """A decorator used to declare an overloaded version of function"""
+        def decorator(func):
+            name = cls._func_name(func)
+            instance = cls.dispatchers[name]
+            return instance._add_overload(func, klass)
         return decorator
 
     @classmethod
@@ -202,6 +211,21 @@ class dispatch(object, metaclass=_DispatchMeta):
         else:
             return self._default(*args, **kw)
 
+    def _add_overload(self, func, klass):
+        """Creates, registers and returns new overload (wrapper)"""
+        spec = inspect.getfullargspec(func)
+        self._handle_when_args(func, spec, klass)
+        self._overloads[klass] = func
+
+        @functools.wraps(func)
+        def wrapper(*args, **kw):
+            return self(*args, **kw)
+
+        wrapper.when = self.when
+        wrapper.on = self.on
+        wrapper.impl = self  # for debugging/unit testing
+        return wrapper
+
     def _getclass(self, args, kw):
         """Returns class of dispatching argument (one of args or kw)"""
         if self._arg_index is not None:
@@ -231,23 +255,6 @@ class dispatch(object, metaclass=_DispatchMeta):
             for base in dc.__bases__:
                 queue.append(base)
         return self._default  # default function to be called
-
-    def when(self, klass):
-        """A decorator used to declare an overloaded version of function"""
-        def decorator(func):
-            spec = inspect.getfullargspec(func)
-            self._handle_when_args(func, spec, klass)
-            self._overloads[klass] = func
-
-            @functools.wraps(func)
-            def wrapper(*args, **kw):
-                return self(*args, **kw)
-
-            wrapper.when = self.when
-            wrapper.on = self.__class__.on
-            wrapper.impl = self  # for debugging/unit testing
-            return wrapper
-        return decorator
 
     def _handle_when_args(self, func, spec, klass):
         if not inspect.isclass(klass):

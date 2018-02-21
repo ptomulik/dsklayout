@@ -672,6 +672,113 @@ class Test__Dispatch(unittest.TestCase):
         self.assertEqual(t.func(b2), "%s.func<B2>(%s)" % (repr(t), repr(b2)))
         self.assertEqual(t.func(c),  "%s.func<C>(%s)"  % (repr(t), repr(c)))
 
+    def test__dispatch__classmethod__01(self):
+        _ = self.classes
+
+        class T(object):
+            @classmethod
+            @dispatch.on(1)
+            def func(cls, x):
+                return "%s.func(%s)" % (repr(cls), repr(x))
+            @classmethod
+            @dispatch.when(_.A1)
+            def func(cls, x):
+                return "%s.func<A1>(%s)" % (repr(cls), repr(x))
+            @classmethod
+            @dispatch.when(_.A2)
+            def func(cls, x):
+                return "%s.func<A2>(%s)" % (repr(cls), repr(x))
+            @classmethod
+            @dispatch.when(_.A3)
+            def func(cls, x):
+                return "%s.func<A3>(%s)" % (repr(cls), repr(x))
+            @classmethod
+            @dispatch.when(_.A4)
+            def func(cls, x):
+                return "%s.func<A4>(%s)" % (repr(cls), repr(x))
+            @classmethod
+            @dispatch.when(_.B1)
+            def func(cls, x):
+                return "%s.func<B1>(%s)" % (repr(cls), repr(x))
+            @classmethod
+            @dispatch.when(_.B2)
+            def func(cls, x):
+                return "%s.func<B2>(%s)" % (repr(cls), repr(x))
+            @classmethod
+            @dispatch.when(_.C)
+            def func(cls, x):
+                return "%s.func<C>(%s)" % (repr(cls), repr(x))
+
+        a1, a2, a3, a4, b1, b2, c = (_.A1(), _.A2(), _.A3(), _.A4(), _.B1(), _.B2(), _.C())
+        t = T()
+
+        self.assertEqual(t.func(1),  "%s.func(1)" % repr(T))
+        self.assertEqual(t.func(a1), "%s.func<A1>(%s)" % (repr(T), repr(a1)))
+        self.assertEqual(t.func(a2), "%s.func<A2>(%s)" % (repr(T), repr(a2)))
+        self.assertEqual(t.func(a3), "%s.func<A3>(%s)" % (repr(T), repr(a3)))
+        self.assertEqual(t.func(a4), "%s.func<A4>(%s)" % (repr(T), repr(a4)))
+        self.assertEqual(t.func(b1), "%s.func<B1>(%s)" % (repr(T), repr(b1)))
+        self.assertEqual(t.func(b2), "%s.func<B2>(%s)" % (repr(T), repr(b2)))
+        self.assertEqual(t.func(c),  "%s.func<C>(%s)"  % (repr(T), repr(c)))
+
+        self.assertEqual(T.func(1),  "%s.func(1)" % repr(T))
+        self.assertEqual(T.func(a1), "%s.func<A1>(%s)" % (repr(T), repr(a1)))
+        self.assertEqual(T.func(a2), "%s.func<A2>(%s)" % (repr(T), repr(a2)))
+        self.assertEqual(T.func(a3), "%s.func<A3>(%s)" % (repr(T), repr(a3)))
+        self.assertEqual(T.func(a4), "%s.func<A4>(%s)" % (repr(T), repr(a4)))
+        self.assertEqual(T.func(b1), "%s.func<B1>(%s)" % (repr(T), repr(b1)))
+        self.assertEqual(T.func(b2), "%s.func<B2>(%s)" % (repr(T), repr(b2)))
+        self.assertEqual(T.func(c),  "%s.func<C>(%s)"  % (repr(T), repr(c)))
+
+    def test__dispatch__staticmethod__01(self):
+        _ = self.classes
+
+        class T(object):
+            @staticmethod
+            @dispatch.on(0)
+            def func(x):
+                return "func(%s)" % repr(x)
+            @staticmethod
+            @dispatch.when(_.A1)
+            def func(x):
+                return "func<A1>(%s)" % repr(x)
+            @staticmethod
+            @dispatch.when(_.A2)
+            def func(x):
+                return "func<A2>(%s)" % repr(x)
+            @staticmethod
+            @dispatch.when(_.A3)
+            def func(x):
+                return "func<A3>(%s)" % repr(x)
+            @staticmethod
+            @dispatch.when(_.A4)
+            def func(x):
+                return "func<A4>(%s)" % repr(x)
+            @staticmethod
+            @dispatch.when(_.B1)
+            def func(x):
+                return "func<B1>(%s)" % repr(x)
+            @staticmethod
+            @dispatch.when(_.B2)
+            def func(x):
+                return "func<B2>(%s)" % repr(x)
+            @staticmethod
+            @dispatch.when(_.C)
+            def func(x):
+                return "func<C>(%s)" % repr(x)
+
+        a1, a2, a3, a4, b1, b2, c = (_.A1(), _.A2(), _.A3(), _.A4(), _.B1(), _.B2(), _.C())
+        t = T()
+
+        self.assertEqual(T.func(1),  "func(1)")
+        self.assertEqual(T.func(a1), "func<A1>(%s)" % repr(a1))
+        self.assertEqual(T.func(a2), "func<A2>(%s)" % repr(a2))
+        self.assertEqual(T.func(a3), "func<A3>(%s)" % repr(a3))
+        self.assertEqual(T.func(a4), "func<A4>(%s)" % repr(a4))
+        self.assertEqual(T.func(b1), "func<B1>(%s)" % repr(b1))
+        self.assertEqual(T.func(b2), "func<B2>(%s)" % repr(b2))
+        self.assertEqual(T.func(c),  "func<C>(%s)"  % repr(c))
+
 if __name__ == '__main__':
     unittest.main()
 
