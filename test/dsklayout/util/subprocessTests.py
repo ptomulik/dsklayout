@@ -7,7 +7,7 @@ import types
 
 import dsklayout.util.subprocess_ as subprocess_
 
-class Test__Subprocess(unittest.TestCase):
+class Test__Backtick(unittest.TestCase):
 
     def test__backtick__with_two_args(self):
         def side(cmd, **kw):

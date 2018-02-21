@@ -6,6 +6,7 @@ import subprocess
 
 __all__ = ('backtick',)
 
+
 def backtick(cmd, input=None, timeout=None):
     """Executes external command and returns its output.
 
@@ -17,7 +18,6 @@ def backtick(cmd, input=None, timeout=None):
     return subprocess.check_output(cmd, stdin=stdin, stderr=PIPE,
                                    universal_newlines=True,
                                    timeout=timeout)
-
 
 
 # Local Variables:

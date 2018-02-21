@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 
 from .. import util
-util.inject_symbols_from_modules(__package__, [
+util.import_all_from(__package__, [
         '.action_',
         '.subject_'
     ])

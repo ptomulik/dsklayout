@@ -9,8 +9,16 @@ import dsklayout.device.device_ as device_
 
 class Test__Device(unittest.TestCase):
 
-    def test__foo(self):
-        pass
+    def test__is_abstract(self):
+        with self.assertRaises(TypeError) as context:
+            device_.Device()
+        self.assertIn('abstract', str(context.exception))
+
+    def test__new__01(self):
+        with self.assertRaises(TypeError) as context:
+            device_.Device.new('foo')
+        self.assertEqual("%r is not supported by Device.new()" % 'str', str(context.exception))
+
 
 if __name__ == '__main__':
     unittest.main()
