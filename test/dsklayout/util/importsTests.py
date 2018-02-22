@@ -82,13 +82,11 @@ class Test__Imports(unittest.TestCase):
         self.assertFalse(hasattr(pkg.tgt1,'geez4'))
 
     def test__import_all_from__5(self):
-        imports_.import_all_from(pkg.tgt2, '.src5', pkg.__name__)
         self.assertIs(pkg.tgt2.foo5, pkg.src5.foo5)
         self.assertIs(pkg.tgt2.bar5, pkg.src5.bar5)
         self.assertFalse(hasattr(pkg.tgt2,'geez5'))
 
     def test__import_all_from__6(self):
-        imports_.import_all_from(pkg.tgt3.__name__, '.src5', pkg.__name__)
         self.assertIs(pkg.tgt3.foo5, pkg.src5.foo5)
         self.assertIs(pkg.tgt3.bar5, pkg.src5.bar5)
         self.assertFalse(hasattr(pkg.tgt3,'geez5'))
