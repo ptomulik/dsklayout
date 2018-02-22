@@ -3,6 +3,7 @@
 """
 
 import importlib
+import inspect
 import sys
 
 __all__ = ('import_all_from', 'import_from')
@@ -16,11 +17,16 @@ def import_all_from(target, modules, module_package=None, **kw):
             from module import *
             __all__ += module.__all__
     """
-    if isinstance(modules, (str,)):
+    if isinstance(modules, str) or inspect.ismodule(modules):
         modules = (modules,)
-    for module in modules:
+    if isinstance(target, str):
         target_module = sys.modules[target]
-        module = importlib.import_module(module, module_package or target)
+    else:
+        target_module = target
+        target = target.__name__
+    for module in modules:
+        if isinstance(module, str):
+            module = importlib.import_module(module, module_package or target)
         import_from(target_module, module, all_symbols(module), **kw)
 
 
