@@ -99,6 +99,27 @@ class Test__BlkDev(unittest.TestCase):
         blkdev.reappear({'pkname': '/dev/sda2'}) # no effect, '/dev/sda2' already in pkname
         self.assertEqual(blkdev.properties, {'name': '/dev/md2', 'fstype': 'ext4', 'pkname': ['/dev/sda2', '/dev/sdb2']})
 
+    def test__repr__(self):
+        blkdev = lsblkdev_.LsBlkDev({'name': '/dev/foo/bar', 'kname': '/dev/dm0',
+                                     'type': 'disk', 'parttype': None, 'fstype':  'ext4',
+                                     'label': 'Penguin'})
+        s = repr(blkdev)
+        self.assertIn('LsBlkDev(', s)
+        self.assertIn('...}', s)
+        self.assertIn('name', s)
+        self.assertIn('/dev/foo/bar', s)
+        self.assertIn('kname', s)
+        self.assertIn('/dev/dm0', s)
+        self.assertIn('type', s)
+        self.assertIn('disk', s)
+        self.assertNotIn('parttype', s)
+        self.assertNotIn('None', s)
+        self.assertIn('fstype', s)
+        self.assertIn('ext4', s)
+        self.assertIn('label', s)
+        self.assertIn('Penguin', s)
+
+
     def test__name(self):
         blkdev = lsblkdev_.LsBlkDev({'name': '/dev/sda'})
         self.assertEqual(blkdev.name, '/dev/sda')
