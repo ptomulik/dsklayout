@@ -30,7 +30,6 @@ class Test__Device(unittest.TestCase):
         self.assertIsNone(d.supports('foo'))
 
 
-
 if __name__ == '__main__':
     unittest.main()
 

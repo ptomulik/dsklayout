@@ -158,7 +158,7 @@ class LsBlkDev(object):
 
 
 for attr, key in LsBlkDev._property_map.items():
-    setattr(LsBlkDev, attr, property(lambda self, k=key: self._properties[k]))
+    setattr(LsBlkDev, attr, property(lambda self, k=key: self._properties.get(k)))
 
 
 # vim: set ft=python et ts=4 sw=4:
