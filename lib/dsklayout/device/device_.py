@@ -14,9 +14,6 @@ class Device(util.FactorySubject):
 
     __slots__ = ()
 
-    def __init__(self, properties):
-        self._properties = properties
-
     @property
     def properties(self):
         return self._properties

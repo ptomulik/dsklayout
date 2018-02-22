@@ -4,10 +4,10 @@
 import unittest
 import unittest.mock as mock
 
-import dsklayout.device.linuxdisk_ as linuxdisk_
+import dsklayout.device.linux_ as linuxdisk_
 
 
-class Test__LinuxDisk(unittest.TestCase):
+class Test__LinuxDevice(unittest.TestCase):
 
     def test__foo(self):
         pass

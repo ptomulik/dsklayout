@@ -26,8 +26,7 @@ class Test__Device(unittest.TestCase):
             def supports(cls, spec):
                 return super().supports(spec)
 
-        d = D('foo')
-        self.assertEqual(d.properties, 'foo')
+        d = D()
         self.assertIsNone(d.supports('foo'))
 
 
