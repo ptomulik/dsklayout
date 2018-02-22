@@ -20,6 +20,17 @@ class Test__Device(unittest.TestCase):
             device_.Device.new('foo')
         self.assertEqual("can't create Device from %r" % 'foo', str(context.exception))
 
+    def test__subclass__01(self):
+        class D(device_.Device):
+            @classmethod
+            def supports(cls, spec):
+                return super().supports(spec)
+
+        d = D('foo')
+        self.assertEqual(d.properties, 'foo')
+        self.assertIsNone(d.supports('foo'))
+
+
 
 if __name__ == '__main__':
     unittest.main()
