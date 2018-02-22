@@ -90,11 +90,11 @@ class Factory(object):
         if not classes:
             raise FactoryError("could not find class to produce an object")
         klass = classes[0]
-        return klass(klass.specargs(spec), *args, **kw)
+        return klass(*(tuple(klass.specargs(spec)) + tuple(args)), **kw)
 
     def produce_all(self, spec, *args, **kw):
         classes = self.compliant_classes(spec)
-        return tuple(klass(*klass.specargs(spec), *args,
+        return tuple(klass(*(tuple(klass.specargs(spec)) + tuple(args)),
                            **{**klass.speckwargs(spec), **kw})
                      for klass in classes)
 
