@@ -5,6 +5,7 @@ import unittest
 import unittest.mock as mock
 
 import dsklayout.device.device_ as device_
+import dsklayout.util as util
 
 
 class Test__Device(unittest.TestCase):
@@ -15,9 +16,9 @@ class Test__Device(unittest.TestCase):
         self.assertIn('abstract', str(context.exception))
 
     def test__new__01(self):
-        with self.assertRaises(TypeError) as context:
+        with self.assertRaises(util.FactoryError) as context:
             device_.Device.new('foo')
-        self.assertEqual("%r is not supported by Device.new()" % 'str', str(context.exception))
+        self.assertEqual("can't create Device from %r" % 'foo', str(context.exception))
 
 
 if __name__ == '__main__':

@@ -1,30 +1,30 @@
 # -*- coding: utf8 -*-
 """`dsklayout.device.disk_`
 
-Provides the Disk class
+Provides the LinuxDisk class
 """
 
-from . import device_
+from . import linux_
 from .. import model
-from .. import util
+from ..util import dispatch
 
-__all__ = ('Disk',)
+__all__ = ('LinuxDisk',)
 
 
-class Disk(device_.Device):
-    """Represents a disk device"""
+class LinuxDisk(linux_.LinuxDevice):
+    """Represents a linux disk"""
 
     __slots__ = ()
 
     @classmethod
-    @util.dispatch.on('spec')
+    @dispatch.on('spec')
     def supports(cls, spec):
         return False
 
     @classmethod
-    @util.dispatch.when(model.BlkDev)
+    @dispatch.when(model.LsBlkDev)
     def supports(cls, spec):
-        return spec.type == 'disk'
+        return 2 if spec.type == 'disk' else 0
 
 
 # Local Variables:

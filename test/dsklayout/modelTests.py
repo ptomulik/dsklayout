@@ -10,7 +10,7 @@ class Test__model__PackageSymbols(unittest.TestCase):
         self.assertIs(model.LsBlk, model.lsblk_.LsBlk)
 
     def test__blkdev__symbols(self):
-        self.assertIs(model.BlkDev, model.blkdev_.BlkDev)
+        self.assertIs(model.LsBlkDev, model.lsblkdev_.LsBlkDev)
 
     def test__exceptions__symbols(self):
         self.assertIs(model.InconsistentDataError, model.exceptions_.InconsistentDataError)

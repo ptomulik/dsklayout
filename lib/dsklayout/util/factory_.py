@@ -18,9 +18,14 @@ class FactorySubject(object, metaclass=abc.ABCMeta):
     @classmethod
     @abc.abstractmethod
     def supports(cls, spec):
-        """Shall return positive integer, if cls(cls.adjust(spec)) is supposed
-           to return valid object. Otherwise, should return a value which
-           evaluates to False in boolean context.
+        """Check if an instance can be created from spec.
+
+           Shall return positive number, if
+
+                cls(*cls.specargs(spec),..., **{**cls.speckwargs(spec), ...})
+
+           is supposed to return valid object. Otherwise, should return a value
+           which evaluates to False in boolean context.
 
            Classes, which declare to support given spec, get sorted by
            cls.supports(spec) in descending order and a class with highest
@@ -29,9 +34,14 @@ class FactorySubject(object, metaclass=abc.ABCMeta):
         pass
 
     @classmethod
-    def adjust(cls, spec):
-        """Adjusts spec such that it's useful as constructor's argument."""
-        return spec
+    def specargs(cls, spec):
+        """Extracts positional arguments for constructor."""
+        return (spec,)
+
+    @classmethod
+    def speckwargs(cls, spec):
+        """Extracts keyword arguments for constructor."""
+        return dict()
 
 
 class Factory(object):
@@ -50,7 +60,7 @@ class Factory(object):
     @classmethod
     def factory(cls, base, **kw):
         if not issubclass(base, FactorySubject):
-            raise TypeError("%s is not supported by Factory.factory()" % \
+            raise TypeError("%s is not supported by Factory.factory()" %
                             type(base).__name__)
         factories = cls.factories()
         if base not in factories:
@@ -68,8 +78,10 @@ class Factory(object):
 
     def compliant_classes(self, spec):
         """Return classes from our hierarchy, which match spec."""
-        compliant = [ c for c in self.classes if c.supports(spec) ]
-        return sorted(compliant, key=lambda c: c.supports(spec), reverse=True)
+        tuples = [(klass, klass.supports(spec)) for klass in self.classes]
+        tuples = filter(lambda x: bool(x[1]), tuples)
+        tuples = sorted(tuples, key=lambda x: x[1], reverse=True)
+        return [t[0] for t in tuples]
 
     def produce(self, spec, *args, **kw):
         """Creates an object of class matching spec. Raises FactoryError if
@@ -78,25 +90,27 @@ class Factory(object):
         if not classes:
             raise FactoryError("could not find class to produce an object")
         klass = classes[0]
-        return klass(klass.adjust(spec), *args, **kw)
+        return klass(klass.specargs(spec), *args, **kw)
 
     def produce_all(self, spec, *args, **kw):
         classes = self.compliant_classes(spec)
-        return tuple(c(c.adjust(spec), *args, **kw) for c in classes)
+        return tuple(klass(*klass.specargs(spec), *args,
+                           **{**klass.speckwargs(spec), **kw})
+                     for klass in classes)
 
     def _find_classes(self, **kw):
-        p = lambda x : inspect.isclass(x) and \
-                       issubclass(x, self._base) and \
-                       x is not self._base and \
-                       not inspect.isabstract(x)
+        def qualify(sym):
+            return inspect.isclass(sym) and issubclass(sym, self._base) and \
+                   sym is not self._base and not inspect.isabstract(sym)
+
         modules = kw.get('search', [self._base.__module__])
         if isinstance(modules, str) or inspect.ismodule(modules):
             modules = [modules]
         classes = []
         for mod in modules:
-            if isinstance(mod,str):
+            if isinstance(mod, str):
                 mod = sys.modules[mod]
-            classes += [c for n, c in inspect.getmembers(mod, p)]
+            classes += [c for n, c in inspect.getmembers(mod, qualify)]
         return classes
 
 

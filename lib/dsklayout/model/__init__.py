@@ -3,7 +3,7 @@
 from .. import util
 util.import_all_from(__package__, [
     '.lsblk_',
-    '.blkdev_',
+    '.lsblkdev_',
     '.exceptions_',
 ])
 

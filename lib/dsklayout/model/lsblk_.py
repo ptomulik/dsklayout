@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 
-from . import blkdev_
+from . import lsblkdev_
 from ..util import backtick
 from ..graph import Graph
 
@@ -25,7 +25,7 @@ class LsBlk(object):
         key = device[keyattr]
         props = {k:  v for (k, v) in device.items() if k != 'children'}
         if not graph.has_node(key):
-            graph.add_node(key, blkdev_.BlkDev(props))
+            graph.add_node(key, lsblkdev_.LsBlkDev(props))
         else:
             graph.node(key).reappear(props)
         if parent is not None:

@@ -4,13 +4,14 @@
 import unittest
 import unittest.mock as mock
 
-import dsklayout.device.disk_ as disk_
+import dsklayout.util.factory_ as factory_
 
 
-class Test__Disk(unittest.TestCase):
+class Test__DeviceFactory(unittest.TestCase):
 
     def test__foo(self):
         pass
+
 
 if __name__ == '__main__':
     unittest.main()

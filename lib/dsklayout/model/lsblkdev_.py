@@ -4,10 +4,10 @@ from . import exceptions_
 
 import copy
 
-__all__ = ('BlkDev',)
+__all__ = ('LsBlkDev',)
 
 
-class BlkDev(object):
+class LsBlkDev(object):
     """Represents a block device"""
 
     __slots__ = ('_properties', '_convert')
@@ -132,7 +132,7 @@ class BlkDev(object):
         rprops = self.__class__._repr_properties
         props = self.properties
         s = repr({k: props[k] for k in rprops if props.get(k) is not None})
-        return "BlkDev(%s)" % s.replace('}', ', ...}')
+        return "LsBlkDev(%s)" % s.replace('}', ', ...}')
 
     def _convert_if_enabled(self, properties):
         if self._convert:
@@ -157,8 +157,8 @@ class BlkDev(object):
             self._properties[key].append(value)
 
 
-for attr, key in BlkDev._property_map.items():
-    setattr(BlkDev, attr, property(lambda self, k=key: self._properties[k]))
+for attr, key in LsBlkDev._property_map.items():
+    setattr(LsBlkDev, attr, property(lambda self, k=key: self._properties[k]))
 
 
 # vim: set ft=python et ts=4 sw=4:

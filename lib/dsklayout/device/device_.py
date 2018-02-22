@@ -5,9 +5,6 @@ Provides the Device class
 """
 
 from .. import util
-from .. import model
-
-import abc
 
 __all__ = ('Device',)
 
@@ -34,17 +31,6 @@ class Device(util.FactorySubject):
             return cls.factory().produce(spec)
         except util.FactoryError:
             raise util.FactoryError("can't create Device from %s" % repr(spec))
-
-    @classmethod
-    @util.dispatch.on('spec')
-    def adjust(cls, spec):
-        raise TypeError("Device.adjust() can't take %s as argument" % \
-                         type(spec).__name__)
-
-    @classmethod
-    @util.dispatch.when(model.BlkDev)
-    def adjust(cls, spec):
-        return spec.properties
 
 
 # Local Variables:
