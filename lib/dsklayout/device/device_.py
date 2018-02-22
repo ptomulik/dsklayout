@@ -23,7 +23,7 @@ class Device(util.FactorySubject):
 
     @classmethod
     def factory(cls):
-        return util.Factory.factory(cls, search=__package__)
+        return util.Factory.of(cls, search=__package__)
 
     @classmethod
     def new(cls, spec):

@@ -51,21 +51,25 @@ class Factory(object):
     of FactorySubject."""
 
     @classmethod
-    def factories(cls):
+    def instances(cls):
         """Dictionary which maps product base classes to factory objects"""
-        if not hasattr(cls, '_factories'):
-            cls._factories = dict()
-        return cls._factories
+        if not hasattr(cls, '_instances'):
+            cls._instances = dict()
+        return cls._instances
 
     @classmethod
-    def factory(cls, base, **kw):
-        if not issubclass(base, FactorySubject):
-            raise TypeError("%s is not supported by Factory.factory()" %
-                            type(base).__name__)
-        factories = cls.factories()
-        if base not in factories:
-            factories[base] = cls(base, **kw)
-        return factories[base]
+    def of(cls, base, **kw):
+        if not inspect.isclass(base):
+            raise TypeError("%s.of() argument 1 must be a class, %s provided" %
+                            (cls.__name__, repr(base)))
+        elif not issubclass(base, FactorySubject):
+            raise TypeError(("%s.of() argument 1 must be a subclass of " +
+                             "FactorySubject, %s provided") %
+                            (cls.__name__, repr(base)))
+        instances = cls.instances()
+        if base not in instances:
+            instances[base] = cls(base, **kw)
+        return instances[base]
 
     def __init__(self, base, **kw):
         self._base = base
@@ -102,16 +106,19 @@ class Factory(object):
     def _find_classes(self, **kw):
         def qualify(sym):
             return inspect.isclass(sym) and issubclass(sym, self._base) and \
-                   sym is not self._base and not inspect.isabstract(sym)
+                   not inspect.isabstract(sym)
 
-        modules = kw.get('search', [self._base.__module__])
-        if isinstance(modules, str) or inspect.ismodule(modules):
-            modules = [modules]
+        namespaces = kw.get('search', [self._base.__module__])
+        if isinstance(namespaces, (str,dict)) or inspect.ismodule(namespaces):
+            namespaces = [namespaces]
         classes = []
-        for mod in modules:
-            if isinstance(mod, str):
-                mod = sys.modules[mod]
-            classes += [c for n, c in inspect.getmembers(mod, qualify)]
+        for ns in namespaces:
+            if isinstance(ns, dict):
+                classes += [v for k,v in ns.items() if qualify(v)]
+            else:
+                if isinstance(ns, str):
+                    ns = sys.modules[ns]
+                classes += [c for n, c in inspect.getmembers(ns, qualify)]
         return classes
 
 
