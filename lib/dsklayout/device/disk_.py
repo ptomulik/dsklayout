@@ -5,6 +5,8 @@ Provides the Disk class
 """
 
 from . import device_
+from .. import model
+from .. import util
 
 __all__ = ('Disk',)
 
@@ -13,6 +15,16 @@ class Disk(device_.Device):
     """Represents a disk device"""
 
     __slots__ = ()
+
+    @classmethod
+    @util.dispatch.on('spec')
+    def supports(cls, spec):
+        return False
+
+    @classmethod
+    @util.dispatch.when(model.BlkDev)
+    def supports(cls, spec):
+        return spec.type == 'disk'
 
 
 # Local Variables:

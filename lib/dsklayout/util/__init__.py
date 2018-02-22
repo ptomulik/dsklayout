@@ -6,6 +6,7 @@ __all__ = imports_.__all__
 
 import_all_from(__package__, [
         '.dispatch_',
+        '.factory_',
         '.subprocess_'
     ])
 

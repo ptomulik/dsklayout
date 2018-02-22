@@ -76,6 +76,15 @@ class BlkDev(object):
             'vendor':         'vendor',
     }
 
+    _repr_properties = (
+            'name',
+            'kname',
+            'type',
+            'parttype',
+            'fstype',
+            'label'
+    )
+
     def __init__(self, properties=(), **kw):
         self._convert = kw.get('convert', False)
         self.appear(properties)
@@ -118,6 +127,12 @@ class BlkDev(object):
 
         # then update evolving properties
         self._for_evolving_props(self._update_evolving_prop, properties)
+
+    def __repr__(self):
+        rprops = self.__class__._repr_properties
+        props = self.properties
+        s = repr({k: props[k] for k in rprops if props.get(k) is not None})
+        return "BlkDev(%s)" % s.replace('}', ', ...}')
 
     def _convert_if_enabled(self, properties):
         if self._convert:

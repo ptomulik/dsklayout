@@ -7,6 +7,14 @@ import dsklayout.util as util
 
 class Test__util__PackageSymbols(unittest.TestCase):
 
+    def test__dispatch__symbols(self):
+        self.assertIs(util.dispatch, util.dispatch_.dispatch)
+
+    def test__factory__symbols(self):
+        self.assertIs(util.Factory, util.factory_.Factory)
+        self.assertIs(util.FactoryError, util.factory_.FactoryError)
+        self.assertIs(util.FactorySubject, util.factory_.FactorySubject)
+
     def test__imports__symbols(self):
         self.assertIs(util.import_all_from, util.imports_.import_all_from)
         self.assertIs(util.import_from, util.imports_.import_from)
@@ -14,8 +22,6 @@ class Test__util__PackageSymbols(unittest.TestCase):
     def test__subprocess__symbols(self):
         self.assertIs(util.backtick, util.subprocess_.backtick)
 
-    def test__dispatch__symbols(self):
-        self.assertIs(util.dispatch, util.dispatch_.dispatch)
 
 if __name__ == '__main__':
     unittest.main()

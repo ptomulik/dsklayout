@@ -4,48 +4,47 @@
 Provides the Device class
 """
 
-from ..util import dispatch
+from .. import util
 from .. import model
 
 import abc
-import sys
-import inspect
 
 __all__ = ('Device',)
 
 
-class Device(object, metaclass=abc.ABCMeta):
-    """Represents a block device"""
+class Device(util.FactorySubject):
+    """Abstract base class for devices"""
 
     __slots__ = ()
 
-    @classmethod
-    @abc.abstractmethod
-    def type(cls):
-        pass
+    def __init__(self, properties):
+        self._properties = properties
+
+    @property
+    def properties(self):
+        return self._properties
 
     @classmethod
-    @dispatch.on(1)
+    def factory(cls):
+        return util.Factory.factory(cls, search=__package__)
+
+    @classmethod
     def new(cls, spec):
-        raise TypeError("%r is not supported by %s.new()" %
-                        (type(spec).__name__, cls.__name__))
+        try:
+            return cls.factory().produce(spec)
+        except util.FactoryError:
+            raise util.FactoryError("can't create Device from %s" % repr(spec))
 
     @classmethod
-    @dispatch.when(model.BlkDev)
-    def new(cls, blkdev):
-        return cls.new_from_blkdev(blkdev)
+    @util.dispatch.on('spec')
+    def adjust(cls, spec):
+        raise TypeError("Device.adjust() can't take %s as argument" % \
+                         type(spec).__name__)
 
     @classmethod
-    def new_from_blkdev(cls, blkdev):
-        raise NotImplementedError("Not implemented yet")
-
-    @staticmethod
-    def subclasses():
-        pred = lambda x : inspect.isclass(x) and \
-                          issubclass(x, Device) and \
-                          x is not Device
-        return inspect.getmembers(sys.modules[__package__], pred)
-
+    @util.dispatch.when(model.BlkDev)
+    def adjust(cls, spec):
+        return spec.properties
 
 
 # Local Variables:
