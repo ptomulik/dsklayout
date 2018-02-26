@@ -3,7 +3,7 @@
 """
 
 from . import cmdext_
-from ..model import lsblk_
+from ..model import tempfile_
 
 __all__ = ('LsBlkExt',)
 
@@ -14,18 +14,18 @@ class LsBlkExt(cmdext_.CmdExt):
 
     @property
     def name(self):
-        return 'lsblk'
+        return 'tempfile'
 
     def add_arguments(self, parser):
-        parser.add_argument('--lsblk',
-                            dest='lsblk',
+        parser.add_argument('--tempfile',
+                            dest='tempfile',
                             metavar="PROG",
-                            default='lsblk',
-                            help="name or path to lsblk program")
+                            default='tempfile',
+                            help="name or path to tempfile program")
 
     def new(self):
-        kwargs = { 'lsblk': self.arguments.lsblk }
-        return lsblk_.LsBlk.new(self.arguments.devices, **kwargs)
+        kwargs = { 'tempfile': self.arguments.tempfile }
+        return tempfile_.LsBlk.new(self.arguments.devices, **kwargs)
 
     def graph(self):
         return self.new().graph()

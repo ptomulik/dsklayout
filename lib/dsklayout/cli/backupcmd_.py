@@ -1,12 +1,9 @@
 # -*- coding: utf8 -*-
-"""`dsklayout.cli.backupcmd_`
-
-Implements the BackupCmd class
+"""Provides the BackupCmd class
 """
 
 from . import cmd_
 from . import lsblkext_
-from ..graph import *
 
 __all__ = ('BackupCmd',)
 

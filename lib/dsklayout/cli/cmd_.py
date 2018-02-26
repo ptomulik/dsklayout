@@ -1,5 +1,5 @@
 # -*- coding: utf8 -*-
-"""`dsklayout.cli.cmd_`
+"""Provides the Cmd class
 """
 
 from . import cmdbase_

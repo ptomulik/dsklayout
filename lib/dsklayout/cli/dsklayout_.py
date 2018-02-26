@@ -1,7 +1,5 @@
 # -*- coding: utf8 -*-
-"""`dsklayout.cli.dsklayout_`
-
-Provides the DskLayout class
+"""Provides the DskLayout class
 """
 
 from . import app_

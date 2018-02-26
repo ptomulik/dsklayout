@@ -1,7 +1,5 @@
 # -*- coding: utf8 -*-
-"""`dsklayout.cli.app_`
-
-Provides the App class
+"""Provides the App class
 """
 
 from . import backupcmd_

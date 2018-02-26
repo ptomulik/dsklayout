@@ -1,5 +1,5 @@
 # -*- coding: utf8 -*-
-"""`dsklayout.cli.cmdext_`
+"""Provides the CmdExt class
 """
 
 from . import cmdbase_

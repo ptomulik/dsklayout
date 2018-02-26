@@ -1,7 +1,5 @@
 # -*- coding: utf8 -*-
-"""`dsklayout.device.disk_`
-
-Provides the LinuxDisk class
+"""Provides the LinuxDisk class
 """
 
 from . import linux_

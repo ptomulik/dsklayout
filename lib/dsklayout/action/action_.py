@@ -1,7 +1,5 @@
 # -*- coding: utf8 -*-
-"""`dsklayout.action.action_`
-
-Provides the Action class
+"""Provides the Action class
 """
 
 import abc

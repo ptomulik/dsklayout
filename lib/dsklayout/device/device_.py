@@ -1,7 +1,5 @@
 # -*- coding: utf8 -*-
-"""`dsklayout.device.device_`
-
-Provides the Device class
+"""Provides the Device class
 """
 
 from .. import util
