@@ -13,9 +13,10 @@ __all__ = ('LinuxDevice',)
 class LinuxDevice(device_.Device):
     """Base class for Linux block devices"""
 
-    __slots__ = ()
+    __slots__ = ('_properties',)
 
     def __init__(self, properties):
+        self._backup = dict()
         self._properties = properties
 
     @property

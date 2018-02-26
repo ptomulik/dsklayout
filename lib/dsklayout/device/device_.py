@@ -10,7 +10,12 @@ __all__ = ('Device',)
 class Device(util.FactorySubject):
     """Abstract base class for devices"""
 
-    __slots__ = ()
+    __slots__ = ('_backup',)
+
+    @property
+    def backup(self):
+        """Backup-related extra data"""
+        return self._backup
 
     @classmethod
     def factory(cls):

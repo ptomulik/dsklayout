@@ -3,6 +3,8 @@
 """
 
 from . import action_
+from ..util import dispatch
+from ..device import *
 
 __all__ = ('BackupAction',)
 
@@ -10,17 +12,24 @@ __all__ = ('BackupAction',)
 class BackupAction(action_.Action):
     """Backup action"""
 
-    __slots__ = ()
+    __slots__ = ('_tmpdir',)
 
-    @property
-    @abc.abstractmethod
-    def method(self):
-        """Name of the subject's method to be invoked by this action"""
+    def __init__(self, tmpdir, **kw):
+        self._tmpdir = tmpdir
+
+    @dispatch.on('subject')
+    def perform(self, subject):
+        """Perform backup action on a given subject"""
+        raise TypeError(("BackupAction.perform() does not accept %s as an " +
+                         "argument") % type(subject).__name__)
+
+    @dispatch.when(LinuxDevice)
+    def perform(self, device):
+        """Perform backup action on a linux block device"""
+        return self._backup_linux_device(device)
+
+    def _backup_linux_device(self, device):
         pass
-
-    def __call__(self, subject):
-        """Dispatch to appropriate method of the subject"""
-        return getattr(subject, self.method)(self)
 
 
 # Local Variables:

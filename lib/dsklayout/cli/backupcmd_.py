@@ -5,7 +5,9 @@
 from . import cmd_
 from . import lsblkext_
 from . import tmpdirext_
-from ..device import Device
+from ..device import *
+##from ..graph import *
+##from ..action import *
 
 __all__ = ('BackupCmd',)
 
@@ -35,9 +37,18 @@ class BackupCmd(cmd_.Cmd):
         with self.tmpdir.new() as tmpdir:
             graph = self.lsblk.graph()
             # Morph LsBlkDevs into Devices
-            for key in graph.nodes:
-                graph.nodes[key] = Device.new(graph.node(key))
+            for devname in graph.nodes:
+                graph.nodes[devname] = Device.new(graph.node(devname))
+            # TODO: finish, something like...
+##            search = Dfs(direction='outward')
+##            trail = search(graph, graph.roots(),
+##                           ingress_func=...
+##                           egress_func=...
+##            action = BackupAction(tmpdir)
+##            for devname in trail.nodes:
+##                action(graph.node(devname))
         return 0
+
 
 # Local Variables:
 # # tab-width:4
