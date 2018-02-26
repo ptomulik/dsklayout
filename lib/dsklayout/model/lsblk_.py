@@ -31,16 +31,16 @@ class LsBlk(object):
         if parent is not None:
             graph.add_edge((parent[keyattr], key))
 
-    def _graph_add_walk(self, graph, device, parent=None, **kw):
+    def _graph_add_recursive(self, graph, device, parent=None, **kw):
         self._graph_add(graph, device, parent, **kw)
         for child in device.get('children', []):
-            self._graph_add_walk(graph, child, device, **kw)
+            self._graph_add_recursive(graph, child, device, **kw)
 
     def graph(self, **kw):
         """Builds and returns graph with nodes representing block devices"""
         graph = Graph(**kw)
         for device in self._content['blockdevices']:
-            self._graph_add_walk(graph, device, **kw)
+            self._graph_add_recursive(graph, device, **kw)
         return graph
 
     @staticmethod
