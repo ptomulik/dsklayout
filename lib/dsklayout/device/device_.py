@@ -14,10 +14,6 @@ class Device(util.FactorySubject):
 
     __slots__ = ()
 
-    @property
-    def properties(self):
-        return self._properties
-
     @classmethod
     def factory(cls):
         return util.Factory.of(cls, search=__package__)
