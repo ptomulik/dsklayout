@@ -4,6 +4,8 @@
 
 from . import cmd_
 from . import lsblkext_
+from . import tmpdirext_
+from ..device import Device
 
 __all__ = ('BackupCmd',)
 
@@ -15,6 +17,7 @@ class BackupCmd(cmd_.Cmd):
     def __init__(self):
         super().__init__()
         self.add_extension(lsblkext_.LsBlkExt())
+        self.add_extension(tmpdirext_.TmpDirExt())
 
     @property
     def name(self):
@@ -29,6 +32,11 @@ class BackupCmd(cmd_.Cmd):
                             help="block device to be included in backup")
 
     def run(self):
+        with self.tmpdir.new() as tmpdir:
+            graph = self.lsblk.graph()
+            # Morph LsBlkDevs into Devices
+            for key in graph.nodes:
+                graph.nodes[key] = Device.new(graph.node(key))
         return 0
 
 # Local Variables:

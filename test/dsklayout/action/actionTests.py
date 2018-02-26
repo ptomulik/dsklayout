@@ -8,11 +8,10 @@ import dsklayout.action.action_ as action_
 
 
 class TestAction(action_.Action):
-    def __init__(self, method):
-        self._method = method
-    @property
-    def method(self):
-        return self._method
+    def __init__(self, retval):
+        self._retval = retval
+    def perform(self, subject):
+        return (subject, self._retval)
 
 class Test__Action(unittest.TestCase):
 
@@ -22,12 +21,9 @@ class Test__Action(unittest.TestCase):
         self.assertIn('abstract', str(context.exception))
 
     def test__call__(self):
-        subject = mock.Mock(spec=['foo'])
-        subject.foo = mock.Mock(return_value='ok')
+        subject = mock.Mock()
         action = TestAction('foo')
-        self.assertEqual(action(subject), 'ok')
-        subject.foo.assert_called_once_with(action)
-
+        self.assertEqual(action(subject), (subject, 'foo'))
 
 
 if __name__ == '__main__':

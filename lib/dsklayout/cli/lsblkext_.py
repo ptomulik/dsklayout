@@ -24,7 +24,7 @@ class LsBlkExt(cmdext_.CmdExt):
                             help="name or path to lsblk program")
 
     def new(self):
-        kwargs = { 'lsblk': self.arguments.lsblk }
+        kwargs = {'lsblk': self.arguments.lsblk}
         return lsblk_.LsBlk.new(self.arguments.devices, **kwargs)
 
     def graph(self):
