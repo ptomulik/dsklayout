@@ -3,7 +3,7 @@
 """
 
 from . import cmdext_
-from ..info import LsBlk
+from ..probe import LsBlk
 
 __all__ = ('LsBlkExt',)
 

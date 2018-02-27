@@ -5,6 +5,7 @@ util.import_all_from(__package__, [
     '.backtick_',
     '.fdisk_',
     '.lsblk_',
+    '.sfdisk_',
 ])
 
 # vim: set ft=python et ts=4 sw=4:
