@@ -7,8 +7,7 @@ import os
 import os.path
 import json
 
-import dsklayout.model.fdisk_ as fdisk_
-from dsklayout.graph import *
+import dsklayout.tool.fdisk_ as fdisk_
 
 backtick = 'dsklayout.util.backtick'
 

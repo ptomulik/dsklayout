@@ -3,7 +3,7 @@
 """
 
 from . import cmdext_
-from ..model import lsblk_
+from ..tool import LsBlk
 
 __all__ = ('LsBlkExt',)
 
@@ -25,7 +25,7 @@ class LsBlkExt(cmdext_.CmdExt):
 
     def new(self):
         kwargs = {'lsblk': self.arguments.lsblk}
-        return lsblk_.LsBlk.new(self.arguments.devices, **kwargs)
+        return LsBlk.new(self.arguments.devices, **kwargs)
 
     def graph(self):
         return self.new().graph()

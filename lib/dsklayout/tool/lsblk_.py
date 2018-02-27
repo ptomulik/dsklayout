@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 
-from . import lsblkdev_
 from . import backtick_
+from ..model import LsBlkDev
 from ..graph import Graph
 
 import json
@@ -40,7 +40,7 @@ class LsBlk(backtick_.BackTick):
         key = device[keyattr]
         props = {k:  v for (k, v) in device.items() if k != 'children'}
         if not graph.has_node(key):
-            graph.add_node(key, lsblkdev_.LsBlkDev(props))
+            graph.add_node(key, LsBlkDev(props))
         else:
             graph.node(key).reappear(props)
         if parent is not None:
