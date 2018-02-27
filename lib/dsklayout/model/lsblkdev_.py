@@ -1,6 +1,7 @@
 # -*- coding: utf8 -*-
 
 from . import exceptions_
+from .. import util
 
 import copy
 
@@ -156,9 +157,6 @@ class LsBlkDev(object):
         if value is not None and value not in self._properties[key]:
             self._properties[key].append(value)
 
-
-for attr, key in LsBlkDev._property_map.items():
-    setattr(LsBlkDev, attr, property(lambda self, k=key: self._properties.get(k)))
-
+util.add_dict_getters(LsBlkDev, LsBlkDev._property_map, '_properties')
 
 # vim: set ft=python et ts=4 sw=4:

@@ -4,7 +4,7 @@
 
 from . import device_
 from .. import model
-from ..util import dispatch
+from .. import util
 
 
 __all__ = ('LinuxDevice',)
@@ -15,6 +15,10 @@ class LinuxDevice(device_.Device):
 
     __slots__ = ('_properties',)
 
+    _backup_property_map = {
+        'parttable':   'parttable'
+    }
+
     def __init__(self, properties):
         self._backup = dict()
         self._properties = properties
@@ -24,26 +28,29 @@ class LinuxDevice(device_.Device):
         return self._properties
 
     @classmethod
-    @dispatch.on('spec')
+    @util.dispatch.on('spec')
     def specargs(cls, spec):
         raise TypeError("LinuxDevice.specargs() can't take %s as argument" %
                         type(spec).__name__)
 
     @classmethod
-    @dispatch.when(model.LsBlkDev)
+    @util.dispatch.when(model.LsBlkDev)
     def specargs(cls, spec):
         return (spec.properties,)
 
     @classmethod
-    @dispatch.on('spec')
+    @util.dispatch.on('spec')
     def supports(cls, spec):
         return False
 
     @classmethod
-    @dispatch.when(model.LsBlkDev)
+    @util.dispatch.when(model.LsBlkDev)
     def supports(cls, spec):
         return 1  # catch all lsblk devices not supported by others
 
+
+util.add_dict_getters(LinuxDevice, model.LsBlkDev._property_map, '_properties')
+util.add_dict_getters(LinuxDevice, LinuxDevice._backup_property_map, '_backup')
 
 # Local Variables:
 # # tab-width:4

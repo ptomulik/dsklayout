@@ -19,6 +19,9 @@ class Test__util__PackageSymbols(unittest.TestCase):
         self.assertIs(util.import_all_from, util.imports_.import_all_from)
         self.assertIs(util.import_from, util.imports_.import_from)
 
+    def test__misc__symbols(self):
+        self.assertIs(util.add_dict_getters, util.misc_.add_dict_getters)
+
     def test__subprocess__symbols(self):
         self.assertIs(util.backtick, util.subprocess_.backtick)
 

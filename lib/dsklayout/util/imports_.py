@@ -9,6 +9,13 @@ import sys
 __all__ = ('import_all_from', 'import_from')
 
 
+def _target_module_and_name(arg):
+    if isinstance(arg, str):
+        return (sys.modules[arg], arg)
+    else:  # module, or any other object featuring __name__ (like class, e.g)
+        return (arg, arg.__name__)
+
+
 def import_all_from(target, modules, module_package=None, **kw):
     """Imports symbols from multiple modules.
 
@@ -19,11 +26,7 @@ def import_all_from(target, modules, module_package=None, **kw):
     """
     if isinstance(modules, str) or inspect.ismodule(modules):
         modules = (modules,)
-    if isinstance(target, str):
-        target_module = sys.modules[target]
-    else:
-        target_module = target
-        target = target.__name__
+    target_module, target = _target_module_and_name(target)
     for module in modules:
         if isinstance(module, str):
             module = importlib.import_module(module, module_package or target)

@@ -95,7 +95,7 @@ class Factory(object):
             raise FactoryError("could not find class to produce an object")
         klass = classes[0]
         return klass(*(tuple(klass.specargs(spec)) + tuple(args)),
-                     **dict(klass.speckwargs(spec),**kw))
+                     **dict(klass.speckwargs(spec), **kw))
 
     def produce_all(self, spec, *args, **kw):
         classes = self.compliant_classes(spec)
@@ -109,12 +109,12 @@ class Factory(object):
                    not inspect.isabstract(sym)
 
         namespaces = kw.get('search', [self._base.__module__])
-        if isinstance(namespaces, (str,dict)) or inspect.ismodule(namespaces):
+        if isinstance(namespaces, (str, dict)) or inspect.ismodule(namespaces):
             namespaces = [namespaces]
         classes = []
         for ns in namespaces:
             if isinstance(ns, dict):
-                classes += [v for k,v in ns.items() if qualify(v)]
+                classes += [v for k, v in ns.items() if qualify(v)]
             else:
                 if isinstance(ns, str):
                     ns = sys.modules[ns]

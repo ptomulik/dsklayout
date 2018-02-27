@@ -20,8 +20,8 @@ class BackupAction(action_.Action):
     @dispatch.on('subject')
     def perform(self, subject):
         """Perform backup action on a given subject"""
-        raise TypeError(("BackupAction.perform() does not accept %s as an " +
-                         "argument") % type(subject).__name__)
+        raise TypeError("BackupAction.perform() can't take %s as argument" %
+                        type(subject).__name__)
 
     @dispatch.when(LinuxDevice)
     def perform(self, device):
