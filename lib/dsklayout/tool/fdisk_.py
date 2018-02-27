@@ -92,13 +92,13 @@ class Fdisk(backtick_.BackTick):
         for expr in cls._expressions:
             match = re.match(expr, line)
             if match:
-                cls._store_info(disk, match)
+                cls._store_parsed_line(disk, match)
                 return True
         # FIXME: issue some warning here
         return False
 
     @classmethod
-    def _store_info(cls, disk, match):
+    def _store_parsed_line(cls, disk, match):
         groupdict = match.groupdict()
         if 'header' in groupdict:
             cls._store_table_header(disk, match)
