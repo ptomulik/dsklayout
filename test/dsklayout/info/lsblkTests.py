@@ -6,7 +6,7 @@ from unittest.mock import patch
 import os.path
 import json
 
-import dsklayout.tool.lsblk_ as lsblk_
+import dsklayout.info.lsblk_ as lsblk_
 from dsklayout.graph import *
 
 backtick = 'dsklayout.util.backtick'
