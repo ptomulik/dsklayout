@@ -9,7 +9,7 @@ import json
 import dsklayout.model.lsblk_ as lsblk_
 from dsklayout.graph import *
 
-backtick = 'dsklayout.model.lsblk_.backtick'
+backtick = 'dsklayout.util.backtick'
 
 class Test__LsBlk(unittest.TestCase):
 

@@ -1,0 +1,84 @@
+[
+  {
+    "name": "/dev/sda",
+    "size": "931.5 GiB",
+    "bytes": 1000204886016,
+    "sectors": 1953525168,
+    "units": "sectors",
+    "unitbytes": 512,
+    "sector_log_size": 512,
+    "sector_phy_size": 512,
+    "io_min_size": 512,
+    "io_opt_size": 512,
+    "disklabel_type": "gpt",
+    "disk_identifier": "57529E7C-2B3F-41F8-B974-74A93F1127F1",
+    "header": ["device", "start", "end", "sectors", "size", "type"],
+    "partitions": [
+      {
+        "device": "/dev/sda1",
+        "start": 2048,
+        "end": 4095,
+        "sectors": 2048,
+        "size": "1M",
+        "type": "BIOS boot"
+      },
+      {
+        "device": "/dev/sda2",
+        "start": 4096,
+        "end": 2101247,
+        "sectors": 2097152,
+        "size": "1G",
+        "type": "Linux RAID"
+      },
+      {
+        "device": "/dev/sda3",
+        "start": 2101248,
+        "end": 1889538047,
+        "sectors": 1887436800,
+        "size": "900G",
+        "type": "Linux RAID"
+      }
+    ]
+  },
+  {
+    "name": "/dev/sdb",
+    "size": "931.5 GiB",
+    "bytes": 1000204886016,
+    "sectors": 1953525168,
+    "units": "sectors",
+    "unitbytes": 512,
+    "sector_log_size": 512,
+    "sector_phy_size": 512,
+    "io_min_size": 512,
+    "io_opt_size": 512,
+    "disklabel_type": "gpt",
+    "disk_identifier": "57529E7C-2B3F-41F8-B974-74A93F1127F1",
+    "header": ["device", "start", "end", "sectors", "size", "type"],
+    "partitions": [
+      {
+        "device": "/dev/sdb1",
+        "start": 2048,
+        "end": 4095,
+        "sectors": 2048,
+        "size": "1M",
+        "type": "BIOS boot"
+      },
+      {
+        "device": "/dev/sdb2",
+        "start": 4096,
+        "end": 2101247,
+        "sectors": 2097152,
+        "size": "1G",
+        "type": "Linux RAID"
+      },
+      {
+        "device": "/dev/sdb3",
+        "start": 2101248,
+        "end": 1889538047,
+        "sectors": 1887436800,
+        "size": "900G",
+        "type": "Linux RAID"
+      }
+    ]
+  }
+]
