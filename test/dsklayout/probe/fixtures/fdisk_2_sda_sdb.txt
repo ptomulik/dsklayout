@@ -1,0 +1,28 @@
+Disk /dev/sda: 465.8 GiB, 500107862016 bytes, 976773168 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x5f572a40
+
+Device     Boot     Start       End   Sectors   Size Id Type
+/dev/sda1            2048   1050623   1048576   512M fd Linux raid autodetect
+/dev/sda4         1050624 976773167 975722544 465.3G  5 Extended
+/dev/sda5         1052672  17829887  16777216     8G 82 Linux swap / Solaris
+/dev/sda6        17831936 152049663 134217728    64G fd Linux raid autodetect
+/dev/sda7       152051712 976773167 824721456 393.3G fd Linux raid autodetect
+
+
+Disk /dev/sdb: 465.8 GiB, 500107862016 bytes, 976773168 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x5f572a40
+
+Device     Boot     Start       End   Sectors   Size Id Type
+/dev/sdb1            2048   1050623   1048576   512M fd Linux raid autodetect
+/dev/sdb4         1050624 976773167 975722544 465.3G  5 Extended
+/dev/sdb5         1052672  17829887  16777216     8G 82 Linux swap / Solaris
+/dev/sdb6        17831936 152049663 134217728    64G fd Linux raid autodetect
+/dev/sdb7       152051712 976773167 824721456 393.3G fd Linux raid autodetect

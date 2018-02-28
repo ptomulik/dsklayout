@@ -1,0 +1,136 @@
+[
+  {
+    "name": "/dev/sda",
+    "size": "465.8 GiB",
+    "bytes": 500107862016,
+    "sectors": 976773168,
+    "units": "sectors",
+    "unitbytes": 512,
+    "sector_log_size": 512,
+    "sector_phy_size": 512,
+    "io_min_size": 512,
+    "io_opt_size": 512,
+    "disklabel_type": "dos",
+    "disk_identifier": "0x5f572a40",
+    "columns": ["Device", "Boot", "Start", "End", "Sectors", "Size", "Id", "Type"],
+    "partitions": [
+      {
+        "device": "/dev/sda1",
+        "boot": "",
+        "start": 2048,
+        "end": 1050623,
+        "sectors": 1048576,
+        "size": "512M",
+        "id": "fd",
+        "type": "Linux raid autodetect"
+      },
+      {
+        "device": "/dev/sda4",
+        "boot": "",
+        "start": 1050624,
+        "end": 976773167,
+        "sectors": 975722544,
+        "size": "465.3G",
+        "id": "5",
+        "type": "Extended"
+      },
+      {
+        "device": "/dev/sda5",
+        "boot": "",
+        "start": 1052672,
+        "end": 17829887,
+        "sectors": 16777216,
+        "size": "8G",
+        "id": "82",
+        "type": "Linux swap / Solaris"
+      },
+      {
+        "device": "/dev/sda6",
+        "boot": "",
+        "start": 17831936,
+        "end": 152049663,
+        "sectors": 134217728,
+        "size": "64G",
+        "id": "fd",
+        "type": "Linux raid autodetect"
+      },
+      {
+        "device": "/dev/sda7",
+        "boot": "",
+        "start": 152051712,
+        "end": 976773167,
+        "sectors": 824721456,
+        "size": "393.3G",
+        "id": "fd",
+        "type": "Linux raid autodetect"
+      }
+    ]
+  },
+  {
+    "name": "/dev/sdb",
+    "size": "465.8 GiB",
+    "bytes": 500107862016,
+    "sectors": 976773168,
+    "units": "sectors",
+    "unitbytes": 512,
+    "sector_log_size": 512,
+    "sector_phy_size": 512,
+    "io_min_size": 512,
+    "io_opt_size": 512,
+    "disklabel_type": "dos",
+    "disk_identifier": "0x5f572a40",
+    "columns": ["Device", "Boot", "Start", "End", "Sectors", "Size", "Id", "Type"],
+    "partitions": [
+      {
+        "device": "/dev/sdb1",
+        "boot": "",
+        "start": 2048,
+        "end": 1050623,
+        "sectors": 1048576,
+        "size": "512M",
+        "id": "fd",
+        "type": "Linux raid autodetect"
+      },
+      {
+        "device": "/dev/sdb4",
+        "boot": "",
+        "start": 1050624,
+        "end": 976773167,
+        "sectors": 975722544,
+        "size": "465.3G",
+        "id": "5",
+        "type": "Extended"
+      },
+      {
+        "device": "/dev/sdb5",
+        "boot": "",
+        "start": 1052672,
+        "end": 17829887,
+        "sectors": 16777216,
+        "size": "8G",
+        "id": "82",
+        "type": "Linux swap / Solaris"
+      },
+      {
+        "device": "/dev/sdb6",
+        "boot": "",
+        "start": 17831936,
+        "end": 152049663,
+        "sectors": 134217728,
+        "size": "64G",
+        "id": "fd",
+        "type": "Linux raid autodetect"
+      },
+      {
+        "device": "/dev/sdb7",
+        "boot": "",
+        "start": 152051712,
+        "end": 976773167,
+        "sectors": 824721456,
+        "size": "393.3G",
+        "id": "fd",
+        "type": "Linux raid autodetect"
+      }
+    ]
+  }
+]

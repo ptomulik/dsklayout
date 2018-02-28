@@ -9,6 +9,10 @@ __all__ = ('Fdisk',)
 
 class Fdisk(backtick_.BackTick):
 
+    _colname = (r'(?:Device|Attrs|Boot|Bsize|Cpg|Cylinders|End|' +
+                r'End-C/H/S|Flags|Fsize|Id|Name|Sectors|Size|Slice|Start|' +
+                r'Start-C/H/S|Type|Type-UUID|UUID)')
+
     _expressions = [
             # Disk info
             r'^Disk\s+(?P<name>[^:]+):' +
@@ -35,11 +39,37 @@ class Fdisk(backtick_.BackTick):
             r'^Disk\s+identifier\s*:\s*(?P<disk_identifier>\S+)$',
             # Empty
             r'^(?P<empty>\s*)$',
-            # Partition header
-            r'^(?P<header>(Device)\s+(Start)\s+(End)' +
-            r'(?:\s+(Sectors))?\s+(Size)\s+(Type))\s*$',
-            # Partition row (must be last)
+            # Partition table header
+            r'^(?P<header>' + _colname + r'(?:\s+' + _colname + r')*)$',
+            # Partition table row (must be last)
             r'^(?P<row>(\/\S+)(?:\s+(\S+))*)$'
+    ]
+
+    _alignment = {
+        'attrs': '?',
+        'boot': '?',
+        'bsize': 'r',
+        'cpg': '?',
+        'cylinders': 'r',
+        'device': 'l',
+        'end': 'r',
+        'end-c/h/s': 'r',
+        'flags': '?',
+        'fsize': '?',
+        'id': 'r',
+        'name': 'l',
+        'sectors': 'r',
+        'size': 'r',
+        'slice': 'l',
+        'start': 'r',
+        'start-c/h/s': 'r',
+        'type': 'l',
+        'type-uuid': 'l',
+        'uuid': 'l',
+    }
+
+    _greedy = [
+        'type'
     ]
 
     _converters = {
@@ -80,55 +110,131 @@ class Fdisk(backtick_.BackTick):
         kwargs['env']['LC_NUMERIC'] = 'C'  # fixes decimal point to be '.'
         return kwargs
 
-    @classmethod
-    def _parse_paragraph(cls, content, paragraph):
+    @staticmethod
+    def _parse_paragraph(content, paragraph):
         disk = dict()
         for line in paragraph.splitlines():
-            cls._parse_line(disk, line)
+            Fdisk._parse_line(disk, line)
+        if 'table-header' in disk and 'table-rows' in disk:
+            Fdisk._postprocess_table(disk)
+            del disk['table-header']
+            del disk['table-rows']
         content.append(disk)
 
-    @classmethod
-    def _parse_line(cls, disk, line):
-        for expr in cls._expressions:
+    @staticmethod
+    def _parse_line(disk, line):
+        for expr in Fdisk._expressions:
             match = re.match(expr, line)
             if match:
-                cls._store_parsed_line(disk, match)
+                Fdisk._store_parsed_line(disk, match)
                 return True
         # FIXME: issue some warning here
         return False
 
-    @classmethod
-    def _store_parsed_line(cls, disk, match):
+    @staticmethod
+    def _store_parsed_line(disk, match):
         groupdict = match.groupdict()
         if 'header' in groupdict:
-            cls._store_table_header(disk, match)
+            Fdisk._store_table_header(disk, groupdict)
         elif 'row' in groupdict:
-            cls._store_table_row(disk, groupdict)
+            Fdisk._store_table_row(disk, groupdict)
         elif 'empty' not in groupdict:
-            cls._store_disk_info(disk, groupdict)
+            Fdisk._store_disk_info(disk, groupdict)
 
-    @classmethod
-    def _store_table_header(cls, disk, match):
-        cols = match.groups()[1:]
-        disk['header'] = [c.lower() for c in cols if c is not None]
+    @staticmethod
+    def _store_table_header(disk, groupdict):
+        disk['table-header'] = groupdict['header']
 
-    @classmethod
-    def _store_table_row(cls, disk, groupdict):
-        if 'partitions' not in disk:
-            disk['partitions'] = []
-        header = disk['header']
-        row = groupdict['row'].split(maxsplit=len(header)-1)
-        pairs = zip(header, row)
-        disk['partitions'].append({k: cls._convert(k, v) for k, v in pairs})
+    @staticmethod
+    def _store_table_row(disk, groupdict):
+        if 'table-rows' not in disk:
+            disk['table-rows'] = []
+        disk['table-rows'].append(groupdict['row'])
 
-    @classmethod
-    def _store_disk_info(cls, disk, groupdict):
-        disk.update({k: cls._convert(k, v) for k, v in groupdict.items()})
+    @staticmethod
+    def _store_disk_info(disk, groupdict):
+        disk.update({k: Fdisk._convert(k, v) for k, v in groupdict.items()})
 
-    @classmethod
-    def _convert(cls, key, val):
-        conv = cls._converters.get(key, lambda x: x)
+    @staticmethod
+    def _convert(key, val):
+        conv = Fdisk._converters.get(key, lambda x: x)
         return conv(val)
+
+    @staticmethod
+    def _postprocess_table(disk):
+        header = disk['table-header']
+        rows = disk['table-rows']
+        pattern = Fdisk._build_row_pattern(header, rows)
+        ranges = Fdisk._determine_columns(header, pattern)
+        disk['partitions'] = []
+        keys = [k.lower() for k in header.split()]
+        disk['columns'] = header.split()
+        for row in rows:
+            entry = {k: Fdisk._convert(k, row[slice(*ranges[k])].strip())
+                     for k in keys}
+            disk['partitions'].append(entry)
+
+    @staticmethod
+    def _build_row_pattern(header, rows):
+        lines = [header] + rows
+        maxlen = max([len(x) for x in lines])
+        pattern = maxlen * [' ']
+        for line in lines:
+            Fdisk._update_row_pattern(pattern, line)
+        return ''.join(pattern)
+
+    @staticmethod
+    def _update_row_pattern(pattern, line):
+        for i in range(0, len(line)):
+            if not line[i].isspace():
+                pattern[i] = '*'
+
+    @staticmethod
+    def _determine_columns(header, pattern):
+        rng = dict()
+        cols = header.split()
+        nongreedy = [c for c in cols if c.lower() not in Fdisk._greedy]
+        greedy = [c for c in cols if c.lower() in Fdisk._greedy]
+        for col in nongreedy:
+            key = col.lower()
+            rng[key] = Fdisk._determine_column(header, col, pattern)
+        for col in greedy:
+            key = col.lower()
+            rng[key] = Fdisk._determine_column(header, col, pattern, rng)
+        return rng
+
+    @staticmethod
+    def _determine_column(header, col, pattern, rng=None):
+        left = header.index(col)
+        right = left + len(col)
+        key = col.lower()
+        align = Fdisk._alignment.get(key, '?')
+        if align == 'l':
+            right = Fdisk._adjust_right(pattern, left, right, rng)
+        elif align == 'r':
+            left = Fdisk._adjust_left(pattern, left, right, rng)
+        return (left, right)
+
+    @staticmethod
+    def _adjust_left(pattern, left, right, rng):
+        m = re.search(r'(?P<stars>\*+)$', pattern[:left])
+        if m:
+            left = min([left, left - len(m.group('stars'))])
+        if rng is not None:
+            maxleft = max([0] + [x[1]+1 for x in rng.values() if x[1] < left])
+            left = min(maxleft, left)
+        return left
+
+    @staticmethod
+    def _adjust_right(pattern, left, right, rng):
+        m = re.match(r'(?P<stars>\*+)', pattern[left:])
+        if m:
+            right = max([right, left + len(m.group('stars'))])
+        if rng is not None:
+            l = [len(pattern)]
+            minright = min(l + [x[0]-1 for x in rng.values() if x[0] > right])
+            right = max([minright, right])
+        return right
 
 
 # vim: set ft=python et ts=4 sw=4:

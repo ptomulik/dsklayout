@@ -12,7 +12,7 @@
     "io_opt_size": 512,
     "disklabel_type": "gpt",
     "disk_identifier": "57529E7C-2B3F-41F8-B974-74A93F1127F1",
-    "header": ["device", "start", "end", "sectors", "size", "type"],
+    "columns": ["Device", "Start", "End", "Sectors", "Size", "Type"],
     "partitions": [
       {
         "device": "/dev/sda1",
@@ -53,7 +53,7 @@
     "io_opt_size": 512,
     "disklabel_type": "gpt",
     "disk_identifier": "57529E7C-2B3F-41F8-B974-74A93F1127F1",
-    "header": ["device", "start", "end", "sectors", "size", "type"],
+    "columns": ["Device", "Start", "End", "Sectors", "Size", "Type"],
     "partitions": [
       {
         "device": "/dev/sdb1",

@@ -16,6 +16,7 @@ class Test__Fdisk(unittest.TestCase):
     fixture_plan = [
         ('fdisk_1_sda_sdb.txt',    'fdisk_1_sda_sdb.content.json'),
         ('fdisk_1_sda.txt',        'fdisk_1_sda.content.json'),
+        ('fdisk_2_sda_sdb.txt',    'fdisk_2_sda_sdb.content.json'),
     ]
 
     def __init__(self, *args, **kw):
