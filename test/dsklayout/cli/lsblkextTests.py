@@ -29,7 +29,7 @@ class Test__LsBlkExt(unittest.TestCase):
 
     def test__new(self):
         with mock.patch.object(lsblkext_.LsBlkExt, 'arguments') as arguments, \
-             mock.patch.object(lsblk_.LsBlk, 'new', return_value ='ok') as new:
+             mock.patch.object(lsblk_.LsBlkProbe, 'new', return_value ='ok') as new:
             arguments.devices = mock.Mock()
             arguments.lsblk = mock.Mock()
             ext = lsblkext_.LsBlkExt()

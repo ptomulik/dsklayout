@@ -3,7 +3,7 @@
 from .. import util
 import abc
 
-__all__ = ('BackTick',)
+__all__ = ('BackTickProbe',)
 
 
 _popen_args = ('bufsize', 'executable', 'stdin', 'stdout', 'stderr',
@@ -13,7 +13,7 @@ _popen_args = ('bufsize', 'executable', 'stdin', 'stdout', 'stderr',
                'errors')
 
 
-class BackTick(object, metaclass=abc.ABCMeta):
+class BackTickProbe(object, metaclass=abc.ABCMeta):
 
     __slots__ = ('_content',)
 
@@ -59,7 +59,7 @@ class BackTick(object, metaclass=abc.ABCMeta):
 
     @classmethod
     def new(cls, arguments=None, flags=None, **kw):
-        """Creates a new instance of BackTick for specified arguments by
+        """Creates a new instance of BackTickProbe for specified arguments by
            running and interpreting output of external command."""
         output = cls.run(arguments, flags, **kw)
         content = cls.parse(output)

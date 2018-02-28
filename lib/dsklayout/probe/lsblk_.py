@@ -6,10 +6,10 @@ from ..graph import Graph
 
 import json
 
-__all__ = ('LsBlk',)
+__all__ = ('LsBlkProbe',)
 
 
-class LsBlk(backtick_.BackTick):
+class LsBlkProbe(backtick_.BackTickProbe):
 
     @classmethod
     def command(cls, **kw):

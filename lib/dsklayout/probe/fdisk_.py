@@ -4,10 +4,10 @@ from . import backtick_
 import re
 import os
 
-__all__ = ('Fdisk',)
+__all__ = ('FdiskProbe',)
 
 
-class Fdisk(backtick_.BackTick):
+class FdiskProbe(backtick_.BackTickProbe):
 
     _colname = (r'(?:Device|Attrs|Boot|Bsize|Cpg|Cylinders|End|' +
                 r'End-C/H/S|Flags|Fsize|Id|Name|Sectors|Size|Slice|Start|' +
@@ -114,63 +114,63 @@ class Fdisk(backtick_.BackTick):
     def _parse_paragraph(content, paragraph):
         disk = dict()
         for line in paragraph.splitlines():
-            Fdisk._parse_line(disk, line)
+            FdiskProbe._parse_line(disk, line)
         if 'table-header' in disk and 'table-rows' in disk:
-            Fdisk._postprocess_table(disk)
+            FdiskProbe._postprocess_table(disk)
             del disk['table-header']
             del disk['table-rows']
         content.append(disk)
 
     @staticmethod
     def _parse_line(disk, line):
-        for expr in Fdisk._expressions:
+        for expr in FdiskProbe._expressions:
             match = re.match(expr, line)
             if match:
-                Fdisk._store_parsed_line(disk, match)
+                FdiskProbe._store_parsed_line(disk, match)
                 return True
         # FIXME: issue some warning here
         return False
 
     @staticmethod
     def _store_parsed_line(disk, match):
-        groupdict = match.groupdict()
-        if 'header' in groupdict:
-            Fdisk._store_table_header(disk, groupdict)
-        elif 'row' in groupdict:
-            Fdisk._store_table_row(disk, groupdict)
-        elif 'empty' not in groupdict:
-            Fdisk._store_disk_info(disk, groupdict)
+        groups = match.groupdict()
+        if 'header' in groups:
+            FdiskProbe._store_table_header(disk, groups)
+        elif 'row' in groups:
+            FdiskProbe._store_table_row(disk, groups)
+        elif 'empty' not in groups:
+            FdiskProbe._store_disk_info(disk, groups)
 
     @staticmethod
-    def _store_table_header(disk, groupdict):
-        disk['table-header'] = groupdict['header']
+    def _store_table_header(disk, groups):
+        disk['table-header'] = groups['header']
 
     @staticmethod
-    def _store_table_row(disk, groupdict):
+    def _store_table_row(disk, groups):
         if 'table-rows' not in disk:
             disk['table-rows'] = []
-        disk['table-rows'].append(groupdict['row'])
+        disk['table-rows'].append(groups['row'])
 
     @staticmethod
-    def _store_disk_info(disk, groupdict):
-        disk.update({k: Fdisk._convert(k, v) for k, v in groupdict.items()})
+    def _store_disk_info(disk, groups):
+        disk.update({k: FdiskProbe._convert(k, v) for k, v in groups.items()})
 
     @staticmethod
     def _convert(key, val):
-        conv = Fdisk._converters.get(key, lambda x: x)
+        conv = FdiskProbe._converters.get(key, lambda x: x)
         return conv(val)
 
     @staticmethod
     def _postprocess_table(disk):
         header = disk['table-header']
         rows = disk['table-rows']
-        pattern = Fdisk._build_row_pattern(header, rows)
-        ranges = Fdisk._determine_columns(header, pattern)
+        pattern = FdiskProbe._build_row_pattern(header, rows)
+        ranges = FdiskProbe._determine_columns(header, pattern)
         disk['partitions'] = []
         keys = [k.lower() for k in header.split()]
         disk['columns'] = header.split()
         for row in rows:
-            entry = {k: Fdisk._convert(k, row[slice(*ranges[k])].strip())
+            entry = {k: FdiskProbe._convert(k, row[slice(*ranges[k])].strip())
                      for k in keys}
             disk['partitions'].append(entry)
 
@@ -180,7 +180,7 @@ class Fdisk(backtick_.BackTick):
         maxlen = max([len(x) for x in lines])
         pattern = maxlen * [' ']
         for line in lines:
-            Fdisk._update_row_pattern(pattern, line)
+            FdiskProbe._update_row_pattern(pattern, line)
         return ''.join(pattern)
 
     @staticmethod
@@ -193,14 +193,14 @@ class Fdisk(backtick_.BackTick):
     def _determine_columns(header, pattern):
         rng = dict()
         cols = header.split()
-        nongreedy = [c for c in cols if c.lower() not in Fdisk._greedy]
-        greedy = [c for c in cols if c.lower() in Fdisk._greedy]
+        nongreedy = [c for c in cols if c.lower() not in FdiskProbe._greedy]
+        greedy = [c for c in cols if c.lower() in FdiskProbe._greedy]
         for col in nongreedy:
             key = col.lower()
-            rng[key] = Fdisk._determine_column(header, col, pattern)
+            rng[key] = FdiskProbe._determine_column(header, col, pattern)
         for col in greedy:
             key = col.lower()
-            rng[key] = Fdisk._determine_column(header, col, pattern, rng)
+            rng[key] = FdiskProbe._determine_column(header, col, pattern, rng)
         return rng
 
     @staticmethod
@@ -208,11 +208,11 @@ class Fdisk(backtick_.BackTick):
         left = header.index(col)
         right = left + len(col)
         key = col.lower()
-        align = Fdisk._alignment.get(key, '?')
+        align = FdiskProbe._alignment.get(key, '?')
         if align == 'l':
-            right = Fdisk._adjust_right(pattern, left, right, rng)
+            right = FdiskProbe._adjust_right(pattern, left, right, rng)
         elif align == 'r':
-            left = Fdisk._adjust_left(pattern, left, right, rng)
+            left = FdiskProbe._adjust_left(pattern, left, right, rng)
         return (left, right)
 
     @staticmethod

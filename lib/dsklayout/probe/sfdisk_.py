@@ -3,10 +3,10 @@
 from . import backtick_
 import json
 
-__all__ = ('Sfdisk',)
+__all__ = ('SfdiskProbe',)
 
 
-class Sfdisk(backtick_.BackTick):
+class SfdiskProbe(backtick_.BackTickProbe):
 
     @classmethod
     def command(cls, **kw):

@@ -3,7 +3,7 @@
 """
 
 from . import cmdext_
-from ..probe import LsBlk
+from ..probe import LsBlkProbe
 
 __all__ = ('LsBlkExt',)
 
@@ -25,7 +25,7 @@ class LsBlkExt(cmdext_.CmdExt):
 
     def new(self):
         kwargs = {'lsblk': self.arguments.lsblk}
-        return LsBlk.new(self.arguments.devices, **kwargs)
+        return LsBlkProbe.new(self.arguments.devices, **kwargs)
 
     def graph(self):
         return self.new().graph()
