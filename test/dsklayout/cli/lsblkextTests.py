@@ -27,21 +27,20 @@ class Test__LsBlkExt(unittest.TestCase):
                       help='name or path to lsblk program'),
         ])
 
-    def test__new(self):
+    def test__probe(self):
         with mock.patch.object(lsblkext_.LsBlkExt, 'arguments') as arguments, \
              mock.patch.object(lsblk_.LsBlkProbe, 'new', return_value ='ok') as new:
-            arguments.devices = mock.Mock()
             arguments.lsblk = mock.Mock()
             ext = lsblkext_.LsBlkExt()
-            self.assertEqual(ext.new(), 'ok')
-            new.assert_called_once_with(arguments.devices, lsblk=arguments.lsblk)
+            self.assertEqual(ext.probe(), 'ok')
+            new.assert_called_once_with(None, lsblk=arguments.lsblk)
 
     def test__graph(self):
         lsblk = mock.Mock()
         lsblk.graph = mock.Mock(return_value = 'ok')
-        with mock.patch.object(lsblkext_.LsBlkExt, 'new', return_value = lsblk) as new:
+        with mock.patch.object(lsblkext_.LsBlkExt, 'probe', return_value = lsblk) as probe:
             self.assertEqual(lsblkext_.LsBlkExt().graph(), 'ok')
-            new.assert_called_once_with()
+            probe.assert_called_once_with(None)
 
 if __name__ == '__main__':
     unittest.main()

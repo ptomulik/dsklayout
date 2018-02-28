@@ -23,12 +23,12 @@ class LsBlkExt(cmdext_.CmdExt):
                             default='lsblk',
                             help="name or path to lsblk program")
 
-    def new(self):
+    def probe(self, devices=None):
         kwargs = {'lsblk': self.arguments.lsblk}
-        return LsBlkProbe.new(self.arguments.devices, **kwargs)
+        return LsBlkProbe.new(devices, **kwargs)
 
-    def graph(self):
-        return self.new().graph()
+    def graph(self, devices=None):
+        return self.probe(devices).graph()
 
 
 # Local Variables:

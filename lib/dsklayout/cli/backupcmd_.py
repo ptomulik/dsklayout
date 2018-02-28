@@ -4,6 +4,8 @@
 
 from . import cmd_
 from . import lsblkext_
+from . import fdiskext_
+from . import sfdiskext_
 from . import tmpdirext_
 from ..device import *
 ##from ..graph import *
@@ -19,6 +21,8 @@ class BackupCmd(cmd_.Cmd):
     def __init__(self):
         super().__init__()
         self.add_extension(lsblkext_.LsBlkExt())
+        self.add_extension(fdiskext_.FdiskExt())
+        self.add_extension(sfdiskext_.SfdiskExt())
         self.add_extension(tmpdirext_.TmpDirExt())
 
     @property
@@ -35,7 +39,7 @@ class BackupCmd(cmd_.Cmd):
 
     def run(self):
         with self.tmpdir.new() as tmpdir:
-            graph = self.lsblk.graph()
+            graph = self.lsblk.graph(self.arguments.devices)
             # Morph LsBlkDevs into Devices
             for devname in graph.nodes:
                 graph.nodes[devname] = Device.new(graph.node(devname))
