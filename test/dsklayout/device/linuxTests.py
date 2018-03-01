@@ -215,10 +215,13 @@ class Test__LinuxDevice(unittest.TestCase):
         dev = linux_.LinuxDevice({'vendor': 'ATA'})
         self.assertEqual(dev.vendor, 'ATA')
 
-    def test__parttable(self):
-        dev = linux_.LinuxDevice({'name': '/dev/sda'})
-        dev.backup['parttable'] = 'gpt'
-        self.assertEqual(dev.parttable, 'gpt')
+    def test__disk_label(self):
+        dev = linux_.LinuxDevice({'disk-label': 'dos'})
+        self.assertEqual(dev.disk_label, 'dos')
+
+    def test__disk_id(self):
+        dev = linux_.LinuxDevice({'disk-id': '0x5f572a40'})
+        self.assertEqual(dev.disk_id, '0x5f572a40')
 
 if __name__ == '__main__':
     unittest.main()

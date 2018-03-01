@@ -11,6 +11,8 @@ from ..device import *
 ##from ..graph import *
 ##from ..action import *
 
+import sys
+
 __all__ = ('BackupCmd',)
 
 
@@ -37,13 +39,16 @@ class BackupCmd(cmd_.Cmd):
         parser.add_argument("devices", metavar='DEV', nargs='*',
                             help="block device to be included in backup")
 
-    def run(self):
-        with self.tmpdir.new() as tmpdir:
-            graph = self.lsblk.graph(self.arguments.devices)
-            # Morph LsBlkDevs into Devices
-            for devname in graph.nodes:
-                graph.nodes[devname] = Device.new(graph.node(devname))
-            # TODO: finish, something like...
+    def _morph_graph(self, graph):
+        for devname in graph.nodes:
+            graph.nodes[devname] = Device.new(graph.node(devname))
+
+    def _backup_linux(self, tmpdir):
+        graph = self.lsblk.graph(self.arguments.devices)
+        # Morph LsBlkDevs into Devices
+        self._morph_graph(graph)
+        # 
+        # TODO: finish, something like...
 ##            search = Dfs(direction='outward')
 ##            trail = search(graph, graph.roots(),
 ##                           ingress_func=...
@@ -51,6 +56,14 @@ class BackupCmd(cmd_.Cmd):
 ##            action = BackupAction(tmpdir)
 ##            for devname in trail.nodes:
 ##                action(graph.node(devname))
+
+    def run(self):
+        with self.tmpdir.new() as tmpdir:
+            if sys.platform == 'linux':
+                return _backup_linux(tmpdir)
+            else:
+                raise NotImplementedError("your platform %s is not supported" 
+                                          % repr(sys.platform))
         return 0
 
 

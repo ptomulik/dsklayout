@@ -15,12 +15,22 @@ class LinuxDevice(device_.Device):
 
     __slots__ = ('_properties',)
 
-    _backup_property_map = {
-        'parttable':   'parttable'
+    _fdisk_property_map = {
+        'disklabel_type': 'disk-label',
+        'disk_identifier': 'disk-id'
     }
 
+    _sfdisk_property_map = {
+        'label': 'disk-label',
+        'id': 'disk-id',
+    }
+
+    _property_map = dict(model.LsBlkDev._property_map, **{
+        'disk_label': 'disk-label',
+        'disk_id': 'disk-id'
+    })
+
     def __init__(self, properties):
-        self._backup = dict()
         self._properties = properties
 
     @property
@@ -49,8 +59,7 @@ class LinuxDevice(device_.Device):
         return 1  # catch all lsblk devices not supported by others
 
 
-util.add_dict_getters(LinuxDevice, model.LsBlkDev._property_map, '_properties')
-util.add_dict_getters(LinuxDevice, LinuxDevice._backup_property_map, '_backup')
+util.add_dict_getters(LinuxDevice, LinuxDevice._property_map, '_properties')
 
 # Local Variables:
 # # tab-width:4
