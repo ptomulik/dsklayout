@@ -4,7 +4,6 @@ from . import backtick_
 from .. import util
 from ..model import LsBlkDev
 from ..graph import Graph
-from ..device import LinuxDevice
 
 import json
 
@@ -51,20 +50,6 @@ class LsBlkProbe(backtick_.BackTickProbe):
     @classmethod
     def parse(cls, output):
         return json.loads(output)
-
-    @util.dispatch.on('device')
-    def update_device(self, device):
-        super().update_device(device)
-
-    @util.dispatch.when(LinuxDevice)
-    def update_device(self, device, **kw):
-        graph = self.graph(**kw)
-        excluded = ('children', 'name', 'kname')
-        node = graph.nodes.get(device.kname, graph.nodes.get(device.name))
-        if node is not None:
-            props = {k: v for (k, v) in node.properties.items()
-                     if k not in excluded}
-            device.properties.update(props)
 
     def graph(self, **kw):
         """Builds and returns graph with nodes representing block devices"""

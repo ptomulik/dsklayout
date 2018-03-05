@@ -2,7 +2,6 @@
 
 from . import backtick_
 from .. import util
-from ..device import LinuxDevice
 import re
 import os
 
@@ -88,47 +87,6 @@ class FdiskProbe(backtick_.BackTickProbe):
         'tracksectors': int,
         'unitbytes': int,
     }
-
-    _device_property_map = {
-        'disklabel_type': 'disk-label',
-        'disk_identifier': 'disk-id'
-    }
-
-    _partition_property_map = {
-        'device': 'name',
-        'start': 'start',
-        'end': 'end',
-        'size': 'size',
-        'id': 'type',
-        'type': 'type',
-    }
-
-    @util.dispatch.on('device')
-    def update_device(self, device):
-        super().update_device(device)
-
-    @util.dispatch.when(LinuxDevice)
-    def update_device(self, device):
-        self._update_device_properties(device, self._device_property_map)
-        self._update_device_partitions(device, self._partition_property_map)
-
-    def _device_entries(self, device):
-        names = tuple(n for n in (device.kname, device.name) if n is not None)
-        return (e for e in self._content if e.get('name') in names)
-
-    def _update_device_properties(self, device, mapping):
-        for entry in self._device_entries(device):
-            device.properties.update(FdiskProbe._remap_dict(entry, mapping))
-
-    def _update_device_partitions(self, device, mapping):
-        for entry in self._device_entries(device):
-            for partition in entry.get('partitions', []):
-                properties = FdiskProbe._remap_dict(partition, mapping)
-                device.update_partition(partition['device'], properties)
-
-    @staticmethod
-    def _remap_dict(src, mapping):
-        return ((mapping[k], v) for (k, v) in src.items() if k in mapping)
 
     @classmethod
     def command(cls, **kw):
