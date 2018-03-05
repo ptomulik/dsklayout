@@ -1,5 +1,6 @@
 # -*- coding: utf8 -*-
 
+from . import probe_
 from .. import util
 import abc
 
@@ -13,7 +14,7 @@ _popen_args = ('bufsize', 'executable', 'stdin', 'stdout', 'stderr',
                'errors')
 
 
-class BackTickProbe(object, metaclass=abc.ABCMeta):
+class BackTickProbe(probe_.Probe):
 
     __slots__ = ('_content',)
 

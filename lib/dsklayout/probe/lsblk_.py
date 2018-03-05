@@ -1,12 +1,41 @@
 # -*- coding: utf8 -*-
 
 from . import backtick_
+from .. import util
 from ..model import LsBlkDev
 from ..graph import Graph
+from ..device import LinuxDevice
 
 import json
 
 __all__ = ('LsBlkProbe',)
+
+
+class _GraphBuilder(object):
+    """Bulids graph from LsBlkProbe nodes. It's intended to be used as function
+       in LsBlkProbe._apply_recursive"""
+
+    def __init__(self, **kw):
+        self._graph = Graph(**kw)
+        self._keyattr = kw.get('keyattr', 'kname')
+
+    @property
+    def graph(self):
+        return self._graph
+
+    @property
+    def keyattr(self):
+        return self._keyattr
+
+    def __call__(self, node, parent=None):
+        key = node[self.keyattr]
+        props = {k:  v for (k, v) in node.items() if k != 'children'}
+        if not self.graph.has_node(key):
+            self.graph.add_node(key, LsBlkDev(props))
+        else:
+            self.graph.node(key).reappear(props)
+        if parent is not None:
+            self.graph.add_edge((parent[self.keyattr], key))
 
 
 class LsBlkProbe(backtick_.BackTickProbe):
@@ -23,28 +52,35 @@ class LsBlkProbe(backtick_.BackTickProbe):
     def parse(cls, output):
         return json.loads(output)
 
+    @util.dispatch.on('device')
+    def update_device(self, device):
+        super().update_device(device)
+
+    @util.dispatch.when(LinuxDevice)
+    def update_device(self, device, **kw):
+        graph = self.graph(**kw)
+        excluded = ('children', 'name', 'kname')
+        node = graph.nodes.get(device.kname, graph.nodes.get(device.name))
+        if node is not None:
+            props = {k: v for (k, v) in node.properties.items()
+                     if k not in excluded}
+            device.properties.update(props)
+
     def graph(self, **kw):
         """Builds and returns graph with nodes representing block devices"""
-        graph = Graph(**kw)
-        for device in self._content['blockdevices']:
-            self._graph_add_recursive(graph, device, **kw)
-        return graph
+        return self._apply_recursive(_GraphBuilder(**kw)).graph
 
-    def _graph_add_recursive(self, graph, device, parent=None, **kw):
-        self._graph_add(graph, device, parent, **kw)
-        for child in device.get('children', []):
-            self._graph_add_recursive(graph, child, device, **kw)
+    def _apply_recursive(self, func):
+        nodes = self._content['blockdevices']
+        LsBlkProbe._apply_recursive_to(func, nodes)
+        return func
 
-    def _graph_add(self, graph, device, parent=None, **kw):
-        keyattr = kw.get('keyattr', 'kname')
-        key = device[keyattr]
-        props = {k:  v for (k, v) in device.items() if k != 'children'}
-        if not graph.has_node(key):
-            graph.add_node(key, LsBlkDev(props))
-        else:
-            graph.node(key).reappear(props)
-        if parent is not None:
-            graph.add_edge((parent[keyattr], key))
+    @staticmethod
+    def _apply_recursive_to(func, nodes, parent=None):
+        for node in nodes:
+            func(node, parent)
+            children = node.get('children', [])
+            LsBlkProbe._apply_recursive_to(func, children, node)
 
 
 # vim: set ft=python et ts=4 sw=4:
