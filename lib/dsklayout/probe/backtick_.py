@@ -16,15 +16,6 @@ _popen_args = ('bufsize', 'executable', 'stdin', 'stdout', 'stderr',
 
 class BackTickProbe(probe_.Probe):
 
-    __slots__ = ('_content',)
-
-    def __init__(self, content):
-        self._content = content
-
-    @property
-    def content(self):
-        return self._content
-
     @classmethod
     @abc.abstractmethod
     def command(self, **kw):

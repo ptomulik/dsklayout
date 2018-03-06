@@ -5,7 +5,7 @@ from .. import util
 import re
 import os
 
-__all__ = ('FdiskProbe',)
+__all__ = ('FdiskProbe', 'FdiskPartitionTable')
 
 
 class FdiskProbe(backtick_.BackTickProbe):
@@ -87,6 +87,23 @@ class FdiskProbe(backtick_.BackTickProbe):
         'tracksectors': int,
         'unitbytes': int,
     }
+
+    @property
+    def entries(self):
+        """Device names of all content entries"""
+        return list(e.get('name') for e in self.content)
+
+    @property
+    def partitiontables(self):
+        """Device names of content entries with a partition table"""
+        return list(e.get('name') for e in self.content if 'partitions' in e)
+
+    def entry(self, name):
+        """Returns a single entry identified by device name"""
+        try:
+            return next((e for e in self.content if e.get('name') == name))
+        except StopIteration:
+            raise ValueError("invalid device name: %s" % repr(name))
 
     @classmethod
     def command(cls, **kw):
@@ -236,6 +253,28 @@ class FdiskProbe(backtick_.BackTickProbe):
             minright = min(l + [x[0]-1 for x in rng.values() if x[0] > right])
             right = max([minright, right])
         return right
+
+
+class FdiskPartitionTable(object):
+    """A single partition table extracted from FdiskProbe"""
+
+    def __init__(self, properties):
+        self._properties = properties
+
+    @property
+    def properties(self):
+        return self._properties
+
+    @classmethod
+    @util.dispatch.on('src')
+    def new(cls, src, *args, **kw):
+        raise TypeError(("FdiskPartitionTable.new() can't accept %s as " +
+                         "argument") % type(src).__name__)
+
+    @classmethod
+    @util.dispatch.when(FdiskProbe)
+    def new(cls, fdisk, device):
+        return cls(fdisk.entry(device))
 
 
 # vim: set ft=python et ts=4 sw=4:
