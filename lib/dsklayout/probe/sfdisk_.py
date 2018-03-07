@@ -9,13 +9,30 @@ __all__ = ('SfdiskProbe', 'SfdiskPartitionTable')
 
 class SfdiskProbe(backtick_.BackTickProbe):
 
+
+    _ptable_map = {
+        'label': 'label',
+        'id': 'id',
+        'device': 'device',
+        'unit': 'units',
+    }
+
+    _ptable_part_map = {
+        'node': 'device',
+        'start': 'start',
+        'size': 'size',
+        'uuid': 'uuid',
+        'type': 'type',
+        'name': 'name',
+    }
+
     @property
     def entries(self):
         """Device names of all content entries"""
         return [self.content['partitiontable'].get('device')]
 
     @property
-    def partitiontables(self):
+    def ptables(self):
         """Device names of content entries with a partition table"""
         return self.entries
 
@@ -26,6 +43,25 @@ class SfdiskProbe(backtick_.BackTickProbe):
             return entry
         else:
             raise ValueError("invalid device name: %s" % repr(name))
+
+    def ptable(self, name):
+        entry = self.entry(name)
+        ptable = {self._ptable_map.get(k, k): v for k, v in entry.items()
+                  if k not in ('partitions', )}
+        ptable['partitions'] = list(
+            {self._ptable_part_map.get(k, k): v for k, v in p.items()}
+            for p in entry['partitions']
+        )
+        for partition in ptable['partitions']:
+            try:
+                start = p['start']
+                size = p['size']
+            except KeyError:
+                pass
+            else:
+                p['end'] = int(start) + int(size) - 1
+
+        return ptable
 
     @classmethod
     def command(cls, **kw):

@@ -70,7 +70,8 @@ class FdiskProbe(backtick_.BackTickProbe):
     }
 
     _greedy = [
-        'type'
+        'type',
+        'name'
     ]
 
     _converters = {
@@ -88,14 +89,34 @@ class FdiskProbe(backtick_.BackTickProbe):
         'unitbytes': int,
     }
 
+    _ptable_map = {
+      'disklabel_type': 'label',
+      'disk_identifier': 'id',
+      'name': 'device',
+      'units': 'units',
+      'bytes': 'bytes',
+    }
+
+    _ptable_part_map = {
+        'device': 'device',
+        'start': 'start',
+        'end': 'end',
+        'sectors': 'size',
+        'uuid': 'uuid',
+        'type-uuid': 'type',
+        'id': 'type',
+        'name': 'name',
+        'type': 'typename',
+    }
+
     @property
     def entries(self):
         """Device names of all content entries"""
         return list(e.get('name') for e in self.content)
 
     @property
-    def partitiontables(self):
-        """Device names of content entries with a partition table"""
+    def ptables(self):
+        """Device names of entries having partition table"""
         return list(e.get('name') for e in self.content if 'partitions' in e)
 
     def entry(self, name):
@@ -105,13 +126,27 @@ class FdiskProbe(backtick_.BackTickProbe):
         except StopIteration:
             raise ValueError("invalid device name: %s" % repr(name))
 
+    def ptable(self, name):
+        """Returns a dictionary which describes a partition table."""
+        entry = self.entry(name)
+        if 'partitions' not in entry:
+            raise ValueError("entry %s has no partition table" % repr(name))
+        ptable = {self._ptable_map.get(k, k): v for k, v in entry.items()
+                  if k not in ('partitions', 'columns')}
+        ptable['partitions'] = list(
+            {self._ptable_part_map.get(k, k): v for k, v in p.items()}
+            for p in entry['partitions']
+        )
+        return ptable
+
+
     @classmethod
     def command(cls, **kw):
         return kw.get('fdisk', 'fdisk')
 
     @classmethod
     def flags(cls, flags, **kw):
-        return ['-l'] + flags
+        return ['-l', '--bytes'] + flags
 
     @classmethod
     def parse(cls, output):
