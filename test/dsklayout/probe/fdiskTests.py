@@ -52,62 +52,62 @@ class Test__Fdisk(unittest.TestCase):
     def test__run__with_no_args(self):
         with patch(backtick, return_value='ok') as mock:
             self.assertIs(fdisk_.FdiskProbe.run(env=dict()), 'ok')
-            mock.assert_called_once_with(['fdisk', '-l'], env={'LC_NUMERIC': 'C'})
+            mock.assert_called_once_with(['fdisk', '-l', '--bytes'], env={'LC_NUMERIC': 'C'})
 
     def test__run__with_device(self):
         with patch(backtick, return_value='ok') as mock:
             self.assertIs(fdisk_.FdiskProbe.run('sda', env=dict()), 'ok')
-            mock.assert_called_once_with(['fdisk', '-l', 'sda'], env={'LC_NUMERIC': 'C'})
+            mock.assert_called_once_with(['fdisk', '-l', '--bytes', 'sda'], env={'LC_NUMERIC': 'C'})
 
     def test__run__with_devices(self):
         with patch(backtick, return_value='ok') as mock:
             self.assertIs(fdisk_.FdiskProbe.run(['sda', 'sdb'], env=dict()), 'ok')
-            mock.assert_called_once_with(['fdisk', '-l', 'sda', 'sdb'], env={'LC_NUMERIC': 'C'})
+            mock.assert_called_once_with(['fdisk', '-l', '--bytes', 'sda', 'sdb'], env={'LC_NUMERIC': 'C'})
 
     def test__run__with_devices_and_flags(self):
         with patch(backtick, return_value='ok') as mock:
             self.assertIs(fdisk_.FdiskProbe.run(['sda', 'sdb'], ['-x', '-y'], env=dict()), 'ok')
-            mock.assert_called_once_with(['fdisk', '-l', '-x', '-y',  'sda', 'sdb'], env={'LC_NUMERIC': 'C'})
+            mock.assert_called_once_with(['fdisk', '-l', '--bytes', '-x', '-y',  'sda', 'sdb'], env={'LC_NUMERIC': 'C'})
 
     def test__run__with_custom_fdisk(self):
         with patch(backtick, return_value='ok') as mock:
             self.assertIs(fdisk_.FdiskProbe.run(['sda', 'sdb'], ['-x', '-y'], fdisk='/opt/bin/fdisk', env=dict()), 'ok')
-            mock.assert_called_once_with(['/opt/bin/fdisk', '-l', '-x', '-y',  'sda', 'sdb'], env={'LC_NUMERIC': 'C'})
+            mock.assert_called_once_with(['/opt/bin/fdisk', '-l', '--bytes', '-x', '-y',  'sda', 'sdb'], env={'LC_NUMERIC': 'C'})
 
     def test__new__with_no_args(self):
         with patch(backtick, return_value='Disk /dev/sda: 931.5 GiB, 1000204886016 bytes, 1953525168 sectors') as mock:
             fdisk = fdisk_.FdiskProbe.new(env=dict())
             self.assertIsInstance(fdisk, fdisk_.FdiskProbe)
             self.assertEqual(fdisk.content, [{"name":  "/dev/sda", "size": "931.5 GiB", "bytes": 1000204886016, "sectors": 1953525168}])
-            mock.assert_called_once_with(['fdisk', '-l'], env={'LC_NUMERIC': 'C'})
+            mock.assert_called_once_with(['fdisk', '-l', '--bytes'], env={'LC_NUMERIC': 'C'})
 
     def test__new__with_device(self):
         with patch(backtick, return_value='Disk /dev/sda: 931.5 GiB, 1000204886016 bytes, 1953525168 sectors') as mock:
             fdisk = fdisk_.FdiskProbe.new('sda', env=dict())
             self.assertIsInstance(fdisk, fdisk_.FdiskProbe)
             self.assertEqual(fdisk.content, [{"name":  "/dev/sda", "size": "931.5 GiB", "bytes": 1000204886016, "sectors": 1953525168}])
-            mock.assert_called_once_with(['fdisk', '-l', 'sda'], env={'LC_NUMERIC': 'C'})
+            mock.assert_called_once_with(['fdisk', '-l', '--bytes', 'sda'], env={'LC_NUMERIC': 'C'})
 
     def test__new__with_devices(self):
         with patch(backtick, return_value='Disk /dev/sda: 931.5 GiB, 1000204886016 bytes, 1953525168 sectors') as mock:
             fdisk = fdisk_.FdiskProbe.new(['sda', 'sdb'], env=dict())
             self.assertIsInstance(fdisk, fdisk_.FdiskProbe)
             self.assertEqual(fdisk.content, [{"name":  "/dev/sda", "size": "931.5 GiB", "bytes": 1000204886016, "sectors": 1953525168}])
-            mock.assert_called_once_with(['fdisk', '-l', 'sda', 'sdb'], env={'LC_NUMERIC': 'C'})
+            mock.assert_called_once_with(['fdisk', '-l', '--bytes', 'sda', 'sdb'], env={'LC_NUMERIC': 'C'})
 
     def test__new__with_devices_and_flags(self):
         with patch(backtick, return_value='Disk /dev/sda: 931.5 GiB, 1000204886016 bytes, 1953525168 sectors') as mock:
             fdisk = fdisk_.FdiskProbe.new(['sda', 'sdb'], ['-x', '-y'], env=dict())
             self.assertIsInstance(fdisk, fdisk_.FdiskProbe)
             self.assertEqual(fdisk.content, [{"name":  "/dev/sda", "size": "931.5 GiB", "bytes": 1000204886016, "sectors": 1953525168}])
-            mock.assert_called_once_with(['fdisk', '-l', '-x', '-y',  'sda', 'sdb'], env={'LC_NUMERIC': 'C'})
+            mock.assert_called_once_with(['fdisk', '-l', '--bytes', '-x', '-y',  'sda', 'sdb'], env={'LC_NUMERIC': 'C'})
 
     def test__new__with_custom_fdisk(self):
         with patch(backtick, return_value='Disk /dev/sda: 931.5 GiB, 1000204886016 bytes, 1953525168 sectors') as mock:
             fdisk = fdisk_.FdiskProbe.new(['sda', 'sdb'], ['-x', '-y'], fdisk='/opt/bin/fdisk', env=dict())
             self.assertIsInstance(fdisk, fdisk_.FdiskProbe)
             self.assertEqual(fdisk.content, [{"name":  "/dev/sda", "size": "931.5 GiB", "bytes": 1000204886016, "sectors": 1953525168}])
-            mock.assert_called_once_with(['/opt/bin/fdisk', '-l', '-x', '-y',  'sda', 'sdb'], env={'LC_NUMERIC': 'C'})
+            mock.assert_called_once_with(['/opt/bin/fdisk', '-l', '--bytes', '-x', '-y',  'sda', 'sdb'], env={'LC_NUMERIC': 'C'})
 
     def test__parse__with_fixtures(self):
         self.maxDiff = None

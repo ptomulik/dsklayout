@@ -20,7 +20,7 @@ class FactorySubject(object, metaclass=abc.ABCMeta):
     def supports(cls, spec):
         """Check if an instance can be created from spec.
 
-           Shall return positive number, if
+           Shall return positive number if
 
                 cls(*cls.specargs(spec),..., **{**cls.speckwargs(spec), ...})
 
@@ -47,8 +47,8 @@ class FactorySubject(object, metaclass=abc.ABCMeta):
 class Factory(object):
     """Given a base class and an abstract specification of an instance, it
     selects a subclass which best matches specification and creates an instance
-    of this subclass. The specification matching is delegated to subclasses
-    of FactorySubject."""
+    of this subclass. The job of specification matching is delegated to
+    subclasses of FactorySubject."""
 
     @classmethod
     def instances(cls):
@@ -59,6 +59,8 @@ class Factory(object):
 
     @classmethod
     def of(cls, base, **kw):
+        """Returns a factory for a family of objects having a common base
+        class"""
         if not inspect.isclass(base):
             raise TypeError("%s.of() argument 1 must be a class, %s provided" %
                             (cls.__name__, repr(base)))

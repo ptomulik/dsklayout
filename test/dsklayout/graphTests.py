@@ -18,9 +18,6 @@ class Test__graph__PackageSymbols(unittest.TestCase):
     def test__elems__symbols(self):
         self.assertIs(graph.Elems, graph.elems_.Elems)
 
-    def test__exceptions__symbols(self):
-        self.assertTrue(True)
-
     def test__graph__symbols(self):
         self.assertIs(graph.Graph, graph.graph_.Graph)
 

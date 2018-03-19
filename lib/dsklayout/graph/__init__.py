@@ -6,7 +6,6 @@ util.import_all_from(__package__, [
     '.dfs_',
     '.edges_',
     '.elems_',
-    '.exceptions_',
     '.graph_',
     '.nodes_',
     '.trail_',
