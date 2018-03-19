@@ -7,12 +7,12 @@ from .. import util
 __all__ = ('Partition',)
 
 
-class Partition(util.FactorySubject):
+class Partition(object):
     """Represents a single entry of PartitionTable"""
 
-    __slots__ = ('properties_',)
+    __slots__ = ('_properties',)
 
-    _property_map = {
+    _pp_map = {
         'device': 'device',
         'units': 'units',
         'start': 'start',
@@ -23,10 +23,14 @@ class Partition(util.FactorySubject):
     }
 
     def __init__(self, properties=None):
-        self._properties = properties if partitions is not None else dict()
+        self._properties = properties if properties is not None else dict()
+
+    @property
+    def properties(self):
+        return self._properties
 
 
-util.add_dict_getters(Partition, Partition._property_map, '_properties')
+util.add_dict_getters(Partition, Partition._pp_map, '_properties')
 
 # Local Variables:
 # # tab-width:4

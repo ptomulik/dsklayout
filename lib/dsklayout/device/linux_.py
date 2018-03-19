@@ -15,7 +15,7 @@ class LinuxDevice(device_.Device):
 
     __slots__ = ('_properties',)
 
-    _property_map = dict(model.LsBlkDev._property_map, **{
+    _pp_map = dict(model.LsBlkDev._pp_map, **{
         'disk_label': 'disk-label',
         'disk_id': 'disk-id',
         'partitions': 'partitions'
@@ -65,7 +65,7 @@ class LinuxDevice(device_.Device):
         return 1  # catch all lsblk devices not supported by others
 
 
-util.add_dict_getters(LinuxDevice, LinuxDevice._property_map, '_properties')
+util.add_dict_getters(LinuxDevice, LinuxDevice._pp_map, '_properties')
 
 # Local Variables:
 # # tab-width:4

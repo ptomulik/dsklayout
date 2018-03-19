@@ -30,7 +30,7 @@ class LsBlkDev(object):
             'rq-size': int,
             'rand': lambda x: bool(int(x)),
     }
-    _property_map = {
+    _pp_map = {
             'name':           'name',
             'kname':          'kname',
             'maj_min':        'maj:min',
@@ -157,6 +157,6 @@ class LsBlkDev(object):
         if value is not None and value not in self._properties[key]:
             self._properties[key].append(value)
 
-util.add_dict_getters(LsBlkDev, LsBlkDev._property_map, '_properties')
+util.add_dict_getters(LsBlkDev, LsBlkDev._pp_map, '_properties')
 
 # vim: set ft=python et ts=4 sw=4:

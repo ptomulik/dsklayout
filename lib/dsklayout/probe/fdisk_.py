@@ -5,7 +5,7 @@ from .. import util
 import re
 import os
 
-__all__ = ('FdiskProbe', 'FdiskPartitionTable')
+__all__ = ('FdiskProbe', )
 
 
 class FdiskProbe(backtick_.BackTickProbe):
@@ -89,7 +89,7 @@ class FdiskProbe(backtick_.BackTickProbe):
         'unitbytes': int,
     }
 
-    _ptable_map = {
+    _partab_map = {
       'disklabel_type': 'label',
       'disk_identifier': 'id',
       'name': 'device',
@@ -97,7 +97,7 @@ class FdiskProbe(backtick_.BackTickProbe):
       'bytes': 'bytes',
     }
 
-    _ptable_part_map = {
+    _partab_part_map = {
         'device': 'device',
         'start': 'start',
         'end': 'end',
@@ -115,7 +115,7 @@ class FdiskProbe(backtick_.BackTickProbe):
         return list(e.get('name') for e in self.content)
 
     @property
-    def ptables(self):
+    def partabs(self):
         """Device names of entries having partition table"""
         return list(e.get('name') for e in self.content if 'partitions' in e)
 
@@ -126,18 +126,18 @@ class FdiskProbe(backtick_.BackTickProbe):
         except StopIteration:
             raise ValueError("invalid device name: %s" % repr(name))
 
-    def ptable(self, name):
+    def partab(self, name):
         """Returns a dictionary which describes a partition table."""
         entry = self.entry(name)
         if 'partitions' not in entry:
             raise ValueError("entry %s has no partition table" % repr(name))
-        ptable = {self._ptable_map.get(k, k): v for k, v in entry.items()
+        partab = {self._partab_map.get(k, k): v for k, v in entry.items()
                   if k not in ('partitions', 'columns')}
-        ptable['partitions'] = list(
-            {self._ptable_part_map.get(k, k): v for k, v in p.items()}
+        partab['partitions'] = list(
+            {self._partab_part_map.get(k, k): v for k, v in p.items()}
             for p in entry['partitions']
         )
-        return ptable
+        return partab
 
 
     @classmethod
@@ -288,28 +288,6 @@ class FdiskProbe(backtick_.BackTickProbe):
             minright = min(l + [x[0]-1 for x in rng.values() if x[0] > right])
             right = max([minright, right])
         return right
-
-
-class FdiskPartitionTable(object):
-    """A single partition table extracted from FdiskProbe"""
-
-    def __init__(self, properties):
-        self._properties = properties
-
-    @property
-    def properties(self):
-        return self._properties
-
-    @classmethod
-    @util.dispatch.on('src')
-    def new(cls, src, *args, **kw):
-        raise TypeError(("FdiskPartitionTable.new() can't accept %s as " +
-                         "argument") % type(src).__name__)
-
-    @classmethod
-    @util.dispatch.when(FdiskProbe)
-    def new(cls, fdisk, device):
-        return cls(fdisk.entry(device))
 
 
 # vim: set ft=python et ts=4 sw=4:

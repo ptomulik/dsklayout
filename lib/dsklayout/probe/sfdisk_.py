@@ -4,20 +4,19 @@ from . import backtick_
 from .. import util
 import json
 
-__all__ = ('SfdiskProbe', 'SfdiskPartitionTable')
+__all__ = ('SfdiskProbe', )
 
 
 class SfdiskProbe(backtick_.BackTickProbe):
 
-
-    _ptable_map = {
+    _partab_map = {
         'label': 'label',
         'id': 'id',
         'device': 'device',
         'unit': 'units',
     }
 
-    _ptable_part_map = {
+    _partab_part_map = {
         'node': 'device',
         'start': 'start',
         'size': 'size',
@@ -32,7 +31,7 @@ class SfdiskProbe(backtick_.BackTickProbe):
         return [self.content['partitiontable'].get('device')]
 
     @property
-    def ptables(self):
+    def partabs(self):
         """Device names of content entries with a partition table"""
         return self.entries
 
@@ -44,24 +43,24 @@ class SfdiskProbe(backtick_.BackTickProbe):
         else:
             raise ValueError("invalid device name: %s" % repr(name))
 
-    def ptable(self, name):
+    def partab(self, name):
         entry = self.entry(name)
-        ptable = {self._ptable_map.get(k, k): v for k, v in entry.items()
+        partab = {self._partab_map.get(k, k): v for k, v in entry.items()
                   if k not in ('partitions', )}
-        ptable['partitions'] = list(
-            {self._ptable_part_map.get(k, k): v for k, v in p.items()}
+        partab['partitions'] = list(
+            {self._partab_part_map.get(k, k): v for k, v in p.items()}
             for p in entry['partitions']
         )
-        for partition in ptable['partitions']:
+        for part in partab['partitions']:
             try:
-                start = p['start']
-                size = p['size']
+                start = part['start']
+                size = part['size']
             except KeyError:
                 pass
             else:
-                p['end'] = int(start) + int(size) - 1
+                part['end'] = int(start) + int(size) - 1
 
-        return ptable
+        return partab
 
     @classmethod
     def command(cls, **kw):
@@ -74,28 +73,6 @@ class SfdiskProbe(backtick_.BackTickProbe):
     @classmethod
     def parse(cls, output):
         return json.loads(output)
-
-
-class SfdiskPartitionTable(object):
-    """A single partition table extracted from SfdiskProbe"""
-
-    def __init__(self, properties):
-        self._properties = properties
-
-    @property
-    def properties(self):
-        return self._properties
-
-    @classmethod
-    @util.dispatch.on('src')
-    def new(cls, src, *args, **kw):
-        raise TypeError(("FdiskPartitionTable.new() can't accept %s as " +
-                         "argument") % type(src).__name__)
-
-    @classmethod
-    @util.dispatch.when(SfdiskProbe)
-    def new(cls, sfdisk, device):
-        return cls(sfdisk.entry(device))
 
 
 # vim: set ft=python et ts=4 sw=4:
