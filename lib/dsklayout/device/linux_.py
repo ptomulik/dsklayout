@@ -16,9 +16,7 @@ class LinuxDevice(device_.Device):
     __slots__ = ('_properties',)
 
     _pp_map = dict(model.LsBlkDev._pp_map, **{
-        'disk_label': 'disk-label',
-        'disk_id': 'disk-id',
-        'partitions': 'partitions'
+        'partab': 'partab'
     })
 
     def __init__(self, properties):
@@ -27,21 +25,6 @@ class LinuxDevice(device_.Device):
     @property
     def properties(self):
         return self._properties
-
-    def partition(self, name):
-        if self.partitions is None:
-            return None
-        entries = [x for x in self.partitions if x.get('name') == name]
-        if len(entries) != 1:
-            return None
-        return entries[0]
-
-    def update_partition(self, name, properties):
-        if self.partitions is None:
-            self.properties['partitions'] = []
-        if self.partition(name) is None:
-            self.partitions.append({'name': name})
-        self.partition(name).update(properties)
 
     @classmethod
     @util.dispatch.on('spec')
