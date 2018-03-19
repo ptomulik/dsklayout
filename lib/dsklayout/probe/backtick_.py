@@ -15,6 +15,7 @@ _popen_args = ('bufsize', 'executable', 'stdin', 'stdout', 'stderr',
 
 
 class BackTickProbe(probe_.Probe):
+    """A Probe which retrieves content from external program's stdout"""
 
     @classmethod
     @abc.abstractmethod
@@ -23,19 +24,20 @@ class BackTickProbe(probe_.Probe):
         pass
 
     @classmethod
+    @abc.abstractmethod
+    def parse(cls, output):
+        """Parse output retrieved from the external program"""
+        pass
+
+    @classmethod
     def flags(self, flags=None, **kw):
-        """Returns flags that are passed to command"""
+        """Returns flags that shall be passed to the external program"""
         return []
 
     @classmethod
     def kwargs(self, **kw):
         """Returns keyword arguments to be passed to backtick() function"""
         return {k: v for k, v in kw.items() if k in _popen_args}
-
-    @classmethod
-    @abc.abstractmethod
-    def parse(cls, output):
-        pass
 
     @classmethod
     def run(cls, arguments=None, flags=None, **kw):

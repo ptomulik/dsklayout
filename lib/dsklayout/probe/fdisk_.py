@@ -139,7 +139,6 @@ class FdiskProbe(backtick_.BackTickProbe):
         )
         return partab
 
-
     @classmethod
     def command(cls, **kw):
         return kw.get('fdisk', 'fdisk')

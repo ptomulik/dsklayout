@@ -27,12 +27,12 @@ class SfdiskProbe(backtick_.BackTickProbe):
 
     @property
     def entries(self):
-        """Device names of all content entries"""
+        """Device names of all devices covered"""
         return [self.content['partitiontable'].get('device')]
 
     @property
     def partabs(self):
-        """Device names of content entries with a partition table"""
+        """Device names of devices having partition tables"""
         return self.entries
 
     def entry(self, name):
@@ -44,6 +44,7 @@ class SfdiskProbe(backtick_.BackTickProbe):
             raise ValueError("invalid device name: %s" % repr(name))
 
     def partab(self, name):
+        """Returns a dictionary which describes a partition table."""
         entry = self.entry(name)
         partab = {self._partab_map.get(k, k): v for k, v in entry.items()
                   if k not in ('partitions', )}
@@ -52,13 +53,7 @@ class SfdiskProbe(backtick_.BackTickProbe):
             for p in entry['partitions']
         )
         for part in partab['partitions']:
-            try:
-                start = part['start']
-                size = part['size']
-            except KeyError:
-                pass
-            else:
-                part['end'] = int(start) + int(size) - 1
+            SfdiskProbe._compute_partition_end(part)
 
         return partab
 
@@ -73,6 +68,16 @@ class SfdiskProbe(backtick_.BackTickProbe):
     @classmethod
     def parse(cls, output):
         return json.loads(output)
+
+    @staticmethod
+    def _compute_partition_end(part):
+        try:
+            start = part['start']
+            size = part['size']
+        except KeyError:
+            pass
+        else:
+            part['end'] = int(start) + int(size) - 1
 
 
 # vim: set ft=python et ts=4 sw=4:
