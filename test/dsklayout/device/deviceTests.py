@@ -31,6 +31,19 @@ class Test__Device(unittest.TestCase):
         dev = device_.Device({'name': '/dev/md2', 'pkname':  '/dev/sda2'})
         self.assertEqual(dev.properties, {'name': '/dev/md2', 'pkname':  '/dev/sda2'})
 
+    def test__partition_table__1(self):
+        dev = device_.Device()
+        self.assertIsNone(dev.partition_table)
+
+    def test__partition_table__2(self):
+        dev = device_.Device((), 'foo')
+        self.assertEqual(dev.partition_table, 'foo')
+
+    def test__partition_table__3(self):
+        dev = device_.Device((), 'foo')
+        dev.partition_table = 'bar'
+        self.assertEqual(dev.partition_table, 'bar')
+
     def test__repr__(self):
         dev = device_.Device({'name': '/dev/foo/bar', 'kname': '/dev/dm0',
                                      'type': 'disk', 'parttype': None, 'fstype':  'ext4',

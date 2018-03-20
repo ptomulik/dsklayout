@@ -1,6 +1,5 @@
 # -*- coding: utf8 -*-
 
-from . import partitiontable_
 from .. import util
 import copy
 
@@ -86,8 +85,8 @@ class Device(object):
         return self._partition_table
 
     @partition_table.setter
-    def partition_table(self, data):
-        self._partition_table = partitiontable_.PartitionTable.new(data)
+    def partition_table(self, table):
+        self._partition_table = table
 
     def __repr__(self):
         rprops = self.__class__._repr_properties
