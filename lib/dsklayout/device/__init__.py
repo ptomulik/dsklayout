@@ -3,8 +3,7 @@
 from .. import util
 util.import_all_from(__package__, [
     '.device_',
-    '.linux_',
-    '.linuxdisk_',
+    '.linuxdevice_',
     '.partition_',
     '.partitiontable_',
     ])

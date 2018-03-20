@@ -45,7 +45,7 @@ class LinuxDevice(device_.Device):
     @classmethod
     @util.dispatch.when(model.LsBlkDev)
     def supports(cls, spec):
-        return 1  # catch all lsblk devices not supported by others
+        return 1
 
 
 util.add_dict_getters(LinuxDevice, LinuxDevice._pp_map, '_properties')
