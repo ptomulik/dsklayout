@@ -8,12 +8,39 @@ from . import fdiskext_
 from . import sfdiskext_
 from . import tmpdirext_
 from ..device import *
-##from ..graph import *
-##from ..action import *
+from ..graph import *
 
 import sys
 
 __all__ = ('BackupCmd',)
+
+class _PartitionTableInjector(object):
+
+    __slots__ = ('_prober', '_candidates')
+
+    def __init__(self, prober):
+        self._prober = prober
+        self._candidates = set()
+
+    @property
+    def partitioned(self):
+        return self._partitioned
+
+    @property
+    def callbacks(self):
+        return {'ingress_func': self.ingress_func,
+                'egress_func': self.egress_func}
+
+    def ingress_func(self, graph, node, edge):
+        dev = graph.node(node)
+        if dev.parttype and dev.pkname:
+            self._candidates |= set(dev.pkname)
+
+    def egress_func(self, graph, node, edge):
+        if node in self._candidates:
+            dev = graph.node(node)
+            tab = self._prober.probe(dev.kname).partab(dev.kname)
+            dev.partition_table = PartitionTable(tab)
 
 
 class BackupCmd(cmd_.Cmd):
@@ -39,31 +66,19 @@ class BackupCmd(cmd_.Cmd):
         parser.add_argument("devices", metavar='DEV', nargs='*',
                             help="block device to be included in backup")
 
-    def _morph_graph(self, graph):
-        for devname in graph.nodes:
-            graph.nodes[devname] = Device.new(graph.node(devname))
+    def _update_partitioned(self, graph):
+        search = Dfs(direction='outward')
+        updater = _PartitionTableInjector(self.sfdisk)
+        search(graph, graph.roots(), **updater.callbacks)
 
-    def _backup_linux(self, tmpdir):
+    def _do_backup(self, tmpdir):
         graph = self.lsblk.graph(self.arguments.devices)
-        # Morph LsBlkDevs into Devices
-        self._morph_graph(graph)
-        # 
-        # TODO: finish, something like...
-##            search = Dfs(direction='outward')
-##            trail = search(graph, graph.roots(),
-##                           ingress_func=...
-##                           egress_func=...
-##            action = BackupAction(tmpdir)
-##            for devname in trail.nodes:
-##                action(graph.node(devname))
+        # attach partition tables to nodes representing partitioned devices
+        self._update_partitioned(graph)
 
     def run(self):
         with self.tmpdir.new() as tmpdir:
-            if sys.platform == 'linux':
-                return self._backup_linux(tmpdir)
-            else:
-                raise NotImplementedError("your platform %s is not supported" 
-                                          % repr(sys.platform))
+            return self._do_backup(tmpdir)
         return 0
 
 
