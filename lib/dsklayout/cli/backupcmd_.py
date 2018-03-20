@@ -60,7 +60,7 @@ class BackupCmd(cmd_.Cmd):
     def run(self):
         with self.tmpdir.new() as tmpdir:
             if sys.platform == 'linux':
-                return _backup_linux(tmpdir)
+                return self._backup_linux(tmpdir)
             else:
                 raise NotImplementedError("your platform %s is not supported" 
                                           % repr(sys.platform))

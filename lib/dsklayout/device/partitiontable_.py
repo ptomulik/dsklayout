@@ -33,11 +33,10 @@ class PartitionTable(object):
         return self._partitions
 
     @classmethod
-    def new(cls, partab):
-        properties = {k: v for k,v in partab.items() if k in cls._pp_map}
-        partitions = [partition_.Partition(p) for p in partab['partitions']]
+    def new(cls, data):
+        properties = {k: v for k,v in data.items() if k in cls._pp_map}
+        partitions = [partition_.Partition(p) for p in data['partitions']]
         return cls(properties, partitions)
-
 
 
 util.add_dict_getters(PartitionTable, PartitionTable._pp_map, '_properties')

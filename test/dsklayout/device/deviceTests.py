@@ -2,20 +2,54 @@
 # -*- coding: utf8 -*-
 
 import unittest
-import unittest.mock as mock
+from unittest.mock import patch
+import os.path
+import json
 
 import dsklayout.device.device_ as device_
-import dsklayout.model.lsblkdev_ as lsblkdev_
-
+from dsklayout.graph import *
 
 class Test__Device(unittest.TestCase):
 
-    def test__issubclass__Device(self):
-        self.assertTrue(issubclass(device_.Device, device_.Device))
+    def test__properties__1(self):
+        # not officially supported, but may be stored
+        dev = device_.Device({'foo':  'FOO', 'bar':  'BAR'})
+        self.assertEqual(dev.properties, {'foo':  'FOO', 'bar':  'BAR'})
 
-    def test__init__1(self):
-        dev = device_.Device('foo')
-        self.assertEqual(dev.properties, 'foo')
+    def test__properties__2(self):
+        # officially supported
+        dev = device_.Device({'name': '/dev/md2', 'fstype':  'ext4'})
+        self.assertEqual(dev.properties, {'name': '/dev/md2', 'fstype':  'ext4'})
+
+    def test__properties__3(self):
+        # officially supported
+        dev = device_.Device({'name': '/dev/md2', 'pkname':  None})
+        self.assertEqual(dev.properties, {'name': '/dev/md2', 'pkname':  None})
+
+    def test__properties__4(self):
+        # officially supported
+        dev = device_.Device({'name': '/dev/md2', 'pkname':  '/dev/sda2'})
+        self.assertEqual(dev.properties, {'name': '/dev/md2', 'pkname':  '/dev/sda2'})
+
+    def test__repr__(self):
+        dev = device_.Device({'name': '/dev/foo/bar', 'kname': '/dev/dm0',
+                                     'type': 'disk', 'parttype': None, 'fstype':  'ext4',
+                                     'label': 'Penguin'})
+        s = repr(dev)
+        self.assertIn('Device(', s)
+        self.assertIn('...}', s)
+        self.assertIn('name', s)
+        self.assertIn('/dev/foo/bar', s)
+        self.assertIn('kname', s)
+        self.assertIn('/dev/dm0', s)
+        self.assertIn('type', s)
+        self.assertIn('disk', s)
+        self.assertNotIn('parttype', s)
+        self.assertNotIn('None', s)
+        self.assertIn('fstype', s)
+        self.assertIn('ext4', s)
+        self.assertIn('label', s)
+        self.assertIn('Penguin', s)
 
     def test__name(self):
         dev = device_.Device({'name': '/dev/sda'})
@@ -169,13 +203,9 @@ class Test__Device(unittest.TestCase):
         dev = device_.Device({'rand': '1'})
         self.assertEqual(dev.rand, '1')
 
-    def test__rand(self):
-        dev = device_.Device({'rand': True})
-        self.assertIs(dev.rand, True)
-
     def test__pkname(self):
-        dev = device_.Device({'pkname': ['/dev/sda2']})
-        self.assertEqual(dev.pkname, ['/dev/sda2'])
+        dev = device_.Device({'pkname': '/dev/sda2'})
+        self.assertEqual(dev.pkname, '/dev/sda2')
 
     def test__hctl(self):
         dev = device_.Device({'hctl': '5:0:0:0'})
@@ -197,9 +227,6 @@ class Test__Device(unittest.TestCase):
         dev = device_.Device({'vendor': 'ATA'})
         self.assertEqual(dev.vendor, 'ATA')
 
-    def test__partab(self):
-        dev = device_.Device({'partab': 'PARTITION TABLE'})
-        self.assertEqual(dev.partab, 'PARTITION TABLE')
 
 if __name__ == '__main__':
     unittest.main()
