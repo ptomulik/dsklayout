@@ -10,9 +10,6 @@ class Test__device__PackageSymbols(unittest.TestCase):
     def test__device__symbols(self):
         self.assertIs(device.Device, device.device_.Device)
 
-    def test__linuxdevice__symbols(self):
-        self.assertIs(device.LinuxDevice, device.linuxdevice_.LinuxDevice)
-
     def test__partitiontable__symbols(self):
         self.assertIs(device.PartitionTable, device.partitiontable_.PartitionTable)
 

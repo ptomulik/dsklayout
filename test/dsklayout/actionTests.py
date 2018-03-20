@@ -9,9 +9,6 @@ class Test__action__PackageSymbols(unittest.TestCase):
     def test__action__symbols(self):
         self.assertIs(action.Action, action.action_.Action)
 
-    def test__backup__symbols(self):
-        self.assertIs(action.BackupAction, action.backup_.BackupAction)
-
 if __name__ == '__main__':
     unittest.main()
 

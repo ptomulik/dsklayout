@@ -2,27 +2,31 @@
 """Provides the Device class
 """
 
+from .. import model
 from .. import util
+
 
 __all__ = ('Device',)
 
 
-class Device(util.FactorySubject):
-    """Abstract base class for devices"""
+class Device(object):
+    """Base class for Linux block devices"""
 
-    __slots__ = ()
+    __slots__ = ('_properties',)
 
-    @classmethod
-    def factory(cls):
-        return util.Factory.of(cls, search=__package__)
+    _pp_map = dict(model.LsBlkDev._pp_map, **{
+        'partab': 'partab'
+    })
 
-    @classmethod
-    def new(cls, spec):
-        try:
-            return cls.factory().produce(spec)
-        except util.FactoryError:
-            raise util.FactoryError("can't create Device from %s" % repr(spec))
+    def __init__(self, properties):
+        self._properties = properties
 
+    @property
+    def properties(self):
+        return self._properties
+
+
+util.add_dict_getters(Device, Device._pp_map, '_properties')
 
 # Local Variables:
 # # tab-width:4
