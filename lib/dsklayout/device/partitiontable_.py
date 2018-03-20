@@ -34,6 +34,7 @@ class PartitionTable(object):
 
     @classmethod
     def new(cls, data):
+        """Creates new instance of partition table from a dictionary"""
         properties = {k: v for k,v in data.items() if k in cls._pp_map}
         partitions = [partition_.Partition(p) for p in data['partitions']]
         return cls(properties, partitions)
