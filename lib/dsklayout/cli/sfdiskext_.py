@@ -27,6 +27,15 @@ class SfdiskExt(cmdext_.CmdExt):
         kwargs = {'sfdisk': self.arguments.sfdisk}
         return SfdiskProbe.new(device, **kwargs)
 
+    def backup(self, device, outfile):
+        cmd = [self.arguments.sfdisk, '--dump', device]
+        with open(outfile, 'w') as f:
+            f.write(subprocess.check_output(cmd))
+
+    def restore(self, device, infile):
+        cmd = [self.arguments.sfdisk, device]
+        with open(infile, 'r') as f:
+            subprocess.check_call(cmd, stdin=f)
 
 # Local Variables:
 # # tab-width:4
