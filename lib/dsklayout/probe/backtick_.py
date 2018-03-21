@@ -19,7 +19,7 @@ class BackTickProbe(probe_.Probe):
 
     @classmethod
     @abc.abstractmethod
-    def command(self, **kw):
+    def command(cls, **kw):
         """Returns the backend command used by this class"""
         pass
 
