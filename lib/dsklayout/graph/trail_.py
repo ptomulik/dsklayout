@@ -5,7 +5,7 @@ import collections
 __all__ = ('Trail',)
 
 
-class Trail(object):
+class Trail:
 
     def __init__(self, graph, **kw):
         self._graph = graph

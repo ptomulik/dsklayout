@@ -7,7 +7,7 @@ from .. import device
 __all__ = ('ParTabIn',)
 
 
-class ParTabIn(object):
+class ParTabIn:
     """Partition Table Injector"""
 
     __slots__ = ('_candidates', '_prober')

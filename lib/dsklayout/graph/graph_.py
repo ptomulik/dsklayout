@@ -9,7 +9,7 @@ __all__ = ('Graph',)
 MISSING = elems_.MISSING
 
 
-class Graph(object):
+class Graph:
     """Represents a directed graph of block devices"""
 
     __slots__ = ('_nodes', '_edges')

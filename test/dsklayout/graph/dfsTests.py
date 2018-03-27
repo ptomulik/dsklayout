@@ -8,7 +8,7 @@ import dsklayout.graph.traversal_ as traversal_
 import dsklayout.graph.trail_ as trail_
 import dsklayout.graph.graph_ as graph_
 
-class Callbacks(object):
+class Callbacks:
 
     def __init__(self, **kw):
         self.ingress_nodes = list()

@@ -634,7 +634,7 @@ class Test__Dispatch(unittest.TestCase):
     def test__dispatch__method__01(self):
         _ = self.classes
 
-        class T(object):
+        class T:
             @dispatch.on(1)
             def func(self, x):
                 return "%s.func(%s)" % (repr(self), repr(x))
@@ -675,7 +675,7 @@ class Test__Dispatch(unittest.TestCase):
     def test__dispatch__classmethod__01(self):
         _ = self.classes
 
-        class T(object):
+        class T:
             @classmethod
             @dispatch.on(1)
             def func(cls, x):
@@ -733,7 +733,7 @@ class Test__Dispatch(unittest.TestCase):
     def test__dispatch__staticmethod__01(self):
         _ = self.classes
 
-        class T(object):
+        class T:
             @staticmethod
             @dispatch.on(0)
             def func(x):

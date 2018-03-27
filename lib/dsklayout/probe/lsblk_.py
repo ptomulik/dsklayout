@@ -14,7 +14,7 @@ class PropertyError(Exception):
     pass
 
 
-class _GraphBuilder(object):
+class _GraphBuilder:
     """Bulids graph from LsBlkProbe nodes. It's intended to be used as function
        in LsBlkProbe._apply_recursive"""
 
@@ -43,7 +43,7 @@ class _GraphBuilder(object):
             self.graph.add_edge((parent[self.keyattr], key))
 
 
-class _Properties(object):
+class _Properties:
 
     __slots__ = ('_properties', '_convert')
 

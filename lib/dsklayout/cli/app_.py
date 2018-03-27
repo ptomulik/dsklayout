@@ -10,7 +10,7 @@ import sys
 __all__ = ('App',)
 
 
-class App(object):
+class App:
     """Abstract base class for a command-line application"""
 
     __slots__ = ('_parser', '_subparsers')

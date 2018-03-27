@@ -8,7 +8,7 @@ from .. import util
 __all__ = ('PartitionTable',)
 
 
-class PartitionTable(object):
+class PartitionTable:
     """Represents a partition table"""
 
     __slots__ = ('_properties', '_partitions')

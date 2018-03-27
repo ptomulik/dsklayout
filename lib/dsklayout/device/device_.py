@@ -6,7 +6,7 @@ import copy
 __all__ = ('Device',)
 
 
-class Device(object):
+class Device:
     """Represents a block device"""
 
     __slots__ = ('_properties', '_partition_table')
