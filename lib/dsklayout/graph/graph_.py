@@ -3,6 +3,7 @@
 from . import edges_
 from . import nodes_
 from . import elems_
+from .. import util
 
 __all__ = ('Graph',)
 
@@ -133,6 +134,16 @@ class Graph:
     def isolated(self):
         """Returns a set of isolated nodes (having no neighbors)"""
         return self._select_nodes_not_satisfying(self.has_neighbors)
+
+    def dump_attributes(self):
+        return {'nodes': util.dump_object(self.nodes),
+                'edges': util.dump_object(self.edges)}
+
+    @classmethod
+    def load_attributes(cls, attributes):
+        nodes = util.load_object(attributes['nodes'])
+        edges = util.load_object(attributes['edges'])
+        return cls(nodes, edges)
 
     def _consistency(self, nodes, edges):
         """Checks provided nodes and edges for consistency"""

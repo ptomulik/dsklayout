@@ -94,6 +94,15 @@ class Device:
         s = repr({k: props[k] for k in rprops if props.get(k) is not None})
         return "Device(%s)" % s.replace('}', ', ...}')
 
+    def dump_attributes(self):
+        return {'properties': self.properties,
+                'partition_table': util.dump_object(self.partition_table)}
+
+    @classmethod
+    def load_attributes(cls, attributes):
+        partition_table = util.load_object(attributes['partition_table'])
+        return cls(attributes['properties'], partition_table)
+
 
 util.add_dict_getters(Device, Device._pp_map, '_properties')
 

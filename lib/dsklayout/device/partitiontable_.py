@@ -32,11 +32,20 @@ class PartitionTable:
     def partitions(self):
         return self._partitions
 
+    def dump_attributes(self):
+        return {'properties': self.properties,
+                'partitions': [util.dump_object(p) for p in self.partitions]}
+
     @classmethod
-    def new(cls, data):
+    def load_attributes(cls, attributes):
+        partitions = [util.load_object(p) for p in attributes['partitions']]
+        return cls(attributes['properties'], partitions)
+
+    @classmethod
+    def new(cls, attribs):
         """Creates new instance of partition table from a dictionary"""
-        properties = {k: v for k,v in data.items() if k in cls._pp_map}
-        partitions = [partition_.Partition(p) for p in data['partitions']]
+        properties = {k: v for k,v in attribs.items() if k in cls._pp_map}
+        partitions = [partition_.Partition(p) for p in attribs['partitions']]
         return cls(properties, partitions)
 
 

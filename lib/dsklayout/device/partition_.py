@@ -29,6 +29,13 @@ class Partition:
     def properties(self):
         return self._properties
 
+    def dump_attributes(self):
+        return {'properties': self.properties}
+
+    @classmethod
+    def load_attributes(cls, attributes):
+        return cls(attributes['properties'])
+
 
 util.add_dict_getters(Partition, Partition._pp_map, '_properties')
 

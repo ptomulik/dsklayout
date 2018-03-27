@@ -1,6 +1,8 @@
 # -*- coding: utf8 -*-
 
 import collections.abc
+import json
+from .. import util
 
 __all__ = ('Elems',)
 
@@ -89,6 +91,14 @@ class Elems(collections.abc.MutableMapping):
             self._update_with_values(items)
         else:
             self._update_without_values(items)
+
+    def dump_attributes(self):
+        return {'items': [(k, util.dump_object(v)) for k, v in self.data.items()]}
+
+    @classmethod
+    def load_attributes(cls, attributes):
+        items = [(k, util.load_object(v)) for k, v in attributes['items']]
+        return cls(items, data=True)
 
     def _update_with_values(self, items):
         for e, d in items:
