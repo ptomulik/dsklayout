@@ -8,7 +8,7 @@ from . import backupcmd_
 __all__ = ('DskLayout',)
 
 
-class DskLayout(app_.App):
+class DskLayout(app_.CliApp):
 
     @property
     def properties(self):

@@ -1,5 +1,5 @@
 # -*- coding: utf8 -*-
-"""Provides the App class
+"""Provides the CliApp class
 """
 
 from . import backupcmd_
@@ -7,10 +7,10 @@ from . import backupcmd_
 import argparse
 import sys
 
-__all__ = ('App',)
+__all__ = ('CliApp',)
 
 
-class App:
+class CliApp:
     """Abstract base class for a command-line application"""
 
     __slots__ = ('_parser', '_subparsers')

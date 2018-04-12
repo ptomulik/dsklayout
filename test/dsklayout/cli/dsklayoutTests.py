@@ -12,7 +12,7 @@ class Test__DskLayout(unittest.TestCase):
 
     def test__isinstance_main(self):
         app = dsklayout_.DskLayout()
-        self.assertIsInstance(app, app_.App)
+        self.assertIsInstance(app, app_.CliApp)
 
     def test__properties(self):
         app = dsklayout_.DskLayout()

@@ -24,8 +24,8 @@ class Test__cli__PackageSymbols(unittest.TestCase):
     def test__lsblkext__symbols(self):
         self.assertIs(cli.LsBlkExt, cli.lsblkext_.LsBlkExt)
 
-    def test__main__symbols(self):
-        self.assertIs(cli.App, cli.app_.App)
+    def test__app__symbols(self):
+        self.assertIs(cli.CliApp, cli.app_.CliApp)
 
 if __name__ == '__main__':
     unittest.main()
