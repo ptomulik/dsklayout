@@ -2,10 +2,10 @@
 
 from .. import util
 
-__all__ = ('Inventory',)
+__all__ = ('Archive',)
 
 
-class Inventory:
+class Archive:
 
     __slots__ = ('_graph',)
 
