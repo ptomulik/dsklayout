@@ -12,6 +12,7 @@ from . import tmpdirext_
 from ..device import *
 from ..graph import *
 from ..visitor import *
+from ..archive import *
 
 import tarfile
 import sys
