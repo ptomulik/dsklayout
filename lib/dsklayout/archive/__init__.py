@@ -3,6 +3,7 @@
 from .. import util
 util.import_all_from(__package__, [
     '.archive_',
+    '.metadata_',
     '.file_'
     ])
 
