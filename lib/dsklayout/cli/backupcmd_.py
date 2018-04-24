@@ -7,6 +7,7 @@ from . import lsblkext_
 from . import fdiskext_
 from . import sfdiskext_
 from . import sgdiskext_
+from . import vgcfgbackupext_
 from . import tmpdirext_
 
 from ..device import *
@@ -31,6 +32,7 @@ class BackupCmd(cmd_.Cmd):
         self.add_extension(fdiskext_.FdiskExt())
         self.add_extension(sfdiskext_.SfdiskExt())
         self.add_extension(sgdiskext_.SgdiskExt())
+        self.add_extension(vgcfgbackupext_.VgCfgBackupExt())
         self.add_extension(tmpdirext_.TmpDirExt())
 
     @property
