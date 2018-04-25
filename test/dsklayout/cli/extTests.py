@@ -4,60 +4,60 @@
 import unittest
 import unittest.mock as mock
 
-import dsklayout.cli.cmdext_ as cmdext_
+import dsklayout.cli.ext_ as ext_
 import dsklayout.cli.cmdbase_ as cmdbase_
 
-class TestCmdExt(cmdext_.CmdExt):
+class TestCliExt(ext_.CliExt):
     @property
     def name(self):
         return 'test'
 
-class Test__CmdExt(unittest.TestCase):
+class Test__CliExt(unittest.TestCase):
 
     def test__isinstance__CmdBase(self):
-        ext = TestCmdExt()
+        ext = TestCliExt()
         self.assertIsInstance(ext, cmdbase_.CmdBase)
 
     def test__parent__AttributeError(self):
-        ext = TestCmdExt()
+        ext = TestCliExt()
         with self.assertRaises(AttributeError) as context:
             ext.parent
         self.assertEqual('_parent', str(context.exception))
 
     def test__parent__setter(self):
-        ext = TestCmdExt()
+        ext = TestCliExt()
         parent = mock.Mock()
         ext.parent = parent
         self.assertIs(ext.parent, parent)
         self.assertIs(ext._parent, parent)
 
     def test__arguments__AttributeError(self):
-        ext = TestCmdExt()
+        ext = TestCliExt()
         with self.assertRaises(AttributeError) as context:
             ext.arguments
         self.assertEqual('_parent', str(context.exception))
 
     def test__arguments__setter(self):
-        ext = TestCmdExt()
+        ext = TestCliExt()
         arguments = mock.Mock()
         with self.assertRaises(AttributeError) as context:
             ext.arguments = arguments
         self.assertEqual("can't set attribute", str(context.exception))
 
     def test__arguments__with_parent(self):
-        ext = TestCmdExt()
+        ext = TestCliExt()
         parent = mock.Mock('parent')
         parent.arguments = mock.Mock('arguments')
         ext.parent = parent
         self.assertIs(ext.arguments, parent.arguments)
 
     def test__add_arguments(self):
-        ext = TestCmdExt()
+        ext = TestCliExt()
         parser = mock.Mock(spec = [])
         self.assertIsNone(ext.add_arguments(parser))
 
     def test__set_defaults(self):
-        ext = TestCmdExt()
+        ext = TestCliExt()
         parser = mock.Mock(spec = [])
         self.assertIsNone(ext.set_defaults(parser))
 

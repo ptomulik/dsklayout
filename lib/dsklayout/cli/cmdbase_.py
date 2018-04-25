@@ -10,7 +10,7 @@ __all__ = ('CmdBase',)
 class CmdBase(object, metaclass=abc.ABCMeta):
     """An abstract base class for either command or command extension.
 
-    Intended to be inherited by Cmd and CmdExt classes.
+    Intended to be inherited by Cmd and CliExt classes.
     """
 
     @property

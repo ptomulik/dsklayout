@@ -2,7 +2,7 @@
 """Provides the SgdiskExt class
 """
 
-from . import cmdext_
+from . import ext_
 ##from ..probe import SgdiskProbe
 
 import subprocess
@@ -10,7 +10,7 @@ import subprocess
 __all__ = ('SgdiskExt',)
 
 
-class SgdiskExt(cmdext_.CmdExt):
+class SgdiskExt(ext_.CliExt):
 
     __slots__ = ()
 

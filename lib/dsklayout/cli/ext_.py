@@ -1,13 +1,13 @@
 # -*- coding: utf8 -*-
-"""Provides the CmdExt class
+"""Provides the CliExt class
 """
 
 from . import cmdbase_
 
-__all__ = ('CmdExt',)
+__all__ = ('CliExt',)
 
 
-class CmdExt(cmdbase_.CmdBase):
+class CliExt(cmdbase_.CmdBase):
 
     __slots__ = ('_parent',)
 

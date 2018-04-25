@@ -2,13 +2,13 @@
 """Provides the LsBlkExt class
 """
 
-from . import cmdext_
+from . import ext_
 from ..probe import LsBlkProbe
 
 __all__ = ('LsBlkExt',)
 
 
-class LsBlkExt(cmdext_.CmdExt):
+class LsBlkExt(ext_.CliExt):
 
     __slots__ = ()
 

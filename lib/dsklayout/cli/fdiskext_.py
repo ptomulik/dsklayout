@@ -2,13 +2,13 @@
 """Provides the FdiskExt class
 """
 
-from . import cmdext_
+from . import ext_
 from ..probe import FdiskProbe
 
 __all__ = ('FdiskExt',)
 
 
-class FdiskExt(cmdext_.CmdExt):
+class FdiskExt(ext_.CliExt):
 
     __slots__ = ()
 

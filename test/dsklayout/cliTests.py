@@ -16,7 +16,7 @@ class Test__cli__PackageSymbols(unittest.TestCase):
         self.assertIs(cli.CmdBase, cli.cmdbase_.CmdBase)
 
     def test__cmdext__symbols(self):
-        self.assertIs(cli.CmdExt, cli.cmdext_.CmdExt)
+        self.assertIs(cli.CliExt, cli.ext_.CliExt)
 
     def test__dsklayout__symbols(self):
         self.assertIs(cli.DskLayout, cli.dsklayout_.DskLayout)

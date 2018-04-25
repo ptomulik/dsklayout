@@ -5,14 +5,14 @@ import unittest
 import unittest.mock as mock
 
 import dsklayout.cli.lsblkext_ as lsblkext_
-import dsklayout.cli.cmdext_ as cmdext_
+import dsklayout.cli.ext_ as ext_
 import dsklayout.probe.lsblk_ as lsblk_
 
 class Test__LsBlkExt(unittest.TestCase):
 
     def test__isinstance__CmdExt(self):
         ext = lsblkext_.LsBlkExt()
-        self.assertIsInstance(ext, cmdext_.CmdExt)
+        self.assertIsInstance(ext, ext_.CliExt)
 
     def test__name(self):
         self.assertEqual(lsblkext_.LsBlkExt().name, 'lsblk')

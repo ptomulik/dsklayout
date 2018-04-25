@@ -2,13 +2,13 @@
 """Provides the TmpDirExt class
 """
 
-from . import cmdext_
+from . import ext_
 import tempfile
 
 __all__ = ('TmpDirExt',)
 
 
-class TmpDirExt(cmdext_.CmdExt):
+class TmpDirExt(ext_.CliExt):
 
     __slots__ = ()
 

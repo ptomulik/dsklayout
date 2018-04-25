@@ -2,13 +2,12 @@
 """Provides the VgCfgBackupExt class
 """
 
-from . import cmdext_
-from ..probe import VgCfgBackupProbe
+from . import ext_
 
 __all__ = ('VgCfgBackupExt',)
 
 
-class VgCfgBackupExt(cmdext_.CmdExt):
+class VgCfgBackupExt(ext_.CliExt):
 
     __slots__ = ()
 

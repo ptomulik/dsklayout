@@ -2,13 +2,13 @@
 """Provides the SfdiskExt class
 """
 
-from . import cmdext_
+from . import ext_
 from ..probe import SfdiskProbe
 
 __all__ = ('SfdiskExt',)
 
 
-class SfdiskExt(cmdext_.CmdExt):
+class SfdiskExt(ext_.CliExt):
 
     __slots__ = ()
 
