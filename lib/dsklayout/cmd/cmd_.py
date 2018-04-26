@@ -2,25 +2,34 @@
 """Provides the Cmd class
 """
 
-__all__ = ('Cmd',)
+__all__ = ('Cmd', 'ARGABSENT')
 
+class _ArgAbsent: pass
+ARGABSENT = _ArgAbsent()
 
 class Cmd:
 
-    __slots__ = ('_arguments',)
+    __slots__ = ('_args',)
 
-    def __init__(self, arguments=None):
-        self._arguments = arguments or dict()
+    def __init__(self, args=None):
+        self._args = args or dict()
 
     @property
-    def arguments(self):
-        return self._arguments
+    def args(self):
+        return self._args
 
-    def argument(self, name):
-        return self.argument[name]
+    def arg(self, name):
+        return self.args[name]
 
-    def getargument(self, name, default=None):
-        return self.arguments.get(name, default)
+    def getarg(self, name, default=None):
+        return self.args.get(name, default)
+
+    def mapargs(self, mappings, defaults=None, default=ARGABSENT):
+        if defaults is None:
+            defaults = dict()
+        mapped = {k: self.getarg(mappings[k], defaults.get(k, default))
+                  for k in mappings}
+        return {k: v for k, v in mapped.items() if v is not ARGABSENT}
 
 
 

@@ -17,8 +17,7 @@ class Archive:
 
     _default_metafile = 'metadata.json'
 
-    _zipfile_attributes = ('close',
-                           'comment',
+    _zipfile_attributes = ('comment',
                            'compression',
                            'debug',
                            'extract',
@@ -55,7 +54,7 @@ class Archive:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_type is None:
-            if not self.closed:
+            if self.fp is not None:
                 self.close()
         return False
 
