@@ -1,13 +1,13 @@
 # -*- coding: utf8 -*-
-"""Provides the Cmd class
+"""Provides the CliCmd class
 """
 
 from . import cmdbase_
 
-__all__ = ('Cmd',)
+__all__ = ('CliCmd',)
 
 
-class Cmd(cmdbase_.CmdBase):
+class CliCmd(cmdbase_.CliCmdBase):
     """Base class for actual command (subcommand)"""
 
     __slots__ = ('_arguments', '_extensions')

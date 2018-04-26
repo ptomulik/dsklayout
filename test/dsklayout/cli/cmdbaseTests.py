@@ -6,18 +6,18 @@ import unittest.mock as mock
 
 import dsklayout.cli.cmdbase_ as cmdbase_
 
-class TestCmd(cmdbase_.CmdBase):
+class TestCmd(cmdbase_.CliCmdBase):
     @property
     def name(self):
         return 'test'
     def parent_name(self):
         return super().name
 
-class Test__CmdBase(unittest.TestCase):
+class Test__CliCmdBase(unittest.TestCase):
 
     def test__is_abstract(self):
         with self.assertRaises(TypeError) as context:
-            cmd = cmdbase_.CmdBase()
+            cmd = cmdbase_.CliCmdBase()
         self.assertIn('abstract', str(context.exception))
 
     def test__name(self):

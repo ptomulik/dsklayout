@@ -23,7 +23,7 @@ class Test__DskLayout(unittest.TestCase):
     def test__subcommands(self):
         app = dsklayout_.DskLayout()
         self.assertEqual(app.subcommands, [
-            backupcmd_.BackupCmd
+            backupcmd_.CliBackupCmd
         ])
 
     def test__add_arguments(self):

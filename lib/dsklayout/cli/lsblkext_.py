@@ -3,7 +3,6 @@
 """
 
 from . import ext_
-from ..probe import LsBlkProbe
 
 __all__ = ('LsBlkExt',)
 
@@ -22,13 +21,6 @@ class LsBlkExt(ext_.CliExt):
                             metavar="PROG",
                             default='lsblk',
                             help="name or path to lsblk program")
-
-    def probe(self, devices=None):
-        kwargs = {'lsblk': self.arguments.lsblk}
-        return LsBlkProbe.new(devices, **kwargs)
-
-    def graph(self, devices=None):
-        return self.probe(devices).graph()
 
 
 # Local Variables:

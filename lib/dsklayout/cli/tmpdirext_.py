@@ -3,7 +3,6 @@
 """
 
 from . import ext_
-import tempfile
 
 __all__ = ('TmpDirExt',)
 
@@ -27,11 +26,6 @@ class TmpDirExt(ext_.CliExt):
                             metavar='PFX',
                             default='dsklayout-',
                             help="prefix for temporary directory name")
-
-    def new(self):
-        kwargs = {'dir': self.arguments.tmpdir,
-                  'prefix': self.arguments.tmpdir_prefix}
-        return tempfile.TemporaryDirectory(**kwargs)
 
 
 # Local Variables:

@@ -14,9 +14,9 @@ class TestCliExt(ext_.CliExt):
 
 class Test__CliExt(unittest.TestCase):
 
-    def test__isinstance__CmdBase(self):
+    def test__isinstance__CliCmdBase(self):
         ext = TestCliExt()
-        self.assertIsInstance(ext, cmdbase_.CmdBase)
+        self.assertIsInstance(ext, cmdbase_.CliCmdBase)
 
     def test__parent__AttributeError(self):
         ext = TestCliExt()

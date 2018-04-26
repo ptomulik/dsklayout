@@ -67,7 +67,7 @@ class Archive:
 
     @property
     def zipfile(self):
-        """TarFile object"""
+        """ZipFile object"""
         return self._zipfile
 
     @property

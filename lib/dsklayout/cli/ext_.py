@@ -7,7 +7,7 @@ from . import cmdbase_
 __all__ = ('CliExt',)
 
 
-class CliExt(cmdbase_.CmdBase):
+class CliExt(cmdbase_.CliCmdBase):
 
     __slots__ = ('_parent',)
 

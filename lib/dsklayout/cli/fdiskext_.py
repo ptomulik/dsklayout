@@ -3,7 +3,6 @@
 """
 
 from . import ext_
-from ..probe import FdiskProbe
 
 __all__ = ('FdiskExt',)
 
@@ -22,10 +21,6 @@ class FdiskExt(ext_.CliExt):
                             metavar="PROG",
                             default='fdisk',
                             help="name or path to fdisk program")
-
-    def probe(self, devices=None):
-        kwargs = {'fdisk': self.arguments.fdisk}
-        return FdiskProbe.new(devices, **kwargs)
 
 
 # Local Variables:

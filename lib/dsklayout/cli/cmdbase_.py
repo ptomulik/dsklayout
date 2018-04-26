@@ -1,16 +1,16 @@
 # -*- coding: utf8 -*-
-"""Provides the CmdBase class
+"""Provides the CliCmdBase class
 """
 
 import abc
 
-__all__ = ('CmdBase',)
+__all__ = ('CliCmdBase',)
 
 
-class CmdBase(object, metaclass=abc.ABCMeta):
+class CliCmdBase(object, metaclass=abc.ABCMeta):
     """An abstract base class for either command or command extension.
 
-    Intended to be inherited by Cmd and CliExt classes.
+    Intended to be inherited by CliCmd and CliExt classes.
     """
 
     @property

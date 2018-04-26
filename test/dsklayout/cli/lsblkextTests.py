@@ -27,20 +27,21 @@ class Test__LsBlkExt(unittest.TestCase):
                       help='name or path to lsblk program'),
         ])
 
-    def test__probe(self):
-        with mock.patch.object(lsblkext_.LsBlkExt, 'arguments') as arguments, \
-             mock.patch.object(lsblk_.LsBlkProbe, 'new', return_value ='ok') as new:
-            arguments.lsblk = mock.Mock()
-            ext = lsblkext_.LsBlkExt()
-            self.assertEqual(ext.probe(), 'ok')
-            new.assert_called_once_with(None, lsblk=arguments.lsblk)
-
-    def test__graph(self):
-        lsblk = mock.Mock()
-        lsblk.graph = mock.Mock(return_value = 'ok')
-        with mock.patch.object(lsblkext_.LsBlkExt, 'probe', return_value = lsblk) as probe:
-            self.assertEqual(lsblkext_.LsBlkExt().graph(), 'ok')
-            probe.assert_called_once_with(None)
+## TODO: use these tests for cmd.backup_.BackupCmd
+##    def test__probe(self):
+##        with mock.patch.object(lsblkext_.LsBlkExt, 'arguments') as arguments, \
+##             mock.patch.object(lsblk_.LsBlkProbe, 'new', return_value ='ok') as new:
+##            arguments.lsblk = mock.Mock()
+##            ext = lsblkext_.LsBlkExt()
+##            self.assertEqual(ext.probe(), 'ok')
+##            new.assert_called_once_with(None, lsblk=arguments.lsblk)
+##
+##    def test__graph(self):
+##        lsblk = mock.Mock()
+##        lsblk.graph = mock.Mock(return_value = 'ok')
+##        with mock.patch.object(lsblkext_.LsBlkExt, 'probe', return_value = lsblk) as probe:
+##            self.assertEqual(lsblkext_.LsBlkExt().graph(), 'ok')
+##            probe.assert_called_once_with(None)
 
 if __name__ == '__main__':
     unittest.main()

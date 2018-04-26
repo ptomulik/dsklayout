@@ -7,12 +7,12 @@ import unittest.mock as mock
 import dsklayout.cli.cmd_ as cmd_
 import dsklayout.cli.cmdbase_ as cmdbase_
 
-class TestCmd(cmd_.Cmd):
+class TestCliCmd(cmd_.CliCmd):
     @property
     def name(self):
         return 'test'
 
-class Test__Cmd(unittest.TestCase):
+class Test__CliCmd(unittest.TestCase):
 
     def extMock(self, name=None):
         if name is None:
@@ -25,46 +25,46 @@ class Test__Cmd(unittest.TestCase):
         return ext
 
     def test__isinstance_cmdbase(self):
-        cmd = TestCmd()
-        self.assertIsInstance(cmd, cmdbase_.CmdBase)
+        cmd = TestCliCmd()
+        self.assertIsInstance(cmd, cmdbase_.CliCmdBase)
 
     def test__init__0(self):
-        cmd = TestCmd()
+        cmd = TestCliCmd()
         self.assertEqual(cmd.extensions, dict())
         with self.assertRaises(AttributeError):
             cmd.arguments
 
     def test__AttributeError(self):
-        cmd = TestCmd()
+        cmd = TestCliCmd()
         with self.assertRaises(AttributeError) as context:
             cmd.foo
         self.assertEqual('foo', str(context.exception))
 
     def test__arguments__AttributeError(self):
-        cmd = TestCmd()
+        cmd = TestCliCmd()
         with self.assertRaises(AttributeError) as context:
             cmd.arguments
         self.assertEqual('arguments', str(context.exception))
 
     def test__properties(self):
-        cmd = TestCmd()
+        cmd = TestCliCmd()
         self.assertEqual(cmd.properties, dict())
 
     def test__arguments__setter(self):
-        cmd = TestCmd()
+        cmd = TestCliCmd()
         args = mock.Mock()
         cmd.arguments = args
         self.assertIs(cmd.arguments, args)
         self.assertIs(cmd._arguments, args)
 
     def test__properties__setter_AttributeError(self):
-        cmd = TestCmd()
+        cmd = TestCliCmd()
         with self.assertRaises(AttributeError) as context:
             cmd.properties = 'foo'
         self.assertEqual("can't set attribute", str(context.exception))
 
     def test__add_extension__custom_name(self):
-        cmd = TestCmd()
+        cmd = TestCliCmd()
         ext = self.extMock()
         cmd.add_extension(ext, 'foo')
         self.assertIn('foo', cmd.extensions)
@@ -73,7 +73,7 @@ class Test__Cmd(unittest.TestCase):
         self.assertIs(cmd.foo, ext)
 
     def test__add_extension__ext_name(self):
-        cmd = TestCmd()
+        cmd = TestCliCmd()
         ext = self.extMock('foo')
         cmd.add_extension(ext)
         self.assertIn('foo', cmd.extensions)
@@ -82,7 +82,7 @@ class Test__Cmd(unittest.TestCase):
         self.assertIs(cmd.foo, ext)
 
     def test__add_extension__AttributeError(self):
-        cmd = TestCmd()
+        cmd = TestCliCmd()
         ext = self.extMock()
         with self.assertRaises(AttributeError) as context:
             cmd.add_extension(ext)
@@ -90,39 +90,39 @@ class Test__Cmd(unittest.TestCase):
 
     def test__add_arguments(self):
         parser = mock.Mock(spec=[])
-        with mock.patch.object(TestCmd,'add_cmd_arguments') as add_cmd_arguments, \
-             mock.patch.object(TestCmd,'add_ext_arguments') as add_ext_arguments:
-                cmd = TestCmd()
+        with mock.patch.object(TestCliCmd,'add_cmd_arguments') as add_cmd_arguments, \
+             mock.patch.object(TestCliCmd,'add_ext_arguments') as add_ext_arguments:
+                cmd = TestCliCmd()
                 self.assertIsNone(cmd.add_arguments(parser))
                 add_cmd_arguments.assert_called_once_with(parser)
                 add_ext_arguments.assert_called_once_with(parser)
 
     def test__set_defaults(self):
         parser = mock.Mock(spec=[])
-        with mock.patch.object(TestCmd,'set_cmd_defaults') as set_cmd_defaults, \
-             mock.patch.object(TestCmd,'set_ext_defaults') as set_ext_defaults:
-                cmd = TestCmd()
+        with mock.patch.object(TestCliCmd,'set_cmd_defaults') as set_cmd_defaults, \
+             mock.patch.object(TestCliCmd,'set_ext_defaults') as set_ext_defaults:
+                cmd = TestCliCmd()
                 self.assertIsNone(cmd.set_defaults(parser))
                 set_cmd_defaults.assert_called_once_with(parser)
                 set_ext_defaults.assert_called_once_with(parser)
 
     def test__add_cmd_arguments(self):
-        cmd = TestCmd()
+        cmd = TestCliCmd()
         parser = mock.Mock(spec =[])
         self.assertIsNone(cmd.add_cmd_arguments(parser))
 
     def test__set_cmd_defaults(self):
-        cmd = TestCmd()
+        cmd = TestCliCmd()
         parser = mock.Mock(spec =[])
         self.assertIsNone(cmd.set_cmd_defaults(parser))
 
     def test__set_cmd_defaults(self):
-        cmd = TestCmd()
+        cmd = TestCliCmd()
         parser = mock.Mock(spec =[])
         self.assertIsNone(cmd.set_cmd_defaults(parser))
 
     def test__add_ext_arguments(self):
-        cmd = TestCmd()
+        cmd = TestCliCmd()
         parser = mock.Mock(spec =[])
         ext1, ext2 = (mock.Mock(spec=['add_arguments']), mock.Mock(spec=['add_arguments']))
         cmd.add_extension(ext1, 'ext1')
@@ -132,7 +132,7 @@ class Test__Cmd(unittest.TestCase):
         ext2.add_arguments.assert_called_once_with(parser)
 
     def test__set_ext_defaults(self):
-        cmd = TestCmd()
+        cmd = TestCliCmd()
         parser = mock.Mock(spec =[])
         ext1, ext2 = (mock.Mock(spec=['set_defaults']), mock.Mock(spec=['set_defaults']))
         cmd.add_extension(ext1, 'ext1')
@@ -142,7 +142,7 @@ class Test__Cmd(unittest.TestCase):
         ext2.set_defaults.assert_called_once_with(parser)
 
     def test__run(self):
-        self.assertEqual(TestCmd().run(), 0)
+        self.assertEqual(TestCliCmd().run(), 0)
 
 if __name__ == '__main__':
     unittest.main()

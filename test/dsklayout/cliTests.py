@@ -7,13 +7,13 @@ import dsklayout.cli as cli
 class Test__cli__PackageSymbols(unittest.TestCase):
 
     def test__backupcmd__symbols(self):
-        self.assertIs(cli.BackupCmd, cli.backupcmd_.BackupCmd)
+        self.assertIs(cli.CliBackupCmd, cli.backupcmd_.CliBackupCmd)
 
     def test__main__symbols(self):
-        self.assertIs(cli.Cmd, cli.cmd_.Cmd)
+        self.assertIs(cli.CliCmd, cli.cmd_.CliCmd)
 
     def test__cmdbase__symbols(self):
-        self.assertIs(cli.CmdBase, cli.cmdbase_.CmdBase)
+        self.assertIs(cli.CliCmdBase, cli.cmdbase_.CliCmdBase)
 
     def test__cmdext__symbols(self):
         self.assertIs(cli.CliExt, cli.ext_.CliExt)

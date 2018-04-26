@@ -17,7 +17,7 @@ class DskLayout(app_.CliApp):
 
     @property
     def subcommands(self):
-        return [backupcmd_.BackupCmd]
+        return [backupcmd_.CliBackupCmd]
 
     def add_arguments(self, parser):
         pass
