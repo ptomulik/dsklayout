@@ -35,6 +35,14 @@ class _BackupContext:
     def archive(self):
         return self._archive
 
+    @property
+    def graph(self):
+        return self.archive.metadata.graph
+
+    @property
+    def files(self):
+        return self.archive.metadata.files
+
     def __enter__(self):
         self._tmpdir.__enter__()
         self._archive.__enter__()
@@ -83,7 +91,7 @@ class BackupCmd(cmd_.Cmd):
         ctx.archive.write(outfile, arcfile)
 
     def _register_file(self, ctx, name, **kw):
-        ctx.archive.metadata.files[name] = dict({'name': name}, **kw)
+        ctx.files[name] = dict({'name': name}, **kw)
 
     def _sfdisk_backup(self, ctx, device, arcfile):
         cmd = [self.getarg('sfdisk', 'sfdisk'), '--dump', device]
@@ -149,20 +157,27 @@ class BackupCmd(cmd_.Cmd):
             return backup(ctx, partab)
 
     def _backup_partition_tables(self, ctx):
-        graph = ctx.archive.metadata.graph
+        graph = ctx.graph
         for node in graph.nodes:
             partab = graph.node(node).partition_table
             if partab:
                 self._backup_partition_table(ctx, partab)
 
-    def _do_backup(self, ctx):
-        # Start backup
-        self._backup_partition_tables(ctx)
+    def _backup_node(self, ctx, graph, node, edge=None):
+        partab = graph.node(node).partition_table
+        if partab:
+            self._backup_partition_table(ctx, partab)
+
+    def _backup(self, ctx):
+        def ingress(graph, node, edge):
+            return self._backup_node(ctx, graph, node, edge)
+        search = Bfs(direction='inward', ingress_func=ingress)
+        search(ctx.graph, ctx.graph.leafs())
         return 0
 
     def run(self):
         with self._newcontext() as ctx:
-            return self._do_backup(ctx)
+            return self._backup(ctx)
         return 0
 
 
