@@ -26,3 +26,13 @@ __pycache__/
 /.py*/
 # Docker
 /docker-compose
+# Pipenv etc.
+/pipenv
+/Pipfile.lock
+.venv/
+dist/
+build/
+wheelhouse/
+*.egg-info
+*.tox
+*.deb
