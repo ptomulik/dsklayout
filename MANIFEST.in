@@ -1,0 +1,2 @@
+include README.rst README_DEVEL.rst
+recursive-include bin lib

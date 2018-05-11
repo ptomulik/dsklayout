@@ -36,3 +36,4 @@ wheelhouse/
 *.egg-info
 *.tox
 *.deb
+/MANIFEST
