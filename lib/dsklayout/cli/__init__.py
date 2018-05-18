@@ -11,4 +11,11 @@ util.import_all_from(__package__, [
     '.lsblkext_',
     ])
 
+
+def main():
+    try:
+        return DskLayout().run()
+    except KeyboardInterrupt:
+        return 0
+
 # vim: set ft=python et ts=4 sw=4:

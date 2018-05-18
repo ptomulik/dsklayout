@@ -12,13 +12,15 @@ python:
   - "3.6.1"
 install:
   - pip install -r requirements.txt
-  - pip install coveralls
-  - pip install coverage
+  - pip install coveralls --user
+  - pip install coverage --user
+  - pip install pipenv --user
+  - pipenv install -e .
 before_script:
   - which python
 script:
-  - PYTHONPATH=lib coverage run --source=dsklayout -m unittest discover -p '*Tests.py'
-    # graph search algorithm should be teted several times... they may run differently 
-  - for I in 1 2 3 4 5 6 7; do for A in dfs bfs; do PYTHONPATH=lib python3 "test/dsklayout/graph/${A}Tests.py"; done; done
+  - coverage run --source=dsklayout -m unittest discover -p '*Tests.py'
+    # graph search algorithm should be tested several times... they may run differently 
+  - for I in 1 2 3 4 5 6 7; do for A in dfs bfs; do python3 "test/dsklayout/graph/${A}Tests.py"; done; done
 after_success:
   - coveralls

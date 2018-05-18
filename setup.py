@@ -27,5 +27,9 @@ setup(name='dsklayout',
         ]
       },
       include_package_data=True,
-      scripts=['bin/dsklayout']
+      entry_points={
+          'console_scripts':[
+              'dsklayout=dsklayout.cli:main'
+          ]
+      }
 )
