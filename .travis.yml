@@ -14,8 +14,7 @@ install:
   - pip install -r requirements.txt
   - pip install coveralls
   - pip install coverage
-  - pip install pipenv
-  - pipenv install -e .
+  - pip install -e .
 before_script:
   - which python
 script:
