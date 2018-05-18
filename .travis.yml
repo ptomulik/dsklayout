@@ -12,9 +12,9 @@ python:
   - "3.6.1"
 install:
   - pip install -r requirements.txt
-  - pip install coveralls --user
-  - pip install coverage --user
-  - pip install pipenv --user
+  - pip install coveralls
+  - pip install coverage
+  - pip install pipenv
   - pipenv install -e .
 before_script:
   - which python
