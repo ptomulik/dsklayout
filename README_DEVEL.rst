@@ -31,18 +31,20 @@ Provided pip is available, invoke
 
 See also `pipenv docs`_.
 
-Installing dsklayout packages for development
+Preparing virtual environment for development
 `````````````````````````````````````````````
 
-.. code:: shell
-
-    python3 -m pipenv install -e .
-
-To uninstall later, type
+Installing packages (and creating virtualenv, if it doesn't exist)
 
 .. code:: shell
 
-    python3 -m pipenv uninstall dsklayout
+    python3 -m pipenv install --dev
+
+To remove the virtualenv later
+
+.. code:: shell
+
+    python3 -m pipenv --rm
 
 
 Installing required packages locally

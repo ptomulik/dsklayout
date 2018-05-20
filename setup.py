@@ -21,11 +21,6 @@ setup(name='dsklayout',
       license='MIT',
       install_requires=[
       ],
-      extras_require={
-        'dev': [
-            'sphinx'
-        ]
-      },
       include_package_data=True,
       entry_points={
           'console_scripts':[
