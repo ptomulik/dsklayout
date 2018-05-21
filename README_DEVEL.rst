@@ -47,14 +47,6 @@ To remove the virtualenv later
     python3 -m pipenv --rm
 
 
-Installing required packages locally
-````````````````````````````````````
-
-.. code:: shell
-
-  python3 -m pipenv install
-
-
 Running commands in pipenv isolated environment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -64,12 +56,12 @@ Example of running unit-tests
 
     python3 -m pipenv run ./runtests.sh
 
-Removing python environment created with pipenv
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Generating documentation
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: shell
 
-    python3 -m pipenv --rm
+    python3 -m pipenv run make html
 
 LICENSE
 -------
