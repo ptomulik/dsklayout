@@ -63,6 +63,8 @@ Generating documentation
 
     python3 -m pipenv run make html
 
+The generated documentation is written to ``build/doc/html``.
+
 LICENSE
 -------
 
