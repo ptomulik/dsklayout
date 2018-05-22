@@ -6,11 +6,7 @@
 DskLayout: disk layout backups
 ******************************
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-   api
+Welcome to DskLayout_ documentation!
 
 Purpose
 =======
@@ -45,17 +41,14 @@ Via PyPi_
 
     python3 -m pip install dsklayout
 
-Usage
-=====
+More documentation
+==================
 
-DskLayout_ provides single command-line program named ``dsklayout`` for all the
-operations.
+.. toctree::
+   :maxdepth: 1
 
-.. code-block:: shell
-
-    dsklayout --help
-
-The utility has several subcommands.
+   cli
+   api
 
 Indices and tables
 ==================

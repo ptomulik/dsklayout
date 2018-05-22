@@ -47,9 +47,14 @@ class CliApp:
         """A list of classes implementing our subcommands"""
         return []
 
+    @property
+    def version(self):
+        return '(unknown version)'
+
     def add_arguments(self, parser):
         """Add common arguments (not specific to any subcommand)."""
-        pass
+        parser.add_argument('-v', '--version', action='version',
+                            version=('%(prog)s ' + self.version))
 
     def set_defaults(self, parser):
         pass

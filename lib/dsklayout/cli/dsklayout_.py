@@ -5,6 +5,8 @@
 from . import app_
 from . import backupcmd_
 
+from .. import __version__
+
 __all__ = ('DskLayout',)
 
 
@@ -19,11 +21,9 @@ class DskLayout(app_.CliApp):
     def subcommands(self):
         return [backupcmd_.CliBackupCmd]
 
-    def add_arguments(self, parser):
-        pass
-
-    def set_defaults(self, parser):
-        pass
+    @property
+    def version(self):
+        return __version__
 
 # Local Variables:
 # # tab-width:4

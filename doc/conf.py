@@ -21,7 +21,7 @@ import os
 topdir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 about = {}
-with open(os.path.join(topdir, 'lib', 'dsklayout', '__version__.py')) as f:
+with open(os.path.join(topdir, 'lib', 'dsklayout', 'about.py')) as f:
     exec(f.read(), about)
 
 
@@ -164,7 +164,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'dsklayout', 'dsklayout Documentation',
+    ('man/dsklayout-backup', 'dsklayout-backup', 'backup layout of host disks',
      [author], 1)
 ]
 

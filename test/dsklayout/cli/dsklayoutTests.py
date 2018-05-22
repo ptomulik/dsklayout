@@ -8,6 +8,8 @@ import dsklayout.cli.dsklayout_ as dsklayout_
 import dsklayout.cli.app_ as app_
 import dsklayout.cli.backupcmd_ as backupcmd_
 
+from dsklayout import __version__ as dsklayout_version
+
 class Test__DskLayout(unittest.TestCase):
 
     def test__isinstance_main(self):
@@ -20,6 +22,10 @@ class Test__DskLayout(unittest.TestCase):
             'description': 'Retrieve and backup layouts of block devices'
         })
 
+    def test__version(self):
+        app = dsklayout_.DskLayout()
+        self.assertEqual(app.version, dsklayout_version)
+
     def test__subcommands(self):
         app = dsklayout_.DskLayout()
         self.assertEqual(app.subcommands, [
@@ -28,8 +34,11 @@ class Test__DskLayout(unittest.TestCase):
 
     def test__add_arguments(self):
         parser = mock.Mock(spec = [])
+        parser.add_argument = mock.Mock()
         app = dsklayout_.DskLayout()
         self.assertIsNone(app.add_arguments(parser))
+        parser.add_argument.assert_called_once_with('-v', '--version',
+                action='version', version=('%(prog)s ' + app.version) )
 
     def test__set_defaults(self):
         parser = mock.Mock(spec = [])

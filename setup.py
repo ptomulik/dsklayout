@@ -7,7 +7,7 @@ import os
 here = os.path.abspath(os.path.dirname(__file__))
 
 about = {}
-with open(os.path.join(here, 'lib', 'dsklayout', '__version__.py')) as f:
+with open(os.path.join(here, 'lib', 'dsklayout', 'about.py')) as f:
     exec(f.read(), about)
 
 setup(name='dsklayout',

@@ -43,6 +43,9 @@ class Test__CliApp(unittest.TestCase):
     def test__subcommands(self):
         self.assertEqual(app_.CliApp().subcommands, [])
 
+    def test__version(self):
+        self.assertEqual(app_.CliApp().version, '(unknown version)')
+
     def test__add_arguments(self):
         parser = mock.Mock()
         self.assertIsNone(app_.CliApp().add_arguments(parser))
