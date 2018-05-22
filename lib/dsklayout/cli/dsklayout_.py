@@ -4,6 +4,7 @@
 
 from . import app_
 from . import backupcmd_
+from . import dotcmd_
 
 from .. import __version__
 
@@ -19,7 +20,7 @@ class DskLayout(app_.CliApp):
 
     @property
     def subcommands(self):
-        return [backupcmd_.CliBackupCmd]
+        return [backupcmd_.CliBackupCmd, dotcmd_.CliDotCmd]
 
     @property
     def version(self):

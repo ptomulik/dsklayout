@@ -1,3 +1,5 @@
+.. _man-dsklayout-backup:
+
 dsklayout backup
 ================
 
@@ -42,23 +44,23 @@ OPTIONS
 
 .. option:: --lsblk=PROG
 
-    Name or path to ``lsblk`` program
+    Path to :manpage:`lsblk(8)` executable
 
 .. option:: --fdisk=PROG
 
-    Name or path to ``fdisk`` program
+    Path to :manpage:`fdisk(8)` executable
 
 .. option:: --sfdisk=PROG
 
-    Name or path to ``sfdisk`` program
+    Path to :manpage:`sfdisk(8)` executable
 
 .. option:: --sgdisk=PROG
 
-    Name or path to ``sgdisk`` program
+    Path to :manpage:`sgdisk(8)` executable
 
 .. option:: --vgcfgbackup=PROG
 
-    Name or path to ``vgcfgbackup`` program
+    Path to :manpage:`vgcfgbackup(8)` executable
 
 
 .. rubric:: Other options

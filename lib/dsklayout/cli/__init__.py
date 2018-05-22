@@ -6,8 +6,9 @@ util.import_all_from(__package__, [
     '.backupcmd_',
     '.cmd_',
     '.cmdbase_',
-    '.ext_',
+    '.dotcmd_',
     '.dsklayout_',
+    '.ext_',
     '.lsblkext_',
     ])
 
