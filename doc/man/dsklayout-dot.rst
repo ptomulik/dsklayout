@@ -40,9 +40,21 @@ OPTIONS
     Read the graph from INFILE. The INFILE should be an archive created with
     :ref:`man-dsklayout-backup`.
 
+
+.. rubric:: Paths to external programs
+
+
+.. option:: --lsblk=PROG
+
+    Path to :manpage:`lsblk(8)` executable
+
+
+.. rubric:: Other options
+
+
 .. option:: --tmpdir-prefix=PFX
 
-    prefix for temporary directory name.
+    Prefix for temporary directory name.
 
 
 .. _DOT language: https://graphviz.org/doc/info/lang.html

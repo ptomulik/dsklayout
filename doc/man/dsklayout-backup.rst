@@ -72,4 +72,4 @@ OPTIONS
 
 .. option:: --tmpdir-prefix=PFX
 
-    prefix for temporary directory name.
+    Prefix for temporary directory name.

@@ -27,9 +27,9 @@ class CliDotCmd(cmd_.CliCmd):
 
     __slots__ = ()
 
-##    def __init__(self):
-##        super().__init__()
-##        self.add_extension(lsblkext_.LsBlkExt())
+    def __init__(self):
+        super().__init__()
+        self.add_extension(lsblkext_.LsBlkExt())
 ##        self.add_extension(fdiskext_.FdiskExt())
 ##        self.add_extension(sfdiskext_.SfdiskExt())
 ##        self.add_extension(sgdiskext_.SgdiskExt())
@@ -53,8 +53,7 @@ class CliDotCmd(cmd_.CliCmd):
                             help="top-level block device to be included in graph")
 
     def run(self):
-        return 0
-        #return BackupCmd(vars(self.arguments)).run()
+        return DotCmd(vars(self.arguments)).run()
 
 
 # Local Variables:
