@@ -35,10 +35,14 @@ OPTIONS
 .. rubric:: Generic options
 
 
-.. option:: -i, --input=INFILE
+.. option:: -i, --input=FILE
 
-    Read the graph from INFILE. The INFILE should be an archive created with
+    Read the graph from FILE. The FILE should be an archive created with
     :ref:`man-dsklayout-backup`.
+
+.. option:: -o, --output=FILE
+
+    Write the generated graph to FILE instead of the stdout.
 
 
 .. rubric:: Paths to external programs
@@ -48,13 +52,6 @@ OPTIONS
 
     Path to :manpage:`lsblk(8)` executable
 
-
-.. rubric:: Other options
-
-
-.. option:: --tmpdir-prefix=PFX
-
-    Prefix for temporary directory name.
 
 
 .. _DOT language: https://graphviz.org/doc/info/lang.html

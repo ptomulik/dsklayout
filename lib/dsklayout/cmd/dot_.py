@@ -11,174 +11,117 @@ from ..graph import *
 from ..probe import *
 from ..visitor import *
 
-import tempfile
-import subprocess
 import sys
-import os
+import re
 
 
 __all__ = ('DotCmd',)
 
-class _DotContext:
+class _Dot:
+    __slots__ = ('_nodes', '_edges', '_attributes')
 
-    __slots__ = ('_tmpdir', '_archive')
-
-    def __init__(self, tmpdir, archive):
-        self._tmpdir = tmpdir
-        self._archive = archive
-
-    @property
-    def tmpdir(self):
-        return self._tmpdir.name
+    def __init__(self, nodes=None, edges=None, attributes=None):
+        self._nodes = nodes or []
+        self._edges = edges or []
+        self._attributes = attributes or self.default_attributes()
 
     @property
-    def archive(self):
-        return self._archive
+    def nodes(self):
+        return self._nodes
 
     @property
-    def graph(self):
-        return self.archive.metadata.graph
+    def edges(self):
+        return self._edges
 
     @property
-    def files(self):
-        return self.archive.metadata.files
+    def attributes(self):
+        return self._attributes
 
-    def __enter__(self):
-        self._tmpdir.__enter__()
-        self._archive.__enter__()
-        return self
+    def add_node(self, graph, node):
+        ident = self.to_id(node)
+        node = graph.node(node)
+        extra = [node.mountpoint, node.partlabel, node.name]
+        extra = [s for s in extra if s]
+        if extra and extra[0] != node.kname:
+            label = "%s (%s)" % (node.kname, extra[0])
+        else:
+            label = node.kname
+        self._nodes.append("%s [label=\"%s\"]" % (ident, label))
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        supp1 = self._archive.__exit__(exc_type, exc_val, exc_tb)
-        supp2 = self._tmpdir.__exit__(exc_type, exc_val, exc_tb)
-        return supp1 or supp2
+    def add_edge(self, graph, e):
+        self._edges.append("%s -> %s" % (self.to_id(e[0]), self.to_id(e[1])))
 
+    def _gen_stmt_list(self):
+        return ";\n  ".join(self.attributes + self.nodes + self.edges)
+
+    def _gen_graph(self):
+        return "%s {\n  %s\n}" % (self.graph_type(), self._gen_stmt_list())
+
+    def to_string(self):
+        return self._gen_graph()
+
+    @classmethod
+    def to_id(cls, s):
+        ident = re.sub(r'\W', '_', s)
+        if not ident or not re.match(r'[a-zA-Z_]', ident[0]):
+            ident = '_' . ident
+        return ident
+
+    @classmethod
+    def graph_type(cls):
+        return "digraph"
+
+    @classmethod
+    def default_attributes(cls):
+        return ['graph [splines=ortho, nodesep="0.75"]',
+                'edge [arrowhead=vee, arrowtail=vee]',
+                'node [shape=rect]']
 
 class DotCmd(cmd_.Cmd):
 
     __slots__ = ()
 
-    def _mktmpdir(self):
-        """Securely creates a temporary directory and returns a
-        tempfile.TemporaryDirectory object which can be used as a context
-        manager"""
-        kwargs = self.mapargs({'dir': 'tmpdir',
-                               'prefix': 'tmpdir_prefix',
-                               'suffix': 'tmpdir_suffix'})
-        return tempfile.TemporaryDirectory(**kwargs)
-
     def _probe(self, klass, tool, args, kw=None):
         kwargs = dict({tool: self.getarg(tool, tool)}, **(kw or {}))
         return klass.new(*args, **kwargs)
 
-    def _fdisk_probe(self, devices=None):
-        return self._probe(FdiskProbe, 'fdisk', (devices,))
-
-    def _sfdisk_probe(self, device):
-        return self._probe(SfdiskProbe, 'sfdisk', (device,))
-
     def _lsblk_probe(self, devices=None):
         return self._probe(LsBlkProbe, 'lsblk', (devices,))
-
-    @classmethod
-    def _backup_cmd_stdout(cls, ctx, cmd, arcfile):
-        out = subprocess.check_output(cmd, universal_newlines=True)
-        ctx.archive.writestr(arcfile, out)
-
-    @classmethod
-    def _backup_cmd_outfile(cls, ctx, cmd, arcfile, outfile):
-        subprocess.check_call(cmd, stdout=subprocess.DEVNULL)
-        ctx.archive.write(outfile, arcfile)
-
-    def _register_file(self, ctx, name, **kw):
-        ctx.files[name] = dict({'name': name}, **kw)
-
-    def _sfdisk_backup(self, ctx, device, arcfile):
-        cmd = [self.getarg('sfdisk', 'sfdisk'), '--dump', device]
-        self._backup_cmd_stdout(ctx, cmd, arcfile)
-        backupcmd = ' '.join([cmd[0], '--dump', device, '>', arcfile])
-        restorecmd = ' '.join([cmd[0], device, '<', arcfile])
-        self._register_file(ctx, arcfile,
-                            type='sfdisk-backup',
-                            device=device,
-                            backupcmd=backupcmd,
-                            restorecmd=restorecmd)
-
-    def _sgdisk_backup(self, ctx, device, arcfile):
-        outfile = os.path.join(ctx.tmpdir, arcfile)
-        cmd = [self.getarg('sgdisk', 'sgdisk'), '--backup=%s' % outfile, device]
-        self._backup_cmd_outfile(ctx, cmd, arcfile, outfile)
-        backupcmd = ' '.join([cmd[0], '--backup=%s' % arcfile, device])
-        restorecmd = ' '.join([cmd[0], '--load-backup=%s' % arcfile, device])
-        self._register_file(ctx, arcfile,
-                            type='sgdisk-backup',
-                            device=device,
-                            backupcmd=backupcmd,
-                            restorecmd=restorecmd)
 
     def _lsblk_graph(self, devices=None):
         return self._lsblk_probe(devices).graph()
 
     def _newgraph(self):
-        graph = self._lsblk_graph(self.getarg('devices'))
-        self._inject_partition_tables(graph)
+        infile = self.getarg('input')
+        if infile is not None:
+            with Archive.new(infile, 'r') as archive:
+                graph = archive.metadata.graph
+        else:
+            graph = self._lsblk_graph(self.getarg('devices'))
         return graph
 
-    def _newcontext(self):
-        tmpdir = self._mktmpdir()
-        meta = ArchiveMetadata(self._newgraph())
-        archive = Archive.new(self.arg('outfile'), 'w', metadata=meta)
-        return _DotContext(tmpdir, archive)
-
-    def _probe_partab(self, dev):
-        # FIXME: catch errors... return None on soft errors...
-        return self._sfdisk_probe(dev).partab(dev)
-
-    def _inject_partition_tables(self, graph):
-        search = Dfs(direction='outward')
-        injector = ParTabIn(self._probe_partab)
-        search(graph, graph.roots(), **injector.callbacks)
-
-    def _backup_partition_table_gpt(self, ctx, partab):
-        arcfile = os.path.basename(partab.device) + '.sgdisk'
-        self._sgdisk_backup(ctx, partab.device, arcfile)
-
-    def _backup_partition_table_dos(self, ctx, partab):
-        arcfile = os.path.basename(partab.device) + '.sfdisk'
-        self._sfdisk_backup(ctx, partab.device, arcfile)
-
-    def _backup_partition_table(self, ctx, partab):
-        label = partab.label
-        try:
-            backup = getattr(self, '_backup_partition_table_%s' % label)
-        except AttributeError:
-            raise RuntimeError("unsupported disk label %s" % repr(label))
-        else:
-            return backup(ctx, partab)
-
-    def _backup_partition_tables(self, ctx):
-        graph = ctx.graph
+    def _fill_dot(self, dot):
+        graph = self._newgraph()
         for node in graph.nodes:
-            partab = graph.node(node).partition_table
-            if partab:
-                self._backup_partition_table(ctx, partab)
+            dot.add_node(graph, node)
+        for edge in graph.edges:
+            dot.add_edge(graph, edge)
 
-    def _backup_node(self, ctx, graph, node, edge=None):
-        partab = graph.node(node).partition_table
-        if partab:
-            self._backup_partition_table(ctx, partab)
+    def _output_dot(self, dot):
+        outfile = self.getarg('output')
+        if outfile is None or output == '-':
+            sys.stdout.write(dot.to_string() + "\n")
+        else:
+            with open(outfile, 'w') as f:
+                f.write(dot.to_string() + "\n")
 
-    def _backup(self, ctx):
-        def ingress(graph, node, edge):
-            return self._backup_node(ctx, graph, node, edge)
-        search = Bfs(direction='inward', ingress_func=ingress)
-        search(ctx.graph, ctx.graph.leafs())
+    def _dot(self, dot):
+        self._fill_dot(dot)
+        self._output_dot(dot)
         return 0
 
     def run(self):
-        with self._newcontext() as ctx:
-            return self._backup(ctx)
-        return 0
+        return self._dot(_Dot())
 
 
 # Local Variables:
