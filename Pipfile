@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 "e1839a8" = {path = ".", editable = true}
+graphviz = "*"
 
 [dev-packages]
 sphinx = ">=1.7.4"

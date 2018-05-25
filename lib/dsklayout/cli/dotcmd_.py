@@ -28,7 +28,9 @@ class CliDotCmd(cmd_.CliCmd):
         return {'description': 'generate graph representation of disk layout'}
 
     def add_cmd_arguments(self, parser):
-        parser.add_argument("-o","--output", metavar='FILE',
+        parser.add_argument("--view", action='store_true',
+                            help="display graph instead of writting its source")
+        parser.add_argument("-o", "--output", metavar='FILE',
                             help="write output to FILE instead of stdout")
         parser.add_argument("-i","--input", metavar='FILE',
                             help="use FILE as input instead of probing OS," +

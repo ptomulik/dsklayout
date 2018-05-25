@@ -13,7 +13,9 @@ DESCRIPTION
 
 Generate graph representing relations between the existing block devices,
 partitions, and so forth. The resultant graph is expressed in `DOT language`_
-defined by graphviz_.
+defined by graphviz_. By default, the command writes graph's source code to
+STDOUT or to an output file. Alternatively, it may display the graph in a
+graphical window.
 
 
 OPTIONS
@@ -42,7 +44,12 @@ OPTIONS
 
 .. option:: -o, --output=FILE
 
-    Write the generated graph to FILE instead of the stdout.
+    Write the generated graph to FILE instead of the stdout. This option has
+    no effect if ``--view`` is in use.
+
+.. option:: --view
+
+    Display the generated graph on screen instead of printing its source.
 
 
 .. rubric:: Paths to external programs

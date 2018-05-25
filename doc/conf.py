@@ -165,6 +165,8 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('man/dsklayout-backup', 'dsklayout-backup', 'backup layout of host disks',
+     [author], 1),
+    ('man/dsklayout-dot', 'dsklayout-dot', 'generate graph representation of disk layout',
      [author], 1)
 ]
 

@@ -6,76 +6,21 @@ from . import cmd_
 
 from ..archive import *
 from ..cmd import *
-from ..device import *
-from ..graph import *
 from ..probe import *
-from ..visitor import *
 
 import sys
 import re
 
+try:
+    import graphviz
+except ImportError as e:
+    _has_graphviz = False
+else:
+    _has_graphviz = True
+
 
 __all__ = ('DotCmd',)
 
-class _Dot:
-    __slots__ = ('_nodes', '_edges', '_attributes')
-
-    def __init__(self, nodes=None, edges=None, attributes=None):
-        self._nodes = nodes or []
-        self._edges = edges or []
-        self._attributes = attributes or self.default_attributes()
-
-    @property
-    def nodes(self):
-        return self._nodes
-
-    @property
-    def edges(self):
-        return self._edges
-
-    @property
-    def attributes(self):
-        return self._attributes
-
-    def add_node(self, graph, node):
-        ident = self.to_id(node)
-        node = graph.node(node)
-        extra = [node.mountpoint, node.partlabel, node.name]
-        extra = [s for s in extra if s]
-        if extra and extra[0] != node.kname:
-            label = "%s (%s)" % (node.kname, extra[0])
-        else:
-            label = node.kname
-        self._nodes.append("%s [label=\"%s\"]" % (ident, label))
-
-    def add_edge(self, graph, e):
-        self._edges.append("%s -> %s" % (self.to_id(e[0]), self.to_id(e[1])))
-
-    def _gen_stmt_list(self):
-        return ";\n  ".join(self.attributes + self.nodes + self.edges)
-
-    def _gen_graph(self):
-        return "%s {\n  %s\n}" % (self.graph_type(), self._gen_stmt_list())
-
-    def to_string(self):
-        return self._gen_graph()
-
-    @classmethod
-    def to_id(cls, s):
-        ident = re.sub(r'\W', '_', s)
-        if not ident or not re.match(r'[a-zA-Z_]', ident[0]):
-            ident = '_' . ident
-        return ident
-
-    @classmethod
-    def graph_type(cls):
-        return "digraph"
-
-    @classmethod
-    def default_attributes(cls):
-        return ['graph [splines=ortho, nodesep="0.75"]',
-                'edge [arrowhead=vee, arrowtail=vee]',
-                'node [shape=rect]']
 
 class DotCmd(cmd_.Cmd):
 
@@ -100,28 +45,64 @@ class DotCmd(cmd_.Cmd):
             graph = self._lsblk_graph(self.getarg('devices'))
         return graph
 
-    def _fill_dot(self, dot):
+    @classmethod
+    def _dot_id(cls, string):
+        ident = re.sub(r'\W', '_', string)
+        if not ident or not re.match(r'[a-zA-Z_]', ident[0]):
+            ident = '_' . ident
+        return ident
+
+
+    def _dot_node_label(self, node):
+        extra = [node.mountpoint, node.partlabel, node.fstype]
+        extra = [s for s in extra if s]
+        if extra and extra[0] != node.name:
+            label = "%s (%s)" % (node.name, extra[0])
+        else:
+            label = node.name
+        return label
+
+    def _dot_setattr(self, dot):
+        dot.attr(splines='ortho', nodesep='0.75')
+        dot.edge_attr.update(arrowhead='vee', arrowtail='vee')
+        dot.node_attr.update(shape='rect')
+
+    def _dot_node(self, dot, graph, node):
+        label = self._dot_node_label(graph.node(node))
+        dot.node(self._dot_id(node), label)
+
+    def _dot_edge(self, dot, graph, edge):
+        dot.edge(self._dot_id(edge[0]), self._dot_id(edge[1]))
+
+    def _dot_build(self, dot):
         graph = self._newgraph()
         for node in graph.nodes:
-            dot.add_node(graph, node)
+            self._dot_node(dot, graph, node)
         for edge in graph.edges:
-            dot.add_edge(graph, edge)
+            self._dot_edge(dot, graph, edge)
 
-    def _output_dot(self, dot):
-        outfile = self.getarg('output')
-        if outfile is None or output == '-':
-            sys.stdout.write(dot.to_string() + "\n")
+    def _dot_output(self, dot):
+        if self.getarg('view'):
+            dot.view()
         else:
-            with open(outfile, 'w') as f:
-                f.write(dot.to_string() + "\n")
+            outfile = self.getarg('output')
+            if outfile is None or output == '-':
+                sys.stdout.write(dot.source + "\n")
+            else:
+                dot.save(outfile)
 
     def _dot(self, dot):
-        self._fill_dot(dot)
-        self._output_dot(dot)
+        self._dot_setattr(dot)
+        self._dot_build(dot)
+        self._dot_output(dot)
         return 0
 
     def run(self):
-        return self._dot(_Dot())
+        if not _has_graphviz:
+            # FIXME: elaborate better error reporting
+            sys.stderr.write("error: missing graphviz package\n")
+            return 1
+        return self._dot(graphviz.Digraph())
 
 
 # Local Variables:
