@@ -24,7 +24,7 @@ __all__ = ('DotCmd',)
 
 class DotCmd(cmd_.Cmd):
 
-    __slots__ = ()
+    __slots__ = ('_lsblk_graph',)
 
     def _probe(self, klass, tool, args, kw=None):
         kwargs = dict({tool: self.getarg(tool, tool)}, **(kw or {}))
@@ -33,27 +33,23 @@ class DotCmd(cmd_.Cmd):
     def _lsblk_probe(self, devices=None):
         return self._probe(LsBlkProbe, 'lsblk', (devices,))
 
-    def _lsblk_graph(self, devices=None):
-        return self._lsblk_probe(devices).graph()
 
-    def _newgraph(self):
+    def _new_lsblk_graph(self):
         infile = self.getarg('input')
         if infile is not None:
             with Archive.new(infile, 'r') as archive:
                 graph = archive.metadata.graph
         else:
-            graph = self._lsblk_graph(self.getarg('devices'))
+            graph = self._lsblk_probe(self.getarg('devices')).graph()
         return graph
 
-    @classmethod
-    def _dot_id(cls, string):
-        ident = re.sub(r'\W', '_', string)
-        if not ident or not re.match(r'[a-zA-Z_]', ident[0]):
-            ident = '_' . ident
-        return ident
+    @property
+    def lsblk_graph(self):
+        if not hasattr(self, '_lsblk_graph'):
+            self._lsblk_graph = self._new_lsblk_graph()
+        return self._lsblk_graph
 
-
-    def _dot_node_label(self, node):
+    def _dot_lsblk_node_label(self, node):
         extra = [node.mountpoint, node.partlabel, node.fstype]
         extra = [s for s in extra if s]
         if extra and extra[0] != node.name:
@@ -67,19 +63,75 @@ class DotCmd(cmd_.Cmd):
         dot.edge_attr.update(arrowhead='vee', arrowtail='vee')
         dot.node_attr.update(shape='rect')
 
-    def _dot_node(self, dot, graph, node):
-        label = self._dot_node_label(graph.node(node))
-        dot.node(self._dot_id(node), label)
+    def _dot_add_lsblk_node(self, dot, graph, node):
+        label = self._dot_lsblk_node_label(graph.node(node))
+        dot.node(node, label)
 
-    def _dot_edge(self, dot, graph, edge):
-        dot.edge(self._dot_id(edge[0]), self._dot_id(edge[1]))
+    def _dot_add_lsblk_edge(self, dot, graph, edge):
+        dot.edge(edge[0], edge[1])
+
+    def _dot_add_lvm_vg(self, dot, vg):
+        name = vg['vg_name']
+        dot.node(name)
+
+    def _dot_add_lvm_pv(self, dot, pv):
+        name = pv['pv_name']
+        dot.node(name)
+        try:
+            vg = pv['vg_name']
+        except KeyError:
+            pass
+        else:
+            dot.edge(name, vg)
+
+    def _dot_add_lvm_lv(self, dot, lv):
+        name = lv['lv_name']
+        dot.node(name)
+        try:
+            vg = lv['vg_name']
+        except KeyError:
+            pass
+        else:
+            dot.edge(vg, name)
+
+    def _dot_build_lsblk(self, dot):
+        args = {'name': 'cluster_lsblk',
+                'comment': 'Block-device graph created with lsblk',
+                'body': ['\tlabel = "LSBLK"']
+               }
+        with dot.subgraph(**args) as sg:
+            graph = self.lsblk_graph
+            for node in graph.nodes:
+                self._dot_add_lsblk_node(sg, graph, node)
+            for edge in graph.edges:
+                self._dot_add_lsblk_edge(sg, graph, edge)
+
+    def _dot_build_lvm(self, dot):
+        graph = self.lsblk_graph
+        members = [graph.node(n).name for n in graph.nodes
+                   if graph.node(n).fstype == 'LVM2_member']
+        volumes = [graph.node(n).name for n in graph.nodes
+                   if graph.node(n).type == 'lvm']
+        if members or volumes:
+            pvs = PvsProbe.new(members).content['report'][0]['pv']
+            lvs = LvsProbe.new(volumes).content['report'][0]['lv']
+            groups = list(set(lv['vg_name'] for lv in lvs))
+            vgs = VgsProbe.new(groups).content['report'][0]['vg']
+            args = {'name': 'cluster_lvm',
+                    'comment': 'LVM graph',
+                    'body': ['\tcolor=black',
+                             '\tlabel="LVM"']}
+            with dot.subgraph(**args) as sg:
+                for vg in vgs:
+                    self._dot_add_lvm_vg(sg, vg)
+                for pv in pvs:
+                    self._dot_add_lvm_pv(sg, pv)
+                for lv in lvs:
+                    self._dot_add_lvm_lv(sg, lv)
 
     def _dot_build(self, dot):
-        graph = self._newgraph()
-        for node in graph.nodes:
-            self._dot_node(dot, graph, node)
-        for edge in graph.edges:
-            self._dot_edge(dot, graph, edge)
+        self._dot_build_lsblk(dot)
+        self._dot_build_lvm(dot)
 
     def _dot_output(self, dot):
         if self.getarg('view'):

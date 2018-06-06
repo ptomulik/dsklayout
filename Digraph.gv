@@ -2,29 +2,45 @@ digraph {
 	node [shape=rect]
 	edge [arrowhead=vee arrowtail=vee]
 	nodesep=0.75 splines=ortho
-	_dev_sda [label="/dev/sda"]
-	_dev_sda1 [label="/dev/sda1 (BIOS Boot Partition)"]
-	_dev_sda2 [label="/dev/sda2 (Linux RAID)"]
-	_dev_md2 [label="/dev/md2 (/boot)"]
-	_dev_sda3 [label="/dev/sda3 (Linux RAID)"]
-	_dev_md3 [label="/dev/md3 (LVM2_member)"]
-	_dev_dm_0 [label="/dev/mapper/teavg-rootfs (/)"]
-	_dev_dm_1 [label="/dev/mapper/teavg-homefs (/home)"]
-	_dev_sdb [label="/dev/sdb"]
-	_dev_sdb1 [label="/dev/sdb1 (BIOS Boot Partition)"]
-	_dev_sdb2 [label="/dev/sdb2 (Linux RAID)"]
-	_dev_sdb3 [label="/dev/sdb3 (Linux RAID)"]
-	_dev_sr0 [label="/dev/sr0"]
-	_dev_sda -> _dev_sda1
-	_dev_sda -> _dev_sda2
-	_dev_sda2 -> _dev_md2
-	_dev_sda -> _dev_sda3
-	_dev_sda3 -> _dev_md3
-	_dev_md3 -> _dev_dm_0
-	_dev_md3 -> _dev_dm_1
-	_dev_sdb -> _dev_sdb1
-	_dev_sdb -> _dev_sdb2
-	_dev_sdb2 -> _dev_md2
-	_dev_sdb -> _dev_sdb3
-	_dev_sdb3 -> _dev_md3
+	// Block-device graph created with lsblk
+	subgraph cluster_lsblk {
+		label = "LSBLK"
+		"/dev/sda" [label="/dev/sda"]
+		"/dev/sda1" [label="/dev/sda1 (BIOS Boot Partition)"]
+		"/dev/sda2" [label="/dev/sda2 (Linux RAID)"]
+		"/dev/md2" [label="/dev/md2 (/boot)"]
+		"/dev/sda3" [label="/dev/sda3 (Linux RAID)"]
+		"/dev/md3" [label="/dev/md3 (LVM2_member)"]
+		"/dev/dm-0" [label="/dev/mapper/teavg-rootfs (/)"]
+		"/dev/dm-1" [label="/dev/mapper/teavg-homefs (/home)"]
+		"/dev/sdb" [label="/dev/sdb"]
+		"/dev/sdb1" [label="/dev/sdb1 (BIOS Boot Partition)"]
+		"/dev/sdb2" [label="/dev/sdb2 (Linux RAID)"]
+		"/dev/sdb3" [label="/dev/sdb3 (Linux RAID)"]
+		"/dev/sr0" [label="/dev/sr0"]
+		"/dev/sda" -> "/dev/sda1"
+		"/dev/sda" -> "/dev/sda2"
+		"/dev/sda2" -> "/dev/md2"
+		"/dev/sda" -> "/dev/sda3"
+		"/dev/sda3" -> "/dev/md3"
+		"/dev/md3" -> "/dev/dm-0"
+		"/dev/md3" -> "/dev/dm-1"
+		"/dev/sdb" -> "/dev/sdb1"
+		"/dev/sdb" -> "/dev/sdb2"
+		"/dev/sdb2" -> "/dev/md2"
+		"/dev/sdb" -> "/dev/sdb3"
+		"/dev/sdb3" -> "/dev/md3"
+	}
+	// LVM graph
+	subgraph cluster_lvm {
+		color=black
+		label="LVM"
+		teavg
+		"/dev/md3"
+		"/dev/md3" -> teavg
+		homefs
+		teavg -> homefs
+		rootfs
+		teavg -> rootfs
+	}
 }
