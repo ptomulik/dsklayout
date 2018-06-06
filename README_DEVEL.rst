@@ -90,6 +90,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE
 
 .. _pip: https://pypi.org/project/pip/
+.. _pipenv: https://pipenv.org/
 .. _pip installation instructions: https://pip.pypa.io/en/latest/installing/#install-pip
 .. _get-pip.py: https://bootstrap.pypa.io/get-pip.py
 .. _pipenv docs: https://docs.pipenv.org/
