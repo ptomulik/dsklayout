@@ -4,26 +4,27 @@ DskLayout - Developer's Guidelines
 Setting up development environment
 ----------------------------------
 
-We recommend using pip/pipenv to manage dependencies and run tools in an
-isolated python environment.
+We recommend using pip_ + pipenv_ to manage dependencies and run programs in
+an isolated Python environment.
 
 Installing pip user-wise
 ````````````````````````
 
-If you have no pip installed, you may do this quickly as follows
+If you don't have pip_ installed, it may be installed as follows
 
 .. code:: shell
 
     python3 install-pip.py --user
 
-The ``install-pip.py`` script accepts all options accepted by `get-pip.py`_,
-see `pip installation instructions`_.
+The ``install-pip.py`` script accepts all options of the `get-pip.py`_ script,
+see `pip installation instructions`_. It also provides some additional options,
+see ``python3 install-pip.py --help`` for its local options.
 
 
 Installing pipenv user-wise
 ```````````````````````````
 
-Provided pip is available, invoke
+Provided pip_ is already installed, invoke
 
 .. code:: shell
 
@@ -88,6 +89,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE
 
+.. _pip: https://pypi.org/project/pip/
 .. _pip installation instructions: https://pip.pypa.io/en/latest/installing/#install-pip
 .. _get-pip.py: https://bootstrap.pypa.io/get-pip.py
 .. _pipenv docs: https://docs.pipenv.org/
