@@ -14,7 +14,7 @@ class LvsProbe(backtick_.BackTickProbe):
 
     @classmethod
     def flags(cls, flags, **kw):
-        return ['--readonly', '--reportformat', 'json'] + flags
+        return ['--readonly', '--reportformat', 'json', '-o', '+lv_all'] + flags
 
     @classmethod
     def parse(cls, output):

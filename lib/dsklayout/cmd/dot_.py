@@ -86,7 +86,12 @@ class DotCmd(cmd_.Cmd):
 
     def _dot_add_lvm_lv(self, dot, lv):
         name = lv['lv_name']
-        dot.node(name)
+        kw = dict()
+        if lv.get('lv_dm_path'):
+            kw['label'] = "%s (%s)" % (name, lv['lv_path'])
+        elif lv.get('lv_path'):
+            kw['label'] = "%s (%s)" % (name, lv['lv_dm_path'])
+        dot.node(name, **kw)
         try:
             vg = lv['vg_name']
         except KeyError:
@@ -95,11 +100,10 @@ class DotCmd(cmd_.Cmd):
             dot.edge(vg, name)
 
     def _dot_build_lsblk(self, dot):
-        args = {'name': 'cluster_lsblk',
-                'comment': 'Block-device graph created with lsblk',
-                'body': ['\tlabel = "LSBLK"']
-               }
-        with dot.subgraph(**args) as sg:
+        kw = {'name': 'cluster_lsblk',
+              'comment': 'Block-device graph created with lsblk',
+              'body': ['\tlabel = "LSBLK"']}
+        with dot.subgraph(**kw) as sg:
             graph = self.lsblk_graph
             for node in graph.nodes:
                 self._dot_add_lsblk_node(sg, graph, node)
@@ -117,11 +121,11 @@ class DotCmd(cmd_.Cmd):
             lvs = LvsProbe.new(volumes).content['report'][0]['lv']
             groups = list(set(lv['vg_name'] for lv in lvs))
             vgs = VgsProbe.new(groups).content['report'][0]['vg']
-            args = {'name': 'cluster_lvm',
-                    'comment': 'LVM graph',
-                    'body': ['\tcolor=black',
-                             '\tlabel="LVM"']}
-            with dot.subgraph(**args) as sg:
+            kw = {'name': 'cluster_lvm',
+                  'comment': 'LVM graph',
+                  'body': ['\tcolor=black',
+                           '\tlabel="LVM"']}
+            with dot.subgraph(**kw) as sg:
                 for vg in vgs:
                     self._dot_add_lvm_vg(sg, vg)
                 for pv in pvs:

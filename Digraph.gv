@@ -38,9 +38,9 @@ digraph {
 		teavg
 		"/dev/md3"
 		"/dev/md3" -> teavg
-		homefs
+		homefs [label="homefs (/dev/teavg/homefs)"]
 		teavg -> homefs
-		rootfs
+		rootfs [label="rootfs (/dev/teavg/rootfs)"]
 		teavg -> rootfs
 	}
 }
