@@ -10,6 +10,7 @@ from ..probe import *
 
 import sys
 import re
+import tempfile
 
 try:
     import graphviz
@@ -84,14 +85,18 @@ class DotCmd(cmd_.Cmd):
         else:
             dot.edge(name, vg)
 
+    def _dot_lvm_lv_label(self, lv):
+        if lv.get('lv_dm_path'):
+            return "%s (%s)" % (lv['lv_name'], lv['lv_path'])
+        elif lv.get('lv_path'):
+            return "%s (%s)" % (lv['lv_name'], lv['lv_dm_path'])
+        else:
+            return lv['lv_name']
+
     def _dot_add_lvm_lv(self, dot, lv):
         name = lv['lv_name']
-        kw = dict()
-        if lv.get('lv_dm_path'):
-            kw['label'] = "%s (%s)" % (name, lv['lv_path'])
-        elif lv.get('lv_path'):
-            kw['label'] = "%s (%s)" % (name, lv['lv_dm_path'])
-        dot.node(name, **kw)
+        label = self._dot_lvm_lv_label(lv)
+        dot.node(name, label)
         try:
             vg = lv['vg_name']
         except KeyError:
@@ -139,7 +144,7 @@ class DotCmd(cmd_.Cmd):
 
     def _dot_output(self, dot):
         if self.getarg('view'):
-            dot.view()
+            dot.view(cleanup=True)
         else:
             outfile = self.getarg('output')
             if outfile is None or output == '-':

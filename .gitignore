@@ -40,3 +40,5 @@ __pycache__/
 /MANIFEST
 # Graphviz garbage
 Digraph.*
+*.gv
+*.gv.pdf
