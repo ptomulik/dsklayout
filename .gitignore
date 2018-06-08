@@ -38,3 +38,5 @@ __pycache__/
 *.tox
 *.deb
 /MANIFEST
+# Graphviz garbage
+Digraph.*
