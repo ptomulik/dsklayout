@@ -5,6 +5,7 @@ util.import_all_from(__package__, [
     '.backtick_',
     '.fdisk_',
     '.lsblk_',
+    '.lvm_',
     '.lvs_',
     '.probe_',
     '.pvs_',
