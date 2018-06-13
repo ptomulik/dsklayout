@@ -115,28 +115,21 @@ class DotCmd(cmd_.Cmd):
             for edge in graph.edges:
                 self._dot_add_lsblk_edge(sg, graph, edge)
 
+    def _dot_build_lvm_subgraph(self, dot, lvm, sg):
+        for key in ('vg', 'pv', 'lv'):
+            for node in lvm.content["%ss" % key]:
+                add_node = getattr(self, '_dot_add_lvm_%s' % key)
+                add_node(sg, node)
+
     def _dot_build_lvm(self, dot):
         graph = self.lsblk_graph
-        members = [graph.node(n).name for n in graph.nodes
-                   if graph.node(n).fstype == 'LVM2_member']
-        volumes = [graph.node(n).name for n in graph.nodes
-                   if graph.node(n).type == 'lvm']
-        if members or volumes:
-            pvs = PvsProbe.new(members).content['report'][0]['pv']
-            lvs = LvsProbe.new(volumes).content['report'][0]['lv']
-            groups = list(set(lv['vg_name'] for lv in lvs))
-            vgs = VgsProbe.new(groups).content['report'][0]['vg']
-            kw = {'name': 'cluster_lvm',
-                  'comment': 'LVM graph',
-                  'body': ['\tcolor=black',
-                           '\tlabel="LVM"']}
-            with dot.subgraph(**kw) as sg:
-                for vg in vgs:
-                    self._dot_add_lvm_vg(sg, vg)
-                for pv in pvs:
-                    self._dot_add_lvm_pv(sg, pv)
-                for lv in lvs:
-                    self._dot_add_lvm_lv(sg, lv)
+        lvm = LvmProbe.new(lsblkgraph=self.lsblk_graph)
+        kw = {'name': 'cluster_lvm',
+              'comment': 'LVM graph',
+              'body': ['\tcolor=black',
+                       '\tlabel="LVM"']}
+        with dot.subgraph(**kw) as sg:
+            self._dot_build_lvm_subgraph(dot, lvm, sg)
 
     def _dot_build(self, dot):
         self._dot_build_lsblk(dot)
