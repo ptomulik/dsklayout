@@ -19,6 +19,13 @@ class Probe(object, metaclass=abc.ABCMeta):
         """Data encapsulated by this object"""
         return self._content
 
+    def dump_attributes(self):
+        return {'content': self.content}
+
+    @classmethod
+    def load_attributes(cls, attributes):
+        return cls(attributes['content'])
+
 
 
 # vim: set ft=python et ts=4 sw=4:

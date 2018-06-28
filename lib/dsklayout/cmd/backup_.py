@@ -36,8 +36,12 @@ class _BackupContext:
         return self._archive
 
     @property
-    def graph(self):
-        return self.archive.metadata.graph
+    def lsblk_graph(self):
+        return self.archive.metadata.lsblk_graph
+
+    @property
+    def lvm_probe(self):
+        return self.archive.metadata.lvm_probe
 
     @property
     def files(self):
@@ -68,7 +72,14 @@ class BackupCmd(cmd_.Cmd):
         return tempfile.TemporaryDirectory(**kwargs)
 
     def _probe(self, klass, tool, args, kw=None):
-        kwargs = dict({tool: self.getarg(tool, tool)}, **(kw or {}))
+        if isinstance(tool, str):
+            tools = {tool: self.getarg(tool, tool)}
+        elif isinstance(tool, dict):
+            tools = tool
+        else:
+            tools = {t: self.getarg(t,t) for t in tool}
+        #kwargs = dict({tool: self.getarg(tool, tool)}, **(kw or {}))
+        kwargs = dict(tools, **(kw or {}))
         return klass.new(*args, **kwargs)
 
     def _fdisk_probe(self, devices=None):
@@ -79,6 +90,9 @@ class BackupCmd(cmd_.Cmd):
 
     def _lsblk_probe(self, devices=None):
         return self._probe(LsBlkProbe, 'lsblk', (devices,))
+
+    def _lvm_probe(self, devices=None, **kw):
+        return self._probe(LvmProbe, ('lvs', 'pvs', 'vgs'), (devices,), kw)
 
     @classmethod
     def _backup_cmd_stdout(cls, ctx, cmd, arcfile):
@@ -126,7 +140,12 @@ class BackupCmd(cmd_.Cmd):
 
     def _newcontext(self):
         tmpdir = self._mktmpdir()
-        meta = ArchiveMetadata(self._newgraph())
+        graph = self._newgraph()
+        if [n for n in graph.nodes if graph.node(n).fstype == 'LVM2_member']:
+            lvm_probe = self._lvm_probe(self.getarg('devices'))
+        else:
+            lvm_probe = None
+        meta = ArchiveMetadata(lsblk_graph=graph, lvm_probe=lvm_probe)
         archive = Archive.new(self.arg('outfile'), 'w', metadata=meta)
         return _BackupContext(tmpdir, archive)
 
@@ -157,7 +176,7 @@ class BackupCmd(cmd_.Cmd):
             return backup(ctx, partab)
 
     def _backup_partition_tables(self, ctx):
-        graph = ctx.graph
+        graph = ctx.lsblk_graph
         for node in graph.nodes:
             partab = graph.node(node).partition_table
             if partab:
@@ -172,7 +191,7 @@ class BackupCmd(cmd_.Cmd):
         def ingress(graph, node, edge):
             return self._backup_node(ctx, graph, node, edge)
         search = Bfs(direction='inward', ingress_func=ingress)
-        search(ctx.graph, ctx.graph.leafs())
+        search(ctx.lsblk_graph, ctx.lsblk_graph.leafs())
         return 0
 
     def run(self):

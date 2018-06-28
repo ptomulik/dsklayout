@@ -39,7 +39,7 @@ class DotCmd(cmd_.Cmd):
         infile = self.getarg('input')
         if infile is not None:
             with Archive.new(infile, 'r') as archive:
-                graph = archive.metadata.graph
+                graph = archive.metadata.lsblk_graph
         else:
             graph = self._lsblk_probe(self.getarg('devices')).graph()
         return graph
@@ -123,6 +123,7 @@ class DotCmd(cmd_.Cmd):
 
     def _dot_build_lvm(self, dot):
         graph = self.lsblk_graph
+        # FIXME: if input archive is used, we should read lvm data from it
         lvm = LvmProbe.new(lsblkgraph=self.lsblk_graph)
         kw = {'name': 'cluster_lvm',
               'comment': 'LVM graph',
