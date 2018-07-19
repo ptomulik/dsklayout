@@ -3,22 +3,15 @@
 """
 
 from . import cmd_
-from . import lsblkext_
 from . import fdiskext_
+from . import lsblkext_
+from . import mdadmext_
 from . import sfdiskext_
 from . import sgdiskext_
-from . import vgcfgbackupext_
 from . import tmpdirext_
+from . import vgcfgbackupext_
 
-##from ..device import *
-##from ..graph import *
-##from ..visitor import *
-##from ..archive import *
 from ..cmd import *
-##
-##import tarfile
-##import sys
-##import os
 
 __all__ = ('CliBackupCmd',)
 
@@ -33,6 +26,7 @@ class CliBackupCmd(cmd_.CliCmd):
         self.add_extension(fdiskext_.FdiskExt())
         self.add_extension(sfdiskext_.SfdiskExt())
         self.add_extension(sgdiskext_.SgdiskExt())
+        self.add_extension(mdadmext_.MdadmExt())
         self.add_extension(vgcfgbackupext_.VgCfgBackupExt())
         self.add_extension(tmpdirext_.TmpDirExt())
 

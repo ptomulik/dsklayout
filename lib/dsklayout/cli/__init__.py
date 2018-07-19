@@ -9,7 +9,12 @@ util.import_all_from(__package__, [
     '.dotcmd_',
     '.dsklayout_',
     '.ext_',
+    '.fdiskext_',
     '.lsblkext_',
+    '.mdadmext_',
+    '.sfdiskext_',
+    '.tmpdirext_',
+    '.vgcfgbackupext_',
     ])
 
 

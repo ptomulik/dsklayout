@@ -187,11 +187,15 @@ class BackupCmd(cmd_.Cmd):
         if partab:
             self._backup_partition_table(ctx, partab)
 
+    def _backup_lvm(self, ctx):
+        lvm = LvmProbe.new(lsblkgraph=ctx.lsblk_graph)
+
     def _backup(self, ctx):
         def ingress(graph, node, edge):
             return self._backup_node(ctx, graph, node, edge)
         search = Bfs(direction='inward', ingress_func=ingress)
         search(ctx.lsblk_graph, ctx.lsblk_graph.leafs())
+        self._backup_lvm(ctx)
         return 0
 
     def run(self):

@@ -50,6 +50,10 @@ OPTIONS
 
     Path to :manpage:`fdisk(8)` executable
 
+.. option:: --mdadm=PROG
+
+    Path to :manpage:`mdadm(8)` executable
+
 .. option:: --sfdisk=PROG
 
     Path to :manpage:`sfdisk(8)` executable
