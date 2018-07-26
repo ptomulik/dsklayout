@@ -19,6 +19,8 @@ import os
 
 __all__ = ('BackupCmd',)
 
+_mdadm_raid_types = ['raid0', 'raid1', 'raid4', 'raid5', 'raid6', 'raid10']
+
 class _BackupContext:
 
     __slots__ = ('_tmpdir', '_archive')
@@ -182,10 +184,26 @@ class BackupCmd(cmd_.Cmd):
             if partab:
                 self._backup_partition_table(ctx, partab)
 
+    def _backup_mdraid_device(sefl, ctx, node):
+        # mdadm --detail
+        # TODO: add to metadata
+        # TODO: save in an archive
+        pass
+
+    def _backup_mdraid_member(self, ctx, node):
+        # mdadm --examine
+        # TODO: add to metadata
+        # TODO: save in an archive
+        pass
+
     def _backup_node(self, ctx, graph, node, edge=None):
         partab = graph.node(node).partition_table
         if partab:
             self._backup_partition_table(ctx, partab)
+        if graph.node(node).type in _mdadm_raid_types:
+            self._backup_mdraid_device(ctx, graph.node)
+        if graph.node(node).fstype == 'linux_raid_member':
+            self._backup_mdraid_member(ctx, graph.node)
 
     def _backup_lvm(self, ctx):
         lvm = LvmProbe.new(lsblkgraph=ctx.lsblk_graph)
