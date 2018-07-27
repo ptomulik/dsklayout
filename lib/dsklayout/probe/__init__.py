@@ -7,6 +7,7 @@ util.import_all_from(__package__, [
     '.lsblk_',
     '.lvm_',
     '.lvs_',
+    '.mdadm_',
     '.probe_',
     '.pvs_',
     '.sfdisk_',
