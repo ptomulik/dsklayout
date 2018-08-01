@@ -46,6 +46,10 @@ class _BackupContext:
         return self.archive.metadata.lvm_probe
 
     @property
+    def mdadm_probe(self):
+        return self.archive.metadata.mdadm_probe
+
+    @property
     def files(self):
         return self.archive.metadata.files
 
@@ -95,6 +99,9 @@ class BackupCmd(cmd_.Cmd):
 
     def _lvm_probe(self, devices=None, **kw):
         return self._probe(LvmProbe, ('lvs', 'pvs', 'vgs'), (devices,), kw)
+
+    def _mdadm_probe(self, devices=None, **kw):
+        return self._probe(MdadmProbe, 'mdadm', (devices,))
 
     @classmethod
     def _backup_cmd_stdout(cls, ctx, cmd, arcfile):
@@ -147,7 +154,8 @@ class BackupCmd(cmd_.Cmd):
             lvm_probe = self._lvm_probe(self.getarg('devices'))
         else:
             lvm_probe = None
-        meta = ArchiveMetadata(lsblk_graph=graph, lvm_probe=lvm_probe)
+        mdadm_probe = self._mdadm_probe(self.getarg('devices'))
+        meta = ArchiveMetadata(lsblk_graph=graph, lvm_probe=lvm_probe, mdadm_probe=mdadm_probe)
         archive = Archive.new(self.arg('outfile'), 'w', metadata=meta)
         return _BackupContext(tmpdir, archive)
 
