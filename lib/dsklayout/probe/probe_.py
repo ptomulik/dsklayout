@@ -5,7 +5,7 @@
 __all__ = ('Probe',)
 
 
-class Probe(object):
+class Probe:
     """Base class for all "probe" classes.
 
     A "probe" object encapsulates data obtainted by querying operating system.

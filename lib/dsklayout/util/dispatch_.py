@@ -58,7 +58,7 @@ class _DispatchMeta(type):
         return cls._dispatchers
 
 
-class dispatch(object, metaclass=_DispatchMeta):
+class dispatch(metaclass=_DispatchMeta):
 
     __slots__ = ('_default', '_arg_index', '_arg_name', '_varargs', '_kwargs',
                  '_overloads')

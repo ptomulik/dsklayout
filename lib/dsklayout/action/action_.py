@@ -7,7 +7,7 @@ import abc
 __all__ = ('Action',)
 
 
-class Action(object, metaclass=abc.ABCMeta):
+class Action(metaclass=abc.ABCMeta):
     """An abstract base class for actions"""
 
     __slots__ = ()

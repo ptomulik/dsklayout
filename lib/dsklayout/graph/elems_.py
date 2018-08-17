@@ -18,7 +18,7 @@ class _missing_meta(type):
         return 'MISSING'
 
 
-class _missing(object, metaclass=_missing_meta):
+class _missing(metaclass=_missing_meta):
     "Represents missing argument to function."
     pass
 

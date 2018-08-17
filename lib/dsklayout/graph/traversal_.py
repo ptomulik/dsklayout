@@ -8,7 +8,7 @@ import abc
 __all__ = ('Traversal',)
 
 
-class Traversal(object, metaclass=abc.ABCMeta):
+class Traversal(metaclass=abc.ABCMeta):
     """An abstract base class for graph traversal (search) algorithms"""
 
     __slots__ = ('_edge_selector',

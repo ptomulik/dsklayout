@@ -7,7 +7,7 @@ import abc
 __all__ = ('CliCmdBase',)
 
 
-class CliCmdBase(object, metaclass=abc.ABCMeta):
+class CliCmdBase(metaclass=abc.ABCMeta):
     """An abstract base class for either command or command extension.
 
     Intended to be inherited by CliCmd and CliExt classes.
