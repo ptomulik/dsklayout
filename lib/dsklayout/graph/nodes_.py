@@ -15,4 +15,8 @@ class Nodes(elems_.Elems):
             kw['data'] = kw['nodedata']
         super().__init__(items, **kw)
 
+# Local Variables:
+# tab-width:4
+# indent-tabs-mode:nil
+# End:
 # vim: set ft=python et ts=4 sw=4:

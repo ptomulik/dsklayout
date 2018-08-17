@@ -1,5 +1,5 @@
 # -*- coding: utf8 -*-
-"""Serializer
+"""Serialization API for dsklayout
 """
 
 import importlib
@@ -57,7 +57,7 @@ def _load_other_object(data):
         return data
 
 # Local Variables:
-# # tab-width:4
-# # indent-tabs-mode:nil
-# # End:
-# vim: set syntax=python expandtab tabstop=4 shiftwidth=4:
+# tab-width:4
+# indent-tabs-mode:nil
+# End:
+# vim: set ft=python et ts=4 sw=4:

@@ -21,7 +21,7 @@ def backtick(cmd, input=None, timeout=None, **kw):
 
 
 # Local Variables:
-# # tab-width:4
-# # indent-tabs-mode:nil
-# # End:
-# vim: set syntax=python expandtab tabstop=4 shiftwidth=4:
+# tab-width:4
+# indent-tabs-mode:nil
+# End:
+# vim: set ft=python et ts=4 sw=4:

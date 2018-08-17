@@ -166,4 +166,8 @@ class Graph:
     def _select_nodes_not_satisfying(self, condition):
         return {n for n in self._nodes if not condition(n)}
 
+# Local Variables:
+# tab-width:4
+# indent-tabs-mode:nil
+# End:
 # vim: set ft=python et ts=4 sw=4:

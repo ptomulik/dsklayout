@@ -42,6 +42,7 @@ class Archive:
     def __init__(self, zipfile, metadata=None, **kw):
         self._zipfile = zipfile
         self.metafile = kw.get('metafile', self._default_metafile)
+        self._init_lastmeta()
         self._init_metadata(metadata)
 
     def close(self):
@@ -103,11 +104,13 @@ class Archive:
                 pass
         return options
 
-    def _init_metadata(self, metadata):
+    def _init_lastmeta(self):
         if self.mode in ('a', 'r'):
             self._lastmeta = self.read_metadata()
         else:
             self._lastmeta = None
+
+    def _init_metadata(self, metadata):
         if not metadata and self._lastmeta:
             self._metadata = self._lastmeta.copy()
         else:
@@ -137,4 +140,8 @@ class Archive:
             string = content.decode(encoding)
         return util.load_object(json.loads(string))
 
+# Local Variables:
+# tab-width:4
+# indent-tabs-mode:nil
+# End:
 # vim: set ft=python et ts=4 sw=4:

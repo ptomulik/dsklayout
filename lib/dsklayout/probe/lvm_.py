@@ -37,4 +37,8 @@ class LvmProbe(probe_.Probe):
         vgs = vgs_.VgsProbe.new(groups, flags, **kw).content['report'][0]['vg']
         return cls({'pvs': pvs, 'lvs': lvs, 'vgs': vgs})
 
+# Local Variables:
+# tab-width:4
+# indent-tabs-mode:nil
+# End:
 # vim: set ft=python et ts=4 sw=4:

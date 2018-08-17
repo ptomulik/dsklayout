@@ -80,4 +80,8 @@ class SfdiskProbe(backtick_.BackTickProbe):
             part['end'] = int(start) + int(size) - 1
 
 
+# Local Variables:
+# tab-width:4
+# indent-tabs-mode:nil
+# End:
 # vim: set ft=python et ts=4 sw=4:

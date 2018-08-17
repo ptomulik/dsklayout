@@ -4,6 +4,9 @@ checks:
   method-count:
     config:
       threshold: 30
+exclude_patterns:
+  - "build/"
+  - "doc/"
 plugins:
   pep8:
     enabled: true

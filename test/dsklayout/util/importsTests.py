@@ -95,4 +95,8 @@ class Test__Imports(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 
+# Local Variables:
+# tab-width:4
+# indent-tabs-mode:nil
+# End:
 # vim: set ft=python et ts=4 sw=4:

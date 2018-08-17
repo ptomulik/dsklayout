@@ -25,4 +25,4 @@ args, unknown = parser.parse_known_args(sys.argv[1:])
 with request.urlopen(args.url) as req, \
      tempfile.NamedTemporaryFile(prefix='get-pip-', suffix='.py') as tmp:
     tmp.write(req.read())
-    subprocess.run([args.python, tmp.name ] + unknown)
+    subprocess.run([args.python, tmp.name] + unknown)

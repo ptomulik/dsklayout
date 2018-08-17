@@ -1,3 +1,8 @@
 div.body > .section p {
   text-align: justify;
 }
+
+div.admonition p.admonition-title {
+  font-size: 17px;
+  font-weight: bold;
+}

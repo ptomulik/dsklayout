@@ -106,4 +106,8 @@ class Device:
 
 util.add_dict_getters(Device, Device._pp_map, '_properties')
 
+# Local Variables:
+# tab-width:4
+# indent-tabs-mode:nil
+# End:
 # vim: set ft=python et ts=4 sw=4:

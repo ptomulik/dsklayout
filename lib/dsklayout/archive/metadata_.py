@@ -5,15 +5,16 @@ import copy
 
 __all__ = ('ArchiveMetadata',)
 
+
 class ArchiveMetadata:
 
     __slots__ = ('_lsblk_graph', '_lvm_probe', '_mdadm_probe', '_files')
 
-    def __init__(self, lsblk_graph=None, lvm_probe=None, mdadm_probe=None, files=None):
-        self._lsblk_graph = lsblk_graph
-        self._lvm_probe = lvm_probe
-        self._mdadm_probe = mdadm_probe
-        self._files = files or dict()
+    def __init__(self, **kw):
+        self._lsblk_graph = kw.get('lsblk_graph')
+        self._lvm_probe = kw.get('lvm_probe')
+        self._mdadm_probe = kw.get('mdadm_probe')
+        self._files = kw.get('files', dict())
 
     def copy(self):
         return copy.deepcopy(self)
@@ -49,4 +50,8 @@ class ArchiveMetadata:
         return cls(**kw)
 
 
+# Local Variables:
+# tab-width:4
+# indent-tabs-mode:nil
+# End:
 # vim: set ft=python et ts=4 sw=4:

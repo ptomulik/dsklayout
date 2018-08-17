@@ -52,7 +52,7 @@ class PartitionTable:
 util.add_dict_getters(PartitionTable, PartitionTable._pp_map, '_properties')
 
 # Local Variables:
-# # tab-width:4
-# # indent-tabs-mode:nil
-# # End:
-# vim: set syntax=python expandtab tabstop=4 shiftwidth=4:
+# tab-width:4
+# indent-tabs-mode:nil
+# End:
+# vim: set ft=python et ts=4 sw=4:
