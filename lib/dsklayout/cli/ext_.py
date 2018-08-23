@@ -8,6 +8,7 @@ __all__ = ('CliExt',)
 
 
 class CliExt(cmdbase_.CliCmdBase):
+    """A base class for CLI extensions."""
 
     __slots__ = ('_parent',)
 
@@ -26,11 +27,23 @@ class CliExt(cmdbase_.CliCmdBase):
         return self._parent.arguments
 
     def add_arguments(self, parser):
-        """Add extension's argument definitions to an argument parser"""
+        """Add extension's argument definitions to an argument parser
+
+        :note: This method **shall** be customized in a subclass
+
+        :param argparse.ArgumentParser parser: the destination parser object
+                                               for the arguments.
+        """
         pass
 
     def set_defaults(self, parser):
-        """Sets extension's defaults to an argument parser"""
+        """Sets extension's defaults to an argument parser
+
+        :note: This method **may** be customized in a subclass
+
+        :param argparse.ArgumentParser parser: the destination parser object
+                                               for the argument defaults.
+        """
         pass
 
 # Local Variables:

@@ -197,3 +197,4 @@ todo_include_todos = True
 
 # P. Tomulik: customizations
 manpages_url = 'https://manpages.debian.org/{path}'
+autoclass_content = 'both'

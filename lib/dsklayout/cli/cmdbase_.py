@@ -16,6 +16,10 @@ class CliCmdBase(metaclass=abc.ABCMeta):
     @property
     @abc.abstractmethod
     def name(self):
+        """Name of the command or command extension
+
+        .. note:: This property **must** be implemented in a subclass.
+        """
         pass
 
     def add_arguments(self, parser):

@@ -3,7 +3,7 @@
 """
 
 from . import cmd_
-from . import lsblkext_
+from . import progext_
 
 from ..cmd import *
 
@@ -17,7 +17,7 @@ class CliDotCmd(cmd_.CliCmd):
 
     def __init__(self):
         super().__init__()
-        self.add_extension(lsblkext_.LsBlkExt())
+        self.add_extension(progext_.ProgExt('lsblk'))
 
     @property
     def name(self):

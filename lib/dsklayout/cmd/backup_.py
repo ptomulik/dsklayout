@@ -15,6 +15,7 @@ import tempfile
 import subprocess
 import sys
 import os
+import shutil
 
 
 __all__ = ('BackupCmd',)
@@ -84,7 +85,8 @@ class BackupCmd(cmd_.Cmd):
             tools = tool
         else:
             tools = {t: self.getarg(t,t) for t in tool}
-        #kwargs = dict({tool: self.getarg(tool, tool)}, **(kw or {}))
+        if not all([shutil.which(prog) for prog in tools.values()]):
+            return None
         kwargs = dict(tools, **(kw or {}))
         return klass.new(*args, **kwargs)
 
@@ -213,15 +215,15 @@ class BackupCmd(cmd_.Cmd):
         if graph.node(node).fstype == 'linux_raid_member':
             self._backup_mdraid_member(ctx, graph.node)
 
-    def _backup_lvm(self, ctx):
-        lvm = LvmProbe.new(lsblkgraph=ctx.lsblk_graph)
+##    def _backup_lvm(self, ctx):
+##        lvm = LvmProbe.new(lsblkgraph=ctx.lsblk_graph)
 
     def _backup(self, ctx):
         def ingress(graph, node, edge):
             return self._backup_node(ctx, graph, node, edge)
         search = Bfs(direction='inward', ingress_func=ingress)
         search(ctx.lsblk_graph, ctx.lsblk_graph.leafs())
-        self._backup_lvm(ctx)
+        #self._backup_lvm(ctx)
         return 0
 
     def run(self):

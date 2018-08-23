@@ -3,13 +3,8 @@
 """
 
 from . import cmd_
-from . import fdiskext_
-from . import lsblkext_
-from . import mdadmext_
-from . import sfdiskext_
-from . import sgdiskext_
+from . import progext_
 from . import tmpdirext_
-from . import vgcfgbackupext_
 
 from ..cmd import *
 
@@ -22,12 +17,10 @@ class CliBackupCmd(cmd_.CliCmd):
 
     def __init__(self):
         super().__init__()
-        self.add_extension(lsblkext_.LsBlkExt())
-        self.add_extension(fdiskext_.FdiskExt())
-        self.add_extension(sfdiskext_.SfdiskExt())
-        self.add_extension(sgdiskext_.SgdiskExt())
-        self.add_extension(mdadmext_.MdadmExt())
-        self.add_extension(vgcfgbackupext_.VgCfgBackupExt())
+        progs = ('lsblk', 'fdisk', 'sfdisk', 'sgdisk', 'mdadm', 'vgcfgbackup',
+                 'pvs', 'vgs', 'lvs')
+        for prog in progs:
+            self.add_extension(progext_.ProgExt(prog))
         self.add_extension(tmpdirext_.TmpDirExt())
 
     @property
