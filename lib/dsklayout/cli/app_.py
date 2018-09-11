@@ -24,27 +24,42 @@ class CliApp:
 
     @property
     def parser(self):
-        """CLI argument parser"""
+        """CLI argument parser
+
+        :rtype: argparse.ArgumentParser
+        """
         return self._parser
 
     @property
     def subparsers(self):
-        """CLI argument subparsers"""
+        """CLI argument subparsers
+
+        :rtype: list(argparse.ArgumentParser)
+        """
         return self._subparsers
 
     @property
     def properties(self):
-        """Properties used when creating argument parser"""
+        """Properties used when creating argument parser
+
+        :rtype: dict
+        """
         return dict()
 
     @property
     def subproperties(self):
-        """Properties used when creating subparsers object"""
+        """Properties used when creating subparsers object
+
+        :rtype: dict
+        """
         return {'title':  'commands'}
 
     @property
     def subcommands(self):
-        """A list of classes implementing our subcommands"""
+        """A list of classes implementing our subcommands
+
+        :rtype: list
+        """
         return []
 
     @property
