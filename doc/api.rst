@@ -3,23 +3,21 @@ Dsklayout API documentation
 
 This is an official API documentation for the dsklayout_ python package.
 
-dsklayout.cli
-=============
+Modules
+=======
 
-.. automodule:: dsklayout.cli
-  :members:
+.. autosummary::
+   :toctree: _autosummary
 
-dsklayout.util
-===============
-
-.. automodule:: dsklayout.util
-  :members:
-
-dsklayout.probe
-===============
-
-.. automodule:: dsklayout.probe
-  :members:
+   dsklayout.probe
+   dsklayout.cmd
+   dsklayout.action
+   dsklayout.util
+   dsklayout.graph
+   dsklayout.cli
+   dsklayout.visitor
+   dsklayout.archive
+   dsklayout.device
 
 
 .. _dsklayout: https://github.com/ptomulik/dsklayout

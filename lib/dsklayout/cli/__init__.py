@@ -1,4 +1,6 @@
 # -*- coding: utf8 -*-
+"""Command Line Interface
+"""
 
 from .. import util
 util.import_all_from(__package__, [

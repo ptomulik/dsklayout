@@ -6,3 +6,18 @@ div.admonition p.admonition-title {
   font-size: 17px;
   font-weight: bold;
 }
+
+dl.class, dl.function {
+  margin: 6px 0px 6px 0px;
+  border: 1px solid #ccc;
+}
+
+dl.class > dt, dl.function > dt {
+  padding: 12px;
+  border-bottom: 1px dashed #ccc;
+  background: #eee;
+}
+
+dl.class > dd, dl.function > dd {
+  margin-right: 12px;
+}

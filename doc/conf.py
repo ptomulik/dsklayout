@@ -48,6 +48,7 @@ release = about['__version__']
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
@@ -198,3 +199,4 @@ todo_include_todos = True
 # P. Tomulik: customizations
 manpages_url = 'https://manpages.debian.org/{path}'
 autoclass_content = 'both'
+autosummary_generate = True
