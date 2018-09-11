@@ -2,9 +2,9 @@
 """Provides "probe" classes.
 
 A probe object encapsulates a result of probing (querying) an operating system
-for a specific information. Usually external command-line programs are used for
-that. Examples of "probing" are listing disk partitions with
-:manpage:`fdisk(8)` or querying raid metadata with :manpage:`mdadm(8)`.
+for specific information. Usually external command-line programs are used to
+collect this information. Examples of "probing" include listing disk partitions
+with :manpage:`fdisk(8)` or querying raid metadata with :manpage:`mdadm(8)`.
 """
 
 from .. import util

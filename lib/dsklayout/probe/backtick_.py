@@ -19,7 +19,7 @@ class BackTickProbe(probe_.Probe):
     STDOUT of a *single* CLI command run.
 
     A subclass of :class:`.BackTickProbe` must override two methods:
-    :func:`.command` and :func:`.parse`.
+    :meth:`.command` and :meth:`.parse`.
 
     Note, that collecting data from multiple related programs shall be
     organized differently. Inheriting :class:`.BackTickProbe` is not the
@@ -34,7 +34,8 @@ class BackTickProbe(probe_.Probe):
         .. note:: This method **must** be implemented in a subclass.
 
         :param kw: keyword arguments (unspecified); the method receives all
-                   keyword arguments passed to :func:`.run` method as is.
+                   keyword arguments passed to :meth:`.BackTickProbe.run`
+                   method as is.
         :return: Path to (or name of) the CLI command that shall be used.
         :rtype: str
 
@@ -67,10 +68,11 @@ class BackTickProbe(probe_.Probe):
 
         .. note:: This method **may** be customized in a subclass.
 
-        :param flags: a list of flags as passed to :func:`.run`; ignored by the
-                      default implementation,
-        :param kw:    keyword arguments as passed to :func:`.run`; ignored by
-                      the default implementation.
+        :param flags: a list of flags as passed to :meth:`.BackTickProbe.run`;
+                      ignored by the default implementation,
+        :param kw:    keyword arguments as passed to
+                      :meth:`.BackTickProbe.run`; ignored by the default
+                      implementation.
         :type flags: list, None
         :return: A list of flags to be passed to the external command. Default
                  implementation returns an empty list ``[]`` unconditionally.
@@ -84,7 +86,7 @@ class BackTickProbe(probe_.Probe):
 
         .. note:: This method **may** be customized in a subclass
 
-        :param kw: keyword arguments, as passed to :func:`.run`
+        :param kw: keyword arguments, as passed to :meth:`.BackTickProbe.run`
         :return: Keyword arguments that shall be passed to
                  :func:`.util.backtick`; the default implementation just
                  selects and returns these of **kw**, that are suitable for
@@ -101,8 +103,8 @@ class BackTickProbe(probe_.Probe):
                           external command,
         :param flags: a list of flags (options and their arguments) to be
                       passed to the external command,
-        :param kw: keyword arguments; passed to :func:`.flags` and
-                   :func:`.command`; arguments selected by :func:`.kwargs` are
+        :param kw: keyword arguments; passed to :meth:`.flags` and
+                   :meth:`.command`; arguments selected by :meth:`.kwargs` are
                    also passed to :func:`.util.backtick`.
         :type arguments: list, None
         :type flags: list, None
@@ -124,11 +126,13 @@ class BackTickProbe(probe_.Probe):
         external command and interpreting its output.
 
         :param arguments: a list of positional arguments to be passed to the
-                          external command; passed unchanged to :func:`.run`,
+                          external command; passed unchanged to
+                          :meth:`.BackTickProbe.run`,
         :param flags: a list of flags (options and their arguments) to be
                       passed to the external command; passed unchanged to
-                      :func:`.run`,
-        :param kw: keyword arguments; passed unchanged to :func:`.run`.
+                      :meth:`.BackTickProbe.run`,
+        :param kw: keyword arguments; passed unchanged to
+                   :meth:`.BackTickProbe.run`.
         :return: New instance of the subclass.
         """
         output = cls.run(arguments, flags, **kw)

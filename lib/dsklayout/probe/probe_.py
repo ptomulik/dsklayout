@@ -8,14 +8,16 @@ __all__ = ('Probe',)
 class Probe:
     """Base class for all "probe" classes.
 
-    A "probe" object encapsulates data obtainted by querying operating system.
-    This is usually done by runing external program or several related
-    programs."""
+    A "probe" object encapsulates data obtained by querying operating system.
+    The query is usually performed by running external program or several
+    related programs. The collected data gets parsed optionally and the result
+    is stored in the :attr:`.content` property."""
 
     __slots__ = ('_content',)
 
     def __init__(self, content):
-        """Initializes the Probe."""
+        """:param content: Data to be encapsulated.
+        """
         self._content = content
 
     @property
