@@ -1,5 +1,5 @@
-DskLayout CLI tool
-==================
+DskLayout CLI
+=============
 
 DskLayout_ provides single command-line program named ``dsklayout``:
 

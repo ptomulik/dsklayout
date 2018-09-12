@@ -45,7 +45,7 @@ More documentation
 ==================
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 3
 
    cli
    api
@@ -60,3 +60,4 @@ Indices and tables
 .. _DskLayout: https://github.com/ptomulik/dsklayout
 .. _PyPi: https://pypi.org
 .. _python: https://python.org
+

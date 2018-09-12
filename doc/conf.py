@@ -99,7 +99,9 @@ html_theme_options = {
     'logo': 'dsklayout.png',
     'github_button': 'true',
     'github_user': 'ptomulik',
-    'github_repo': 'dsklayout'
+    'github_repo': 'dsklayout',
+    #'show_relbars': True,
+    'sidebar_includehidden': True,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -118,7 +120,7 @@ html_static_path = ['_static']
 html_sidebars = {
     '**': [
         'about.html',
-        'localtoc.html',
+        'globaltoc.html',
         'relations.html',
         'sourcelink.html',
         'searchbox.html'
