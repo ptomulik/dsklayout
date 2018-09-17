@@ -3,12 +3,18 @@
 
 This module implements dsklayout command-line interface. It provides an entry
 point for dsklayout application -- the :func:`.main` function. The function can
-be conveniently used with :func:`setuptools.setup`.
+be conveniently used with ``setuptools.setup()`` (see :doc:`setuptools`).
 
 There are also classes that help implementing custom CLI applications with
 subcommands and flags/options. At the top, there is :class:`.CliApp` class,
 which is a base class for CLI applications (any new CLI application shall
-be implemented as a subclass of :class:`CliApp`).
+be implemented as a subclass of :class:`CliApp`). An application may implement
+several subcommands. A subcommand shall be implemented as a subclass of
+:class:`.CliCmd`. A subcommand may use one or more extensions. The purpose of
+an extension is mainly to provide a set of specific command-line options
+to a subcommand. This allows for simple re-use of options in serveral
+subcommands. An extension shall be implemented as a subclass of
+:class:`.CliExt`.
 """
 
 from .. import util

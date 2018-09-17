@@ -23,11 +23,27 @@ class CliCmdBase(metaclass=abc.ABCMeta):
         pass
 
     def add_arguments(self, parser):
-        """Adds command's argument definitions to argument parser"""
+        """Adds command's argument definitions to argument parser
+
+        :param argparse.ArgumentParser parser: the target argument parser to be
+                                               modified
+
+        .. note::
+                A subclass may reimplement this method to define custom
+                command-line arguments.
+        """
         pass
 
     def set_defaults(self, parser):
-        """Sets defaults to this command's arguments parser"""
+        """Sets defaults to this command's arguments parser
+
+        :param argparse.ArgumentParser parser: the target argument parser to be
+                                               modified
+
+        .. note::
+                A subclass may reimplement this method to provide custom
+                defaults to certain command-line arguments.
+        """
         pass
 
 # Local Variables:
