@@ -11,10 +11,12 @@ __all__ = ('CliApp',)
 
 
 class CliApp:
-    """Abstract base class for a command-line application
+    """Abstract base class for a command-line application.
 
     A typical application shall inherit this class and reimplement
     :attr:`.properties`, :attr:`.subcommands` and :attr:`.version`.
+    The default implementation of :meth:`.run` is just a dispatcher, which
+    dispatches control to appropriate subcommand.
     """
 
     __slots__ = ('_parser', '_subparsers')
@@ -28,7 +30,10 @@ class CliApp:
 
     @property
     def parser(self):
-        """CLI argument parser
+        """CLI argument parser.
+
+        This is the main argument parser used by application. All the
+        :attr:`.subparsers` are attached to :attr:`.parser`.
 
         :rtype: argparse.ArgumentParser
         """
@@ -36,7 +41,15 @@ class CliApp:
 
     @property
     def subparsers(self):
-        """CLI argument subparsers
+        """CLI argument subparsers.
+
+        Subparsers are argument parsers provided by subcommands. They're used
+        to parse subcommand-specific command-line options.
+
+        .. note::
+                There is no need to override this property. The list is filled
+                automatically when consecutive subcommands are added during
+                :class:`.CliApp` construction.
 
         :rtype: list(argparse.ArgumentParser)
         """
@@ -44,7 +57,15 @@ class CliApp:
 
     @property
     def properties(self):
-        """Properties used when creating argument parser
+        """Properties used when creating argument parser.
+
+        These properties are passed as keyword arguments to the constructor of
+        :class:`argparse.ArgumentParser` when creating :attr:`.parser`.
+
+        .. note::
+                A subclass may redefine this property to provide custom
+                keyword arguments to the constructor when :attr:`.parser`
+                is being created.
 
         :rtype: dict
         """
@@ -52,7 +73,13 @@ class CliApp:
 
     @property
     def subproperties(self):
-        """Properties used when creating subparsers object
+        """Properties used when creating :attr:`.subparsers` object.
+
+        .. note::
+                A subclass may override this property to provide keyword
+                arguments to
+                :meth:`argparse.ArgumentParser.add_subparsers`
+                when the container for subparsers is created.
 
         :rtype: dict
         """
@@ -60,9 +87,14 @@ class CliApp:
 
     @property
     def subcommands(self):
-        """A list of classes implementing our subcommands
+        """A list of classes implementing application's subcommands.
 
-        :rtype: list
+        .. note::
+                The default list is empty. A subclass shall override this
+                property to provide actual list of subcommands. All entries
+                shall be subclasses of :class:`.CliCmd`.
+
+        :rtype: list(type)
         """
         return []
 
@@ -80,8 +112,7 @@ class CliApp:
         return '(unknown version)'
 
     def add_arguments(self, parser):
-        """Add common arguments (not specific to any subcommand) to an argument
-        parser
+        """Add argument definitions to **parser**.
 
 
         :param argparse.ArgumentParser parser: argument parser, where the
@@ -102,10 +133,10 @@ class CliApp:
                             version=('%(prog)s ' + self.version))
 
     def set_defaults(self, parser):
-        """Set defaults for application command-line options
+        """Set defaults to application command-line options.
 
-        :param argparse.ArgumentParser parser: Argument parser with
-                                               application's arguments.
+        :param argparse.ArgumentParser parser: target argument parser to be
+                                               modified.
 
         .. note::
 
@@ -115,11 +146,13 @@ class CliApp:
         pass
 
     def run(self):
-        """Run subcommand
+        """Execute application.
 
-        Main entry point to the application. The default implementation parses
-        command-line arguments and invokes appropriate subcommand's ``run()``
-        method.
+        This is the main entry point to the application. The default
+        implementation parses command-line arguments and invokes appropriate
+        subcommand by calling its ``run()`` method. If the command-line
+        arguments are invalid, a help message is printed.
+
 
         :returns: status code returned by the subcommand.
         :rtype: int
@@ -138,7 +171,7 @@ class CliApp:
             self._add_subcommand(subparsers, klass())
 
     def _add_subcommand(self, subparsers, command):
-        """Add single subcommand"""
+        """Add single subcommand."""
         subparser = subparsers.add_parser(command.name, **command.properties)
         command.add_arguments(subparser)
         command.set_defaults(subparser)

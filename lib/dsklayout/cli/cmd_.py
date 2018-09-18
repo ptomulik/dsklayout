@@ -70,9 +70,12 @@ class CliCmd(cmdbase_.CliCmdBase):
         ext.parent = self
 
     def add_arguments(self, parser):
-        """Custom implementation of :meth:`.CliCmdBase.add_arguments`.
+        """Adds command's argument definitions to argument parser.
 
-        This method just invokes :meth:`.add_cmd_arguments` and
+        :param argparse.ArgumentParser parser: the target argument parser.
+
+        This is a custom implementation of :meth:`.CliCmdBase.add_arguments`.
+        The method calls :meth:`.add_cmd_arguments` and
         :meth:`.add_ext_arguments`.
         """
         self.add_cmd_arguments(parser)
@@ -90,11 +93,26 @@ class CliCmd(cmdbase_.CliCmdBase):
             ext.add_arguments(parser)
 
     def set_defaults(self, parser):
-        """Set argument defaults"""
+        """Sets defaults to this command's arguments.
+
+        :param argparse.ArgumentParser parser: the target parser to be
+                                               modified.
+
+        This is a custom implementation of  :meth:`.CliCmdBase.set_defaults`.
+        The method calls :meth:`.set_cmd_defaults` and
+        :meth:`.set_ext_defaults`.
+        """
         self.set_cmd_defaults(parser)
         self.set_ext_defaults(parser)
 
     def set_ext_defaults(self, parser):
+        """Let the :attr:`.extensions` to set their default values to
+        command-line arguments.
+
+        :param argparse.ArgumentParser parser: the target parser to be
+                                               modified.
+
+        """
         for key, ext in self._extensions.items():
             ext.set_defaults(parser)
 
@@ -105,16 +123,36 @@ class CliCmd(cmdbase_.CliCmdBase):
                                                modified.
 
         .. note::
-                A subclass shall reimplement this method to define its own
-                command-line arguments. The default implementation does
-                nothing.
+                A subclass may override this method to define command-line
+                arguments. The default implementation does nothing.
         """
         pass
 
     def set_cmd_defaults(self, parser):
+        """Set default values to command-line arguments of this command.
+
+        :param argparse.ArgumentParser parser: the target parser to be
+                                               modified.
+
+        The default implementation in :meth:`.CliCmd.set_cmd_defaults` does
+        nothing.
+
+        .. note::
+                A subclass may override this method to provide it own defaults.
+        """
         pass
 
     def run(self):
+        """Execute this subcommand.
+
+        .. note::
+                A subclass shall override this method to provide command's
+                logic. The default implementation just returns ``0``.
+
+        :returns: status code from command execution to be returned to
+                  operating system.
+        :rtype: int
+        """
         return 0
 
 

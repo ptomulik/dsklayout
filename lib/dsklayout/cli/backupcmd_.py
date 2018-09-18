@@ -30,14 +30,33 @@ class CliBackupCmd(cmd_.CliCmd):
 
     @property
     def properties(self):
+        """Custom properties for the ``backup`` subcommand's parser.
+
+        .. seealso::
+                :attr:`.CliCmd.properties`
+        """
         return {'description': 'backup disk layout'}
 
     def add_cmd_arguments(self, parser):
+        """Add command-line arguments related to ``backup`` subcommand.
+
+        .. note::
+                Most of the options are defined by extensions. They're handled
+                separately.
+
+        .. seealso::
+                :meth:`.CliCmd.add_cmd_arguments`
+        """
         parser.add_argument("outfile", metavar='OUTFILE', help="output file")
         parser.add_argument("devices", metavar='DEV', nargs='*',
                             help="block device to be included in backup")
 
     def run(self):
+        """Execute the ``backup`` subcommand.
+
+        .. seealso::
+                :meth:`.CliCmd.run`
+        """
         return BackupCmd(vars(self.arguments)).run()
 
 

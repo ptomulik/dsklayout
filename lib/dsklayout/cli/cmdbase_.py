@@ -23,7 +23,7 @@ class CliCmdBase(metaclass=abc.ABCMeta):
         pass
 
     def add_arguments(self, parser):
-        """Adds command's argument definitions to argument parser
+        """Adds command's argument definitions to argument parser.
 
         :param argparse.ArgumentParser parser: the target argument parser to be
                                                modified
