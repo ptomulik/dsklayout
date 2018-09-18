@@ -12,6 +12,14 @@ __all__ = ('Archive',)
 
 
 class Archive:
+    """Dsklayout archive. Contains all data necessary to store and restore disk
+    layout.
+
+    Physically, a saved archive is a zip archive containing several files. One
+    of these files is a json file storing metadata for the application. Other
+    in-archive files may be used directly by external tools, such as ``sfdisk``
+    or ``sgdisk``, to restore certain parts of disk layout.
+    """
 
     __slots__ = ('_zipfile', '_metadata', '_metafile', '_lastmeta')
 
@@ -40,6 +48,15 @@ class Archive:
                            'writestr')
 
     def __init__(self, zipfile, metadata=None, **kw):
+        """
+        :param zipfile.ZipFile zipfile:
+            object used for saving or loading archive content
+        :param .ArchiveMetadata|None metadata:
+            metadata object -- encapsulates archive metadata
+        :keyword metafile:
+            name of the in-archive file to be used to keep archive metadata
+            (defaults to ``"metadata.json"``).
+        """
         self._zipfile = zipfile
         self.metafile = kw.get('metafile', self._default_metafile)
         self._init_lastmeta()
