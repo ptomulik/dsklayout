@@ -18,7 +18,7 @@ This section documents python modules provided by the dsklayout_ python
 package. The summary below lists all the documented modules.
 
 .. autosummary::
-    :toctree: _autosummary
+    :toctree: api/modules
 
     dsklayout.archive
     dsklayout.cli

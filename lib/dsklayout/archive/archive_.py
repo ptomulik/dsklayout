@@ -12,13 +12,17 @@ __all__ = ('Archive',)
 
 
 class Archive:
-    """Dsklayout archive. Contains all data necessary to store and restore disk
-    layout.
+    """Dsklayout archive.
 
     Physically, a saved archive is a zip archive containing several files. One
     of these files is a json file storing metadata for the application. Other
     in-archive files may be used directly by external tools, such as ``sfdisk``
     or ``sgdisk``, to restore certain parts of disk layout.
+
+    In addition to members documented here, the class also exposes most of the
+    methods and attributes provided by the :class:`zipfile.ZipFile`.
+
+    Objects of :class:`.Archive` may be used as context managers.
     """
 
     __slots__ = ('_zipfile', '_metadata', '_metafile', '_lastmeta')
@@ -50,12 +54,11 @@ class Archive:
     def __init__(self, zipfile, metadata=None, **kw):
         """
         :param zipfile.ZipFile zipfile:
-            object used for saving or loading archive content
+            an object implementing basic operations on the archive file,
         :param .ArchiveMetadata|None metadata:
-            metadata object -- encapsulates archive metadata
-        :keyword metafile:
-            name of the in-archive file to be used to keep archive metadata
-            (defaults to ``"metadata.json"``).
+            archive metadata to be stored in the metadata file,
+        :keyword str metafile:
+            optional file name of the in-archive metadata file.
         """
         self._zipfile = zipfile
         self.metafile = kw.get('metafile', self._default_metafile)
@@ -63,6 +66,13 @@ class Archive:
         self._init_metadata(metadata)
 
     def close(self):
+        """Close the archive file with :meth:`zipfile.close
+        <zipfile.ZipFile.close>`.
+
+        If the archive is open for writing, the :attr:`.metadata` is written to
+        the :attr:`metadata file <.metafile>` (``"metadata.json"`` by default)
+        just before closing the archive.
+        """
         if self.mode in ('a', 'x', 'w'):
             self.write_metadata(self.metadata)
         self.zipfile.close()
@@ -84,17 +94,26 @@ class Archive:
 
     @property
     def zipfile(self):
-        """ZipFile object"""
+        """ZipFile object used to operate on the archive file.
+
+        :rtype: zipfile.ZipFile
+        """
         return self._zipfile
 
     @property
     def metadata(self):
-        """Metadata object describing archive contents"""
+        """Metadata object describing archive contents.
+
+        :rtype: .ArchiveMetadata
+        """
         return self._metadata
 
     @property
     def metafile(self):
-        """In-archive file containing metadata"""
+        """Name of the in-archive file containing metadata.
+
+        :rtype: str
+        """
         return self._metafile
 
     @metafile.setter
@@ -103,10 +122,34 @@ class Archive:
 
     @property
     def lastmeta(self):
+        """Last version of metadata found in the :attr:`metadata file
+        <.metafile>`.
+
+        This read-only property is updated internally. For an :class:`.Archive`
+        instance created from scratch it's ``None``. For an :class:`.Archive`
+        loaded from an archive file, it encapsulates the metadata loaded from
+        in-archive :attr:`metadata file <.metafile>`. Every time the
+        :attr:`.metadata` is saved to metadata file, the :attr:`.lastmeta` is
+        updated to encapsulate a copy of the just-written :attr:`.metadata`.
+
+        .. warning::
+                Do not modify the object referenced by :attr:`.lastmeta`.
+
+        :rtype: .ArchiveMetadata
+        """
         return self._lastmeta
 
     @classmethod
     def new(cls, file, mode='r', **kw):
+        """Create new :class:`.Archive` instance.
+
+        This method accepts all arguments (positional and keyword arguments) of
+        :class:`zipfile.ZipFile` constructor. Additional arguments to the
+        constructor of :class:`.Archive` may be passed via keyword arguments.
+
+        :returns: new instance of :class:`.Archive`
+        :rtype: Archive
+        """
         options = cls._extract_zip_options(kw)
         return cls(zipfile.ZipFile(file, mode, **options), **kw)
 
@@ -136,6 +179,13 @@ class Archive:
             self._metadata = metadata_.ArchiveMetadata()
 
     def write_metadata(self, metadata, arcname=None):
+        """Write metadata file to the archive file.
+
+        :param ArchiveMetadata metadata:
+            the metadata to be saved,
+        :param str|None arcname:
+            optional name of the in-archive destination file for metadata.
+        """
         if arcname is None:
             arcname = self.metafile
         array = util.dump_object(metadata)
@@ -147,6 +197,17 @@ class Archive:
         self._lastmeta = self.metadata.copy()
 
     def read_metadata(self, arcname=None, encoding='utf-8'):
+        """Read metadata from file.
+
+        :param str|None arcname:
+            optional name of the in-archive source file containing metadata,
+        :param str encoding:
+            character encoding used to read the file.
+
+        :returns: and instance of :class:`.ArchiveMetadata` loaded from the
+                  file.
+        :rtype: ArchiveMetadata
+        """
         if arcname is None:
             arcname = self.metafile
         try:

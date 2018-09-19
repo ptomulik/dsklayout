@@ -2,10 +2,10 @@
 """Archive implementation.
 
 This module provides objects used to export and import dsklayout data. In the
-centre, there is class :class:`.Archive`, which encapsulates complete
+centre, there is a class named :class:`.Archive`, which encapsulates complete
 information about disk layout. The content of :class:`.Archive` can be easily
 saved to an archive file. The file may be later read by application yielding,
-again, equivalent instance of :class:`.Archive`.
+again, an instance of :class:`.Archive`.
 """
 
 from .. import util
