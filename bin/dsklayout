@@ -3,7 +3,4 @@
 
 import dsklayout.cli as cli
 
-try:
-    exit(cli.DskLayout().run())
-except KeyboardInterrupt:
-    pass
+exit(cli.main())

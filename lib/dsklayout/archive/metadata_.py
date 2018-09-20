@@ -7,28 +7,55 @@ __all__ = ('ArchiveMetadata',)
 
 
 class ArchiveMetadata:
+    """Metadata for :class:`.Archive`."""
 
     __slots__ = ('_lsblk_graph', '_lvm_probe', '_mdadm_probe', '_files')
 
     def __init__(self, **kw):
+        """
+        :keyword .graph.Graph lsblk_graph:
+            disk layout graph built by :class:`.probe.LsBlkProbe`,
+        :keyword .probe.LvmProbe lvm_probe:
+            a probe object with lvm probe result,
+        :keyword .probe.MdadmProbe mdadm_probe: bleah 3 ...
+            a probe object with mdadm probe result,
+        :keyword dict files:
+            a dictionary of files
+        """
         self._lsblk_graph = kw.get('lsblk_graph')
         self._lvm_probe = kw.get('lvm_probe')
         self._mdadm_probe = kw.get('mdadm_probe')
         self._files = kw.get('files', dict())
 
     def copy(self):
+        """Return a deep copy of this object.
+
+        :rtype: ArchiveMetadata
+        """
         return copy.deepcopy(self)
 
     @property
     def lsblk_graph(self):
+        """The lsblk graph used to construct this object.
+
+        :rtype: .graph.Graph
+        """
         return self._lsblk_graph
 
     @property
     def lvm_probe(self):
+        """The lvm probe object used to construct this object.
+
+        :rtype: .probe.LvmProbe
+        """
         return self._lvm_probe
 
     @property
     def mdadm_probe(self):
+        """The mdadm probe object used to construct this object.
+
+        :rtype: .probe.MdadmProbe
+        """
         return self._mdadm_probe
 
     @property

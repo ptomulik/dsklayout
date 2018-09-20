@@ -34,7 +34,7 @@ util.import_all_from(__package__, [
 def main():
     """Entry point to the dsklayout command-line application
 
-    Example usage (a code snippet for ``setup.py``)
+    :example: Usage of :func:`.main` (a code snippet for ``setup.py``)
 
     .. code:: python
 

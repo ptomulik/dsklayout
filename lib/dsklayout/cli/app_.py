@@ -115,8 +115,9 @@ class CliApp:
         """Add argument definitions to **parser**.
 
 
-        :param argparse.ArgumentParser parser: argument parser, where the
-                                               options will be registered
+        :param argparse.ArgumentParser parser:
+            argument parser, where application's command-line arguments will be
+            defined.
 
         The default implementation implements ``-v, --version`` option, which
         just displays a string returned by :attr:`.version` property.

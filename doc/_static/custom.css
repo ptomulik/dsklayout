@@ -3,7 +3,7 @@ div.body > .section p {
 }
 
 div.admonition p.admonition-title {
-  font-size: 17px;
+  font-size: 14px;
   font-weight: bold;
 }
 
@@ -20,4 +20,18 @@ dl.class > dt, dl.function > dt {
 
 dl.class > dd, dl.function > dd {
   margin-right: 12px;
+}
+
+dl.method > dt, dl.classmethod > dt, dl.attribute > dt {
+  background: #eee;
+  padding: 4px;
+  border-bottom: 1px solid black;
+}
+
+body {
+  font-size: 14px;
+}
+
+div.highlight {
+  font-size: 13px;
 }

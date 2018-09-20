@@ -33,9 +33,10 @@ class BackTickProbe(probe_.Probe):
 
         .. note:: This method **must** be implemented in a subclass.
 
-        :param kw: keyword arguments (unspecified); the method receives all
-                   keyword arguments passed to :meth:`.BackTickProbe.run`
-                   method as is.
+        :param \*\*kw:
+            keyword arguments (unspecified); the method receives all keyword
+            arguments passed to :meth:`.BackTickProbe.run` method as is.
+
         :return: Path to (or name of) the CLI command that shall be used.
         :rtype: str
 
