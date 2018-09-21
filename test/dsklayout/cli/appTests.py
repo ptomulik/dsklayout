@@ -17,28 +17,28 @@ class Test__CliApp(unittest.TestCase):
              mock.patch.object(app_.CliApp, 'set_defaults') as set_defaults, \
              mock.patch.object(app_.CliApp, 'add_subcommands') as add_subcommands, \
              mock.patch.object(argparse, 'ArgumentParser', return_value = parser) as ArgumentParser:
-            main = app_.CliApp()
-            self.assertIs(main.parser, parser)
-            self.assertIs(main.subparsers, subparsers)
+            app = app_.CliApp()
+            self.assertIs(app.parser, parser)
+            self.assertIs(app.subparsers, subparsers)
             add_arguments.assert_called_once_with(parser)
             set_defaults.assert_called_once_with(parser)
             add_subcommands.assert_called_once_with(subparsers)
 
     def test__parser(self):
-        main = app_.CliApp()
-        self.assertIsInstance(main.parser, argparse.ArgumentParser)
+        app = app_.CliApp()
+        self.assertIsInstance(app.parser, argparse.ArgumentParser)
 
     def test__subparsers(self):
-        main = app_.CliApp()
-        self.assertIsNotNone(main.subparsers)
-        self.assertTrue(hasattr(main.subparsers, 'add_parser'))
+        app = app_.CliApp()
+        self.assertIsNotNone(app.subparsers)
+        self.assertTrue(hasattr(app.subparsers, 'add_parser'))
 
     def test__properties(self):
         self.assertEqual(app_.CliApp().properties, dict())
 
     def test__subproperties(self):
-        main = app_.CliApp()
-        self.assertEqual(main.subproperties['title'], 'commands')
+        app = app_.CliApp()
+        self.assertEqual(app.subproperties['title'], 'commands')
 
     def test__subcommands(self):
         self.assertEqual(app_.CliApp().subcommands, [])
@@ -58,10 +58,10 @@ class Test__CliApp(unittest.TestCase):
         cmd_instance = mock.Mock()
         cmd_klass = mock.Mock(return_value = cmd_instance)
         subparsers = mock.Mock()
-        main = app_.CliApp()
+        app = app_.CliApp()
         with mock.patch.object(app_.CliApp, 'add_subcommand') as add_subcommand, \
              mock.patch.object(app_.CliApp, 'subcommands', [cmd_klass]):
-                 self.assertIsNone(main.add_subcommands(subparsers))
+                 self.assertIsNone(app.add_subcommands(subparsers))
                  add_subcommand.assert_called_once_with(subparsers, cmd_instance)
 
 
@@ -76,35 +76,35 @@ class Test__CliApp(unittest.TestCase):
         command.add_arguments = mock.Mock()
         command.set_defaults = mock.Mock()
 
-        main = app_.CliApp()
-        self.assertIsNone(main.add_subcommand(subparsers, command))
+        app = app_.CliApp()
+        self.assertIsNone(app.add_subcommand(subparsers, command))
         subparsers.add_parser.assert_called_once_with(command.name, **command.properties)
         command.add_arguments.assert_called_once_with(subparser1)
         command.set_defaults.assert_called_once_with(subparser1)
         subparser1.set_defaults.assert_called_once_with(command=command)
 
     def test__run(self):
-        main = app_.CliApp()
+        app = app_.CliApp()
         arguments = mock.Mock()
         arguments.command = mock.Mock()
         arguments.command.run = mock.Mock(return_value = 'ok')
         with mock.patch.object(app_.CliApp, 'parser') as parser, \
              mock.patch('sys.argv', ['prog','arg1','arg2']) as argv:
             parser.parse_args = mock.Mock(return_value = arguments)
-            main = app_.CliApp()
-            self.assertEqual(main.run(), 'ok')
+            app = app_.CliApp()
+            self.assertEqual(app.run(), 'ok')
             parser.parse_args.assert_called_once_with(argv[1:])
             arguments.command.run.assert_called_once_with()
 
     def test__run__without_command(self):
-        main = app_.CliApp()
+        app = app_.CliApp()
         arguments = mock.Mock(spec=[])
         with mock.patch.object(app_.CliApp, 'parser') as parser, \
              mock.patch('sys.argv', ['prog','arg1','arg2']) as argv:
             parser.parse_args = mock.Mock(return_value = arguments)
             parser.print_help = mock.Mock(return_value = 'ok')
-            main = app_.CliApp()
-            self.assertEqual(main.run(), 'ok')
+            app = app_.CliApp()
+            self.assertEqual(app.run(), 'ok')
             parser.parse_args.assert_called_once_with(argv[1:])
             parser.print_help.assert_called_once_with()
 

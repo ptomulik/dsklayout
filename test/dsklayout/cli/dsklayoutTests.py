@@ -7,6 +7,7 @@ import unittest.mock as mock
 import dsklayout.cli.dsklayout_ as dsklayout_
 import dsklayout.cli.app_ as app_
 import dsklayout.cli.backupcmd_ as backupcmd_
+import dsklayout.cli.dotcmd_ as dotcmd_
 
 from dsklayout import __version__ as dsklayout_version
 
@@ -29,7 +30,8 @@ class Test__DskLayout(unittest.TestCase):
     def test__subcommands(self):
         app = dsklayout_.DskLayout()
         self.assertEqual(app.subcommands, [
-            backupcmd_.CliBackupCmd
+            backupcmd_.CliBackupCmd,
+            dotcmd_.CliDotCmd
         ])
 
     def test__add_arguments(self):

@@ -26,7 +26,7 @@ class CliApp:
         self._subparsers = self._parser.add_subparsers(**self.subproperties)
         self.add_arguments(self._parser)
         self.set_defaults(self._parser)
-        self._add_subcommands(self._subparsers)
+        self.add_subcommands(self._subparsers)
 
     @property
     def parser(self):
@@ -166,12 +166,12 @@ class CliApp:
         command.arguments = arguments
         return command.run()
 
-    def _add_subcommands(self, subparsers):
+    def add_subcommands(self, subparsers):
         """Add all subcommands defined by :attr:`.subcommands`."""
         for klass in self.subcommands:
-            self._add_subcommand(subparsers, klass())
+            self.add_subcommand(subparsers, klass())
 
-    def _add_subcommand(self, subparsers, command):
+    def add_subcommand(self, subparsers, command):
         """Add single subcommand."""
         subparser = subparsers.add_parser(command.name, **command.properties)
         command.add_arguments(subparser)

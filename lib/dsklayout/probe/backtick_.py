@@ -14,7 +14,7 @@ _popen_args = ('bufsize', 'executable', 'stdin', 'stdout', 'stderr',
                'errors')
 
 
-class BackTickProbe(probe_.Probe):
+class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
     """Base class for any :class:`.Probe` which retrieves content from the
     STDOUT of a *single* CLI command run.
 

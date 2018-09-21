@@ -24,9 +24,6 @@ class Test__cli__PackageSymbols(unittest.TestCase):
     def test__dsklayout__symbols(self):
         self.assertIs(cli.DskLayout, cli.dsklayout_.DskLayout)
 
-    def test__lsblkext__symbols(self):
-        self.assertIs(cli.LsBlkExt, cli.lsblkext_.LsBlkExt)
-
     def test__app__symbols(self):
         self.assertIs(cli.CliApp, cli.app_.CliApp)
 

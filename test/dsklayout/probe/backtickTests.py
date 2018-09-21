@@ -16,7 +16,7 @@ class Test__BackTickProbe(unittest.TestCase):
     def test__abstract__1(self):
 
         with self.assertRaises(TypeError) as context:
-            backtick_.BackTickProbe()
+            backtick_.BackTickProbe({})
 
         self.assertIn("abstract", str(context.exception))
 
