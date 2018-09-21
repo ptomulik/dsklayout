@@ -48,7 +48,7 @@ class Test__DskLayout(unittest.TestCase):
         self.assertIsNone(app.set_defaults(parser))
 
 
-if __name__ == '__dsklayout__':
+if __name__ == '__main__':
     unittest.main()
 
 # Local Variables:

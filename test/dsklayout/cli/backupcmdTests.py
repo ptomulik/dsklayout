@@ -30,6 +30,7 @@ class Test__CliBackupCmd(unittest.TestCase):
         parser.add_argument = mock.Mock()
         self.assertIsNone(cmd.add_cmd_arguments(parser))
         parser.add_argument.assert_has_calls([
+            mock.call("outfile", metavar='OUTFILE', help="output file"),
             mock.call("devices", metavar='DEV', nargs="*",
                       help="block device to be included in backup")
         ])
@@ -67,7 +68,7 @@ class Test__CliBackupCmd(unittest.TestCase):
             self.assertEqual('ok', cmd.run())
             run.assert_called_once_with()
 
-if __name__ == '__backupcmd__':
+if __name__ == '__main__':
     unittest.main()
 
 # Local Variables:
