@@ -3,9 +3,12 @@
 
 import unittest
 import unittest.mock as mock
+import argparse
 
 import dsklayout.cli.backupcmd_ as backupcmd_
 import dsklayout.cli.cmd_ as cmd_
+import dsklayout.cli.progext_ as progext_
+import dsklayout.cli.tmpdirext_ as tmpdirext_
 
 class Test__CliBackupCmd(unittest.TestCase):
 
@@ -31,11 +34,38 @@ class Test__CliBackupCmd(unittest.TestCase):
                       help="block device to be included in backup")
         ])
 
-    @unittest.skip("test not implemented yet!")
+    def test__extensions__01(self):
+        cmd = backupcmd_.CliBackupCmd()
+        self.assertIsInstance(cmd.extensions['lsblk'], progext_.ProgExt)
+        self.assertIsInstance(cmd.extensions['fdisk'], progext_.ProgExt)
+        self.assertIsInstance(cmd.extensions['sfdisk'], progext_.ProgExt)
+        self.assertIsInstance(cmd.extensions['sgdisk'], progext_.ProgExt)
+        self.assertIsInstance(cmd.extensions['mdadm'], progext_.ProgExt)
+        self.assertIsInstance(cmd.extensions['vgcfgbackup'], progext_.ProgExt)
+        self.assertIsInstance(cmd.extensions['pvs'], progext_.ProgExt)
+        self.assertIsInstance(cmd.extensions['vgs'], progext_.ProgExt)
+        self.assertIsInstance(cmd.extensions['lvs'], progext_.ProgExt)
+        self.assertIsInstance(cmd.extensions['tmpdir'], tmpdirext_.TmpDirExt)
+
+    def test__extensions__02(self):
+        cmd = backupcmd_.CliBackupCmd()
+        self.assertIs(cmd.extensions['lsblk'], cmd.lsblk)
+        self.assertIs(cmd.extensions['fdisk'], cmd.fdisk)
+        self.assertIs(cmd.extensions['sfdisk'], cmd.sfdisk)
+        self.assertIs(cmd.extensions['sgdisk'], cmd.sgdisk)
+        self.assertIs(cmd.extensions['mdadm'], cmd.mdadm)
+        self.assertIs(cmd.extensions['vgcfgbackup'], cmd.vgcfgbackup)
+        self.assertIs(cmd.extensions['pvs'], cmd.pvs)
+        self.assertIs(cmd.extensions['vgs'], cmd.vgs)
+        self.assertIs(cmd.extensions['lvs'], cmd.lvs)
+        self.assertIs(cmd.extensions['tmpdir'], cmd.tmpdir)
+
     def test__run(self):
-        self.assertTrue(False)
-        #cmd = backupcmd_.CliBackupCmd()
-        #self.assertEqual(cmd.run(), 0)
+        cmd = backupcmd_.CliBackupCmd()
+        cmd.arguments = argparse.Namespace()
+        with mock.patch.object(backupcmd_.BackupCmd, 'run', return_value='ok') as run:
+            self.assertEqual('ok', cmd.run())
+            run.assert_called_once_with()
 
 if __name__ == '__backupcmd__':
     unittest.main()
