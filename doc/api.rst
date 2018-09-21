@@ -6,8 +6,10 @@ This is an official API documentation for the dsklayout_ python package.
 Introduction
 ============
 
-The dsklayout_ package provides an application and a library composed of
-several modules.
+The dsklayout_ package provides an application based on a modular library. The
+modules from dsklayout_ package provide all the objects and functions necessary
+to create the dsklayout_ application.
+
 
 Modules
 ==========
