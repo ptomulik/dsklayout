@@ -5,6 +5,7 @@ import unittest
 import types
 import dsklayout
 
+
 class Test__PackageSymbols(unittest.TestCase):
 
     def test__graph__symbol(self):
@@ -15,6 +16,7 @@ class Test__PackageSymbols(unittest.TestCase):
 
     def test__model__symbol(self):
         self.assertIsInstance(dsklayout.util, types.ModuleType)
+
 
 if __name__ == '__main__':
     unittest.main()

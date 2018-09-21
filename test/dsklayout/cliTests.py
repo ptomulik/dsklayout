@@ -2,6 +2,7 @@
 # -*- coding: utf8 -*-
 
 import unittest
+from unittest.mock import patch
 import dsklayout.cli as cli
 
 class Test__cli__PackageSymbols(unittest.TestCase):
@@ -26,6 +27,26 @@ class Test__cli__PackageSymbols(unittest.TestCase):
 
     def test__app__symbols(self):
         self.assertIs(cli.CliApp, cli.app_.CliApp)
+
+class Test__main(unittest.TestCase):
+
+    def test__main__0(self):
+        with patch.object(cli.DskLayout, 'run', return_value='ok') as run:
+            result = cli.main()
+            run.assert_called_once_with()
+            self.assertEqual('ok', result)
+
+    def test__main__Exception(self):
+        with patch.object(cli.DskLayout, 'run', side_effect=RuntimeError('foo')) as run:
+            with self.assertRaises(RuntimeError) as context:
+                cli.main()
+            self.assertEqual('foo', str(context.exception))
+
+    def test__main__KeyboardInterrupt(self):
+        with patch.object(cli.DskLayout, 'run', side_effect=KeyboardInterrupt()) as run:
+            result = cli.main()
+            run.assert_called_once_with()
+            self.assertIs(0, result)
 
 if __name__ == '__main__':
     unittest.main()
