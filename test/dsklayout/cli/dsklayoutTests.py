@@ -19,9 +19,7 @@ class Test__DskLayout(unittest.TestCase):
 
     def test__properties(self):
         app = dsklayout_.DskLayout()
-        self.assertEqual(app.properties, {
-            'description': 'Retrieve and backup layouts of block devices'
-        })
+        self.assertEqual(app.properties, {'description': 'Retrieve and backup layouts of block devices'})
 
     def test__version(self):
         app = dsklayout_.DskLayout()
@@ -39,8 +37,7 @@ class Test__DskLayout(unittest.TestCase):
         parser.add_argument = mock.Mock()
         app = dsklayout_.DskLayout()
         self.assertIsNone(app.add_arguments(parser))
-        parser.add_argument.assert_called_once_with('-v', '--version',
-                action='version', version=('%(prog)s ' + app.version) )
+        parser.add_argument.assert_called_once_with('-v', '--version', action='version', version=('%(prog)s ' + app.version))
 
     def test__set_defaults(self):
         parser = mock.Mock(spec = [])

@@ -10,7 +10,7 @@ Introduction
 
 The dsklayout_ package consists of several modules comprising a complete
 foundation for the dsklayout_ application. The modules found in dsklayout_
-package may be depicted in a layered fashion. The topmost module is then
+package may be depicted in a layered fashion. On the top level there is
 :mod:`dsklayout.cli` which implements command-line interface. At the same
 level there could be a module called ``dsklayout.gui`` implementing graphical
 user interface, but it's not being developed at the moment. One level down,
@@ -29,8 +29,8 @@ may be found in Modules_.
 Modules
 =======
 
-This section documents python modules provided by the dsklayout_ package. The
-summary below lists all the modules and provides links to full documentation.
+This section documents python modules of dsklayout_ package. The summary below
+provides links to a full documentation for each module.
 
 .. autosummary::
     :toctree: api/modules

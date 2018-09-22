@@ -43,7 +43,6 @@ class Test__Fdisk(unittest.TestCase):
         mydir = os.path.dirname(__file__)
         return os.path.join(mydir, 'fixtures', file)
 
-
     def test__content(self):
         content = 'content'
         fdisk = fdisk_.FdiskProbe(content)

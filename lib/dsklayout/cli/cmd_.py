@@ -59,7 +59,7 @@ class CliCmd(cmdbase_.CliCmdBase):
         """Add an extension to this subcommand
 
         :param .CliExt ext: an extension object to be added,
-        :param str name: custom name (if different from extension-provided name).
+        :param str name: custom name (replaces the extension-provided name).
 
         .. note::
                 This method shall be invoked from subclass's constructor.
@@ -89,8 +89,7 @@ class CliCmd(cmdbase_.CliCmdBase):
         The method simply invokes ``ext.add_arguments(parser)`` for each
         extension ``ext`` from :attr:`.extensions`.
         """
-        for key, ext in self._extensions.items():
-            ext.add_arguments(parser)
+        self._each_extension(lambda x: x.add_arguments(parser))
 
     def set_defaults(self, parser):
         """Sets defaults to this command's arguments.
@@ -113,8 +112,7 @@ class CliCmd(cmdbase_.CliCmdBase):
                                                modified.
 
         """
-        for key, ext in self._extensions.items():
-            ext.set_defaults(parser)
+        self._each_extension(lambda x: x.set_defaults(parser))
 
     def add_cmd_arguments(self, parser):
         """Add command-line arguments related to this subcommand
@@ -154,6 +152,11 @@ class CliCmd(cmdbase_.CliCmdBase):
         :rtype: int
         """
         return 0
+
+    # Created to make code climate happy
+    def _each_extension(self, func, args=(), kw={}):
+        for _, x in self._extensions.items():
+            func(x, *args, **kw)
 
 
 # Local Variables:

@@ -31,8 +31,7 @@ class Test__CliBackupCmd(unittest.TestCase):
         self.assertIsNone(cmd.add_cmd_arguments(parser))
         parser.add_argument.assert_has_calls([
             mock.call("outfile", metavar='OUTFILE', help="output file"),
-            mock.call("devices", metavar='DEV', nargs="*",
-                      help="block device to be included in backup")
+            mock.call("devices", metavar='DEV', nargs="*", help="block device to be included in backup")
         ])
 
     def test__extensions__01(self):

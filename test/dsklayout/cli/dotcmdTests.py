@@ -30,16 +30,10 @@ class Test__CliDotCmd(unittest.TestCase):
         parser.add_argument = mock.Mock()
         self.assertIsNone(cmd.add_cmd_arguments(parser))
         parser.add_argument.assert_has_calls([
-            mock.call("--view", action='store_true',
-                      help="display graph instead of writting its source"),
-            mock.call("-o", "--output", metavar='FILE',
-                      help="write output to FILE instead of stdout"),
-            mock.call("-i", "--input", metavar='FILE',
-                      help="use FILE as input instead of probing OS," +
-                           " FILE should be an archive previously" +
-                           " created with dsklayout backup"),
-            mock.call("devices", metavar='DEV', nargs="*",
-                      help="top-level block device to be included in graph")
+            mock.call("--view", action='store_true', help="display graph instead of writting its source"),
+            mock.call("-o", "--output", metavar='FILE', help="write output to FILE instead of stdout"),
+            mock.call("-i", "--input", metavar='FILE', help="use FILE as input instead of probing OS, FILE should be an archive previously created with dsklayout backup"),
+            mock.call("devices", metavar='DEV', nargs="*", help="top-level block devices to be included in graph")
         ])
 
     def test__extensions__01(self):

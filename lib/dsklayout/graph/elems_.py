@@ -93,7 +93,8 @@ class Elems(collections.abc.MutableMapping):
             self._update_without_values(items)
 
     def dump_attributes(self):
-        return {'items': [(k, util.dump_object(v)) for k, v in self.data.items()]}
+        items = [(k, util.dump_object(v)) for k, v in self.data.items()]
+        return {'items': items}
 
     @classmethod
     def load_attributes(cls, attributes):

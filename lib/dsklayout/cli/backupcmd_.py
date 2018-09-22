@@ -12,7 +12,7 @@ __all__ = ('CliBackupCmd',)
 
 
 class CliBackupCmd(cmd_.CliCmd):
-    """Implements the ``dsklayout backup`` subcommand."""
+    """Implements the ``dsklayout backup`` command-line interface."""
 
     __slots__ = ()
 

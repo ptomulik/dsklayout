@@ -19,7 +19,7 @@ class Graph:
         nodes = nodes_.Nodes(nodes, **kw)
         edges = edges_.Edges(edges, **kw)
         if kw.get('consistency', True):
-            self._consistency(nodes, edges)
+            _consistency(nodes, edges)
         self._nodes = nodes
         self._edges = edges
 
@@ -96,27 +96,27 @@ class Graph:
 
     def successors(self, node):
         """Returns successors of the given node."""
-        return self._select_node_related_elems(self._edges.successors, node)
+        return _select_related(self._nodes, self._edges.successors, node)
 
     def predecessors(self, node):
         """Returns predecessors of the given node."""
-        return self._select_node_related_elems(self._edges.predecessors, node)
+        return _select_related(self._nodes, self._edges.predecessors, node)
 
     def neighbors(self, node):
         """Returns a set of nodes that are connected to a given node"""
-        return self._select_node_related_elems(self._edges.neighbors, node)
+        return _select_related(self._nodes, self._edges.neighbors, node)
 
     def outward(self, node):
         """Returns edges outward to given node"""
-        return self._select_node_related_elems(self._edges.outward, node)
+        return _select_related(self._nodes, self._edges.outward, node)
 
     def inward(self, node):
         """Returns edges inward to given node"""
-        return self._select_node_related_elems(self._edges.inward, node)
+        return _select_related(self._nodes, self._edges.inward, node)
 
     def incident(self, node):
         """Returns edges incident to given node"""
-        return self._select_node_related_elems(self._edges.incident, node)
+        return _select_related(self._nodes, self._edges.incident, node)
 
     @classmethod
     def adjacent(cls, node, edge):
@@ -125,15 +125,15 @@ class Graph:
 
     def roots(self):
         """Returns a set of root nodes (having no predecessors)"""
-        return self._select_nodes_not_satisfying(self.has_predecessors)
+        return _select_not_satisfying(self._nodes, self.has_predecessors)
 
     def leafs(self):
         """Returns a set of leaf nodes (having no successors)"""
-        return self._select_nodes_not_satisfying(self.has_successors)
+        return _select_not_satisfying(self._nodes, self.has_successors)
 
     def isolated(self):
         """Returns a set of isolated nodes (having no neighbors)"""
-        return self._select_nodes_not_satisfying(self.has_neighbors)
+        return _select_not_satisfying(self._nodes, self.has_neighbors)
 
     def dump_attributes(self):
         return {'nodes': util.dump_object(self.nodes),
@@ -145,26 +145,30 @@ class Graph:
         edges = util.load_object(attributes['edges'])
         return cls(nodes, edges)
 
-    def _consistency(self, nodes, edges):
-        """Checks provided nodes and edges for consistency"""
-        # For each edge ensure, that their both endpoints refer existing nodes
-        for (left, right) in edges:
-            if left not in nodes:
-                raise KeyError(left)
-            if right not in nodes:
-                raise KeyError(right)
 
-    def _select_node_related_elems(self, selector, node):
-        """Helper used to select node-related elements (nodes, edges)"""
-        try:
-            elems = selector(node)
-        except KeyError:
-            self._nodes[node]  # rethrow if we have no such node
-            elems = ()         # otherwise it was an isolated node
-        return set(elems)
+def _consistency(nodes, edges):
+    """Checks provided nodes and edges for consistency"""
+    # For each edge ensure, that their both endpoints refer existing nodes
+    for (left, right) in edges:
+        if left not in nodes:
+            raise KeyError(left)
+        if right not in nodes:
+            raise KeyError(right)
 
-    def _select_nodes_not_satisfying(self, condition):
-        return {n for n in self._nodes if not condition(n)}
+
+def _select_related(nodes, selector, node):
+    """Helper used to select node-related elements (nodes, edges)"""
+    try:
+        elems = selector(node)
+    except KeyError:
+        nodes[node]  # rethrow if we have no such node
+        elems = ()   # otherwise it was an isolated node
+    return set(elems)
+
+
+def _select_not_satisfying(elems, condition):
+    return {n for n in elems if not condition(n)}
+
 
 # Local Variables:
 # tab-width:4

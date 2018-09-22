@@ -12,6 +12,7 @@ __all__ = ('CliDotCmd',)
 
 
 class CliDotCmd(cmd_.CliCmd):
+    """Implements the ``dsklayout dot`` command-line interface."""
 
     __slots__ = ()
 
@@ -29,15 +30,17 @@ class CliDotCmd(cmd_.CliCmd):
 
     def add_cmd_arguments(self, parser):
         parser.add_argument("--view", action='store_true',
-                            help="display graph instead of writting its source")
+                            help="display graph instead of writting its" +
+                                 " source")
         parser.add_argument("-o", "--output", metavar='FILE',
                             help="write output to FILE instead of stdout")
-        parser.add_argument("-i","--input", metavar='FILE',
+        parser.add_argument("-i", "--input", metavar='FILE',
                             help="use FILE as input instead of probing OS," +
                                  " FILE should be an archive previously" +
                                  " created with dsklayout backup")
         parser.add_argument("devices", metavar='DEV', nargs='*',
-                            help="top-level block device to be included in graph")
+                            help="top-level block devices to be included in " +
+                                 "graph")
 
     def run(self):
         return DotCmd(vars(self.arguments)).run()

@@ -1,5 +1,5 @@
 # -*- coding: utf8 -*-
-"""Command-line implementation.
+"""Dsklayout command-line implementation.
 
 This module implements dsklayout command-line interface. It provides an entry
 point for dsklayout application -- the :func:`.main` function. The function can
@@ -56,7 +56,7 @@ def main():
     except KeyboardInterrupt:
         return 0
 
-__all__ = __all__ + ( 'main', )
+__all__ = __all__ + ('main',)
 
 # Local Variables:
 # tab-width:4

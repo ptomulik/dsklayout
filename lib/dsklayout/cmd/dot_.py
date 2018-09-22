@@ -34,7 +34,6 @@ class DotCmd(cmd_.Cmd):
     def _lsblk_probe(self, devices=None):
         return self._probe(LsBlkProbe, 'lsblk', (devices,))
 
-
     def _new_lsblk_graph(self):
         infile = self.getarg('input')
         if infile is not None:

@@ -21,8 +21,9 @@ class Archive:
     layout.
 
     :class:`.Archive` is just a decorator that wraps a :class:`zipfile.ZipFile`
-    object. In addition to members documented here, the class also exposes most
-    of the methods and attributes provided by the :class:`zipfile.ZipFile`.
+    object. The class exposes most of the methods and attributes of
+    :class:`zipfile.ZipFile`. It also introduces its own custom members
+    documented here.
 
     New instances shall typically be created with class method :meth:`.new`.
     :class:`.Archive` objects may be used as context managers.
@@ -153,10 +154,10 @@ class Archive:
         :param file:
             may be a path to a file (a string), a file-like object or a
             path-like object, the argument is passed unchanged to
-            :class:`zipfile.ZipFile`,
+            :class:`zipfile.ZipFile` constructor,
         :param str mode:
             optional mode used to open the archive, the argument is passed
-            unchanged to :class:`zipfile.ZipFile`,
+            unchanged to :class:`zipfile.ZipFile` constructor,
         :param \*\*kw:
             keyword arguments (see below):
         :keyword compression:

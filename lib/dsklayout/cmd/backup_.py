@@ -22,6 +22,7 @@ __all__ = ('BackupCmd',)
 
 _mdadm_raid_types = ['raid0', 'raid1', 'raid4', 'raid5', 'raid6', 'raid10']
 
+
 class _BackupContext:
 
     __slots__ = ('_tmpdir', '_archive')
@@ -84,7 +85,7 @@ class BackupCmd(cmd_.Cmd):
         elif isinstance(tool, dict):
             tools = tool
         else:
-            tools = {t: self.getarg(t,t) for t in tool}
+            tools = {t: self.getarg(t, t) for t in tool}
         if not all([shutil.which(prog) for prog in tools.values()]):
             return None
         kwargs = dict(tools, **(kw or {}))

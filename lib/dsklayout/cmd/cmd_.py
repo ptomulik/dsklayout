@@ -4,8 +4,13 @@
 
 __all__ = ('Cmd', 'ARGABSENT')
 
-class _ArgAbsent: pass
+
+class _ArgAbsent:
+    pass
+
+
 ARGABSENT = _ArgAbsent()
+
 
 class Cmd:
 
@@ -30,7 +35,6 @@ class Cmd:
         mapped = {k: self.getarg(mappings[k], defaults.get(k, default))
                   for k in mappings}
         return {k: v for k, v in mapped.items() if v is not ARGABSENT}
-
 
 
 # Local Variables:
