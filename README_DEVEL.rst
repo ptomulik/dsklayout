@@ -5,7 +5,8 @@ Setting up development environment
 ----------------------------------
 
 We recommend using pip_ + pipenv_ to manage dependencies and run programs in
-an isolated Python environment.
+an isolated Python environment. We also use `docker compose`_ to analyze code
+with containerized `Code Climate CLI`_.
 
 Installing pip user-wise
 ````````````````````````
@@ -114,3 +115,4 @@ SOFTWARE
 .. _pipenv docs: https://docs.pipenv.org/
 .. _docker compose installation: https://docs.docker.com/compose/install/
 .. _docker compose: https://docs.docker.com/compose/
+.. _Code Climate CLI: https://github.com/codeclimate/codeclimate
