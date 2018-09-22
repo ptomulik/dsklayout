@@ -47,9 +47,16 @@ To remove the virtualenv later
 
     python3 -m pipenv --rm
 
+Installing docker-compose
+`````````````````````````
+
+Follow `docker compose installation_` instructions.
+
+Performing developer's tasks
+----------------------------
 
 Running commands in pipenv isolated environment
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+````````````````````````````````````````````````
 
 Example of running unit-tests
 
@@ -58,13 +65,24 @@ Example of running unit-tests
     python3 -m pipenv run ./runtests.sh
 
 Generating documentation
-^^^^^^^^^^^^^^^^^^^^^^^^
+````````````````````````
 
 .. code:: shell
 
     python3 -m pipenv run make html
 
 The generated documentation is written to ``build/doc/html``.
+
+
+Analyzing code with codeclimate
+```````````````````````````````
+
+Provided `docker compose_` is already installed
+
+.. code:: shell
+
+      docker-compose run codeclimate analyze
+
 
 LICENSE
 -------
@@ -94,3 +112,5 @@ SOFTWARE
 .. _pip installation instructions: https://pip.pypa.io/en/latest/installing/#install-pip
 .. _get-pip.py: https://bootstrap.pypa.io/get-pip.py
 .. _pipenv docs: https://docs.pipenv.org/
+.. _docker compose installation: https://docs.docker.com/compose/install/
+.. _docker compose: https://docs.docker.com/compose/
