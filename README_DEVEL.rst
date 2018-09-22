@@ -50,7 +50,7 @@ To remove the virtualenv later
 Installing docker-compose
 `````````````````````````
 
-Follow `docker compose installation_` instructions.
+Follow `docker compose installation`_ instructions.
 
 Performing developer's tasks
 ----------------------------
@@ -77,7 +77,7 @@ The generated documentation is written to ``build/doc/html``.
 Analyzing code with codeclimate
 ```````````````````````````````
 
-Provided `docker compose_` is already installed
+Provided `docker compose`_ is already installed
 
 .. code:: shell
 
