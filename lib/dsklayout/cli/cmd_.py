@@ -147,8 +147,8 @@ class CliCmd(cmdbase_.CliCmdBase):
                 A subclass shall override this method to provide command's
                 logic. The default implementation just returns ``0``.
 
-        :returns: status code from command execution to be returned to
-                  operating system.
+        :return: status code from command execution to be returned to
+                 operating system.
         :rtype: int
         """
         return 0

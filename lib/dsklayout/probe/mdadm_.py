@@ -24,36 +24,40 @@ class _MdadmReportProbe(backtick_.BackTickProbe):
         return cls._parse(output)
 
     @classmethod
-    def _parse_device_name(cls, content, line):
-        m = re.match(r'^\s*(/+\w+(?:/+\w+)*):\s*$', line)
+    def _match_device_name(cls, line):
+        return re.match(r'^\s*(/+\w+(?:/+\w+)*):\s*$', line)
+
+    @classmethod
+    def _parse_device_name(cls, node, line):
+        m = cls._match_device_name(line)
         if not m:
             return False
-        content['Device Name'] = m.group(1)
+        node['Device Name'] = m.group(1)
         return True
 
     @classmethod
-    def _parse_keyval(cls, content, line):
+    def _parse_keyval(cls, node, line):
         m = re.match(r'^\s*(\w+(?:\s+\w+)*)\s*:\s*(\S+(?:\s+\S+)*)\s*$', line)
         if not m:
             return False
-        content[m.group(1)] = m.group(2)
+        node[m.group(1)] = m.group(2)
         return True
 
     @classmethod
-    def _parse_table_header(cls, content, line):
+    def _parse_table_header(cls, node, line):
         m = re.match(r'^\s*(Number)\s+(Major)\s+(Minor)\s+(RaidDevice)\s+(State)\s*$', line)
         if not m:
             return False
-        content['table'] = {
+        node['table'] = {
             'headers': m.groups(),
             'colspan': [m.span(i) for i in range(1, 1+len(m.groups()))]
         }
         return True
 
     @classmethod
-    def _parse_table_row(cls, content, line):
-        headers = content['table']['headers']
-        colspan = content['table']['colspan']
+    def _parse_table_row(cls, node, line):
+        headers = node['table']['headers']
+        colspan = node['table']['colspan']
 
         m = re.match(r'^\s*\w+(?:\s+\w+){5,}\s*', line)
         if not m:
@@ -80,37 +84,57 @@ class _MdadmReportProbe(backtick_.BackTickProbe):
         row['State'] = templist[:-1]
         row['Device'] = templist[-1]
 
-        if 'rows' not in content['table']:
-            content['table']['rows'] = []
-        content['table']['rows'].append(row)
+        if 'rows' not in node['table']:
+            node['table']['rows'] = []
+        node['table']['rows'].append(row)
         return True
 
     @classmethod
-    def _postprocess_mdadm_report_table(cls, content):
-        if 'table' in content:
-            content['Device List'] = content['table']['rows']
-            del content['table']
+    def _postprocess_mdadm_report_table(cls, node):
+        if 'table' in node:
+            node['Device List'] = node['table']['rows']
+            del node['table']
 
     @classmethod
-    def _parse_line(cls, state, content, line):
-        if not content.get('Device Name'):
-            return cls._parse_device_name(content, line)
+    def _parse_line(cls, state, node, line):
+        if not node.get('Device Name'):
+            return cls._parse_device_name(node, line)
         elif state['intable']:
-            return cls._parse_table_row(content, line)
+            return cls._parse_table_row(node, line)
         else:
-            if cls._parse_table_header(content, line):
+            if cls._parse_table_header(node, line):
                 state['intable'] = True
                 return True
             else:
-                return cls._parse_keyval(content, line)
+                return cls._parse_keyval(node, line)
+
+    @classmethod
+    def _parse_sheet(cls, nodes, sheet):
+        state = {'intable': False}
+        node = dict()
+        for line in sheet:
+            cls._parse_line(state, node, line)
+        cls._postprocess_mdadm_report_table(node)
+        nodes.append(node)
+
+    @classmethod
+    def _split_sheets(cls, report):
+        sheets = []
+        for line in report.splitlines():
+            if cls._match_device_name(line):
+                sheets.append([line])
+            elif sheets:
+                sheets[-1].append(line)
+            else:
+                # TODO: syntax error, issue a warning/error?
+                return []
+        return sheets
 
     @classmethod
     def _parse(cls, report, **kw):
-        state = {'intable': False}
-        content = {'Report': report}
-        for line in report.splitlines():
-            cls._parse_line(state, content, line)
-        cls._postprocess_mdadm_report_table(content)
+        content = {'Report': report, 'Nodes': []}
+        for sheet in cls._split_sheets(report):
+            cls._parse_sheet(content['Nodes'], sheet)
         return content
 
 
@@ -131,6 +155,41 @@ class MdadmExamineProbe(_MdadmReportProbe):
 class MdadmProbe(probe_.Probe):
 
     @classmethod
+    def new(cls, arguments=None, flags=None, **kw):
+        """Creates a new instance of MdadmProbe for specified arguments by
+           running and interpreting output of mdadm --detail, and
+           mdadm --examine."""
+        graph = cls._lsblk_graph(arguments, flags, kw)
+        devices = _select_nodes(graph, cls._is_raid)
+        members = _select_nodes(graph, cls._is_raid_member)
+
+        detail = MdadmDetailProbe.new(devices, flags, **kw)
+        examine = MdadmExamineProbe.new(members, flags, **kw)
+
+        return cls({'detail': detail, 'examine': examine})
+
+    @classmethod
+    def available(cls, **kw):
+        """Returns True if all the supporting probes are operational.
+
+        :param \*\*kw:
+            optional keyword arguments, **must** be same as keyword arguments
+            for :meth:`new()`.
+        """
+        probes = [_MdadmReportProbe]
+        if 'lsblkgraph' not in kw:
+            probes.append(lsblk_.LsBlkProbe)
+        return all(p.available(**kw) for p in probes)
+
+    @classmethod
+    def _is_raid(cls, node):
+        return re.match(r'^raid(?:\d{1,2})$', node.type)
+
+    @classmethod
+    def _is_raid_member(cls, node):
+        return node.fstype == 'linux_raid_member'
+
+    @classmethod
     def _lsblk_graph(cls, arguments, flags, kw):
         try:
             graph = kw['lsblkgraph']
@@ -138,26 +197,6 @@ class MdadmProbe(probe_.Probe):
         except KeyError:
             graph = lsblk_.LsBlkProbe.new(arguments, flags, **kw).graph()
         return graph
-
-    @classmethod
-    def new(cls, arguments=None, flags=None, **kw):
-        """Creates a new instance of MdadmProbe for specified arguments by
-           running and interpreting output of mdadm --detail, and
-           mdadm --examine."""
-        graph = cls._lsblk_graph(arguments, flags, kw)
-        devices = _select_nodes(graph, lambda n : re.match(r'^raid(?:\d{1,2})$', n.type) )
-        members = _select_nodes(graph, lambda n : n.fstype == 'linux_raid_member')
-
-        devices = {dev: MdadmDetailProbe.new(dev, flags, **kw).content
-                   for dev in devices}
-        members = {mem: MdadmExamineProbe.new(mem, flags, **kw).content
-                   for mem in members}
-        return cls({'devices': devices, 'members': members})
-
-    @classmethod
-    def available(cls, **kw):
-        classes = (lsblk_.LsBlkProbe, _MdadmReportProbe)
-        return all(c.which(**kw) for c in classes)
 
 # Local Variables:
 # tab-width:4

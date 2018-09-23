@@ -6,17 +6,20 @@ import importlib
 
 __all__ = ('dump_object', 'load_object')
 
+
 def dump_object(obj):
     if hasattr(obj, 'dump_attributes'):
         return _dump_object_with_attributes(obj)
     else:
         return _dump_other_object(obj)
 
+
 def load_object(data):
     obj = _load_object_with_attributes(data)
     if obj is None:
         obj = _load_other_object(data)
     return obj
+
 
 def _dump_other_object(obj):
     if isinstance(obj, dict):
@@ -33,6 +36,7 @@ def _dump_object_with_attributes(obj):
             '_class': cls.__name__,
             '_attributes': obj.dump_attributes()}
 
+
 def _load_object_with_attributes(data):
     try:
         modname = data['_module']
@@ -48,6 +52,7 @@ def _load_object_with_attributes(data):
         else:
             return cls(**attribs)
 
+
 def _load_other_object(data):
     if isinstance(data, dict):
         return {k: load_object(v) for k, v in data.items()}
@@ -55,6 +60,7 @@ def _load_other_object(data):
         return [load_object(v) for v in data]
     else:
         return data
+
 
 # Local Variables:
 # tab-width:4

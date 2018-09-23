@@ -11,7 +11,7 @@ import dsklayout.probe.fdisk_ as fdisk_
 
 backtick = 'dsklayout.util.backtick'
 
-class Test__Fdisk(unittest.TestCase):
+class Test__FdiskProbe(unittest.TestCase):
 
     fixture_plan = [
         ('fdisk_1_sda_sdb.txt',    'fdisk_1_sda_sdb.content.json'),
@@ -112,8 +112,8 @@ class Test__Fdisk(unittest.TestCase):
         self.maxDiff = None
         for left, right in self.fixture_plan:
             content = fdisk_.FdiskProbe.parse(self.fixtures[left])
-            expct = self.fixtures[right]
-            self.assertEqual(content, expct)
+            expected = self.fixtures[right]
+            self.assertEqual(content, expected)
 
 if __name__ == '__main__':
     unittest.main()

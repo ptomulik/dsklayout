@@ -1,0 +1,52 @@
+/dev/md1:
+           Version : 0.90
+     Creation Time : Sat Apr 21 06:56:49 2012
+        Raid Level : raid1
+        Array Size : 524224 (511.94 MiB 536.81 MB)
+     Used Dev Size : 524224 (511.94 MiB 536.81 MB)
+      Raid Devices : 2
+     Total Devices : 2
+   Preferred Minor : 1
+       Persistence : Superblock is persistent
+
+       Update Time : Sun Sep 23 08:56:58 2018
+             State : clean 
+    Active Devices : 2
+   Working Devices : 2
+    Failed Devices : 0
+     Spare Devices : 0
+
+Consistency Policy : resync
+
+              UUID : 82ca73c6:644ccaa7:9d4deba6:47ca997f
+            Events : 0.5271
+
+    Number   Major   Minor   RaidDevice State
+       0       8        1        0      active sync   /dev/sda1
+       1       8       17        1      active sync   /dev/sdb1
+/dev/md6:
+           Version : 1.2
+     Creation Time : Sat Apr 21 06:57:45 2012
+        Raid Level : raid1
+        Array Size : 67107768 (64.00 GiB 68.72 GB)
+     Used Dev Size : 67107768 (64.00 GiB 68.72 GB)
+      Raid Devices : 2
+     Total Devices : 2
+       Persistence : Superblock is persistent
+
+       Update Time : Sun Sep 23 11:45:34 2018
+             State : clean 
+    Active Devices : 2
+   Working Devices : 2
+    Failed Devices : 0
+     Spare Devices : 0
+
+Consistency Policy : resync
+
+              Name : debian:6
+              UUID : d1caa66e:095cd84f:ecb540e2:d0e6191b
+            Events : 58294
+
+    Number   Major   Minor   RaidDevice State
+       2       8        6        0      active sync   /dev/sda6
+       3       8       22        1      active sync   /dev/sdb6

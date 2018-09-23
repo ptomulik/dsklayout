@@ -1,0 +1,108 @@
+/dev/sda1:
+          Magic : a92b4efc
+        Version : 0.90.00
+           UUID : 82ca73c6:644ccaa7:9d4deba6:47ca997f
+  Creation Time : Sat Apr 21 06:56:49 2012
+     Raid Level : raid1
+  Used Dev Size : 524224 (511.94 MiB 536.81 MB)
+     Array Size : 524224 (511.94 MiB 536.81 MB)
+   Raid Devices : 2
+  Total Devices : 2
+Preferred Minor : 1
+
+    Update Time : Sun Sep 23 08:56:58 2018
+          State : clean
+ Active Devices : 2
+Working Devices : 2
+ Failed Devices : 0
+  Spare Devices : 0
+       Checksum : 209cb36e - correct
+         Events : 5271
+
+
+      Number   Major   Minor   RaidDevice State
+this     0       8        1        0      active sync   /dev/sda1
+
+   0     0       8        1        0      active sync   /dev/sda1
+   1     1       8       17        1      active sync   /dev/sdb1
+/dev/sdb1:
+          Magic : a92b4efc
+        Version : 0.90.00
+           UUID : 82ca73c6:644ccaa7:9d4deba6:47ca997f
+  Creation Time : Sat Apr 21 06:56:49 2012
+     Raid Level : raid1
+  Used Dev Size : 524224 (511.94 MiB 536.81 MB)
+     Array Size : 524224 (511.94 MiB 536.81 MB)
+   Raid Devices : 2
+  Total Devices : 2
+Preferred Minor : 1
+
+    Update Time : Sun Sep 23 08:56:58 2018
+          State : clean
+ Active Devices : 2
+Working Devices : 2
+ Failed Devices : 0
+  Spare Devices : 0
+       Checksum : 209cb380 - correct
+         Events : 5271
+
+
+      Number   Major   Minor   RaidDevice State
+this     1       8       17        1      active sync   /dev/sdb1
+
+   0     0       8        1        0      active sync   /dev/sda1
+   1     1       8       17        1      active sync   /dev/sdb1
+/dev/sda6:
+          Magic : a92b4efc
+        Version : 1.2
+    Feature Map : 0x0
+     Array UUID : d1caa66e:095cd84f:ecb540e2:d0e6191b
+           Name : debian:6
+  Creation Time : Sat Apr 21 06:57:45 2012
+     Raid Level : raid1
+   Raid Devices : 2
+
+ Avail Dev Size : 134215680 (64.00 GiB 68.72 GB)
+     Array Size : 67107768 (64.00 GiB 68.72 GB)
+  Used Dev Size : 134215536 (64.00 GiB 68.72 GB)
+    Data Offset : 2048 sectors
+   Super Offset : 8 sectors
+   Unused Space : before=1960 sectors, after=144 sectors
+          State : clean
+    Device UUID : 32b97917:360284fb:ec0a3034:fa3bc4db
+
+    Update Time : Sun Sep 23 12:13:36 2018
+  Bad Block Log : 512 entries available at offset 72 sectors
+       Checksum : e2d76b3f - correct
+         Events : 58294
+
+
+   Device Role : Active device 0
+   Array State : AA ('A' == active, '.' == missing, 'R' == replacing)
+/dev/sdb6:
+          Magic : a92b4efc
+        Version : 1.2
+    Feature Map : 0x0
+     Array UUID : d1caa66e:095cd84f:ecb540e2:d0e6191b
+           Name : debian:6
+  Creation Time : Sat Apr 21 06:57:45 2012
+     Raid Level : raid1
+   Raid Devices : 2
+
+ Avail Dev Size : 134215680 (64.00 GiB 68.72 GB)
+     Array Size : 67107768 (64.00 GiB 68.72 GB)
+  Used Dev Size : 134215536 (64.00 GiB 68.72 GB)
+    Data Offset : 2048 sectors
+   Super Offset : 8 sectors
+   Unused Space : before=1960 sectors, after=144 sectors
+          State : clean
+    Device UUID : 56bfafd2:057a91a8:9b03b0dd:d448b7a3
+
+    Update Time : Sun Sep 23 12:13:36 2018
+  Bad Block Log : 512 entries available at offset 72 sectors
+       Checksum : bc8deebd - correct
+         Events : 58294
+
+
+   Device Role : Active device 1
+   Array State : AA ('A' == active, '.' == missing, 'R' == replacing)

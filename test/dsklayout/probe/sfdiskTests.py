@@ -10,7 +10,7 @@ import dsklayout.probe.sfdisk_ as sfdisk_
 
 backtick = 'dsklayout.util.backtick'
 
-class Test__Sfdisk(unittest.TestCase):
+class Test__SfdiskProbe(unittest.TestCase):
 
     def test__content(self):
         content = 'content'

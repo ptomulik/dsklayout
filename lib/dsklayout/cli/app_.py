@@ -106,7 +106,7 @@ class CliApp:
 
             This property shall be implemented in a subclass.
 
-        :returns: application version
+        :return: application version
         :rtype: str
         """
         return '(unknown version)'
@@ -155,7 +155,7 @@ class CliApp:
         arguments are invalid, a help message is printed.
 
 
-        :returns: status code returned by the subcommand.
+        :return: status code returned by the subcommand.
         :rtype: int
         """
         arguments = self.parser.parse_args(sys.argv[1:])

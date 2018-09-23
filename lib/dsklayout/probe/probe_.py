@@ -2,6 +2,8 @@
 """Provides the Probe base class
 """
 
+from .. import util
+
 __all__ = ('Probe',)
 
 
@@ -28,12 +30,13 @@ class Probe:
 
     def dump_attributes(self):
         """Supports serialization."""
-        return {'content': self.content}
+        return {'content': util.dump_object(self.content)}
 
     @classmethod
     def load_attributes(cls, attributes):
         """Supports deserialization."""
-        return cls(attributes['content'])
+        content = util.load_object(attributes['content'])
+        return cls(content)
 
 
 

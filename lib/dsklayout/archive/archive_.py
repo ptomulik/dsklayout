@@ -171,7 +171,7 @@ class Archive:
         argument not documented here get forwarded to the constructor of
         :class:`.Archive`.
 
-        :returns: new instance of :class:`.Archive`
+        :return: new instance of :class:`.Archive`
         :rtype: Archive
         """
         options = cls._extract_zip_options(kw)
@@ -236,8 +236,8 @@ class Archive:
         :param str encoding:
             character encoding used to read the file.
 
-        :returns: an instance of :class:`.ArchiveMetadata` loaded from the
-                  file.
+        :return: an instance of :class:`.ArchiveMetadata` loaded from the
+                 file.
         :rtype: ArchiveMetadata
         """
         if arcname is None:

@@ -19,12 +19,22 @@ class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
     """Base class for any :class:`.Probe` which retrieves content from the
     STDOUT of a *single* CLI command run.
 
-    A subclass of :class:`.BackTickProbe` must override two methods:
+    .. note::
+        Collecting data from multiple related programs shall be
+        organized differently. Inheriting :class:`BackTickProbe` is not the
+        proper way of implementing composite probes.
+
+    A subclass of :class:`BackTickProbe` must override two methods:
     :meth:`command` and :meth:`parse`.
 
-    Note, that collecting data from multiple related programs shall be
-    organized differently. Inheriting :class:`.BackTickProbe` is not the
-    way to go in this case.
+    New instances should be created by user with the class method :meth:`new`.
+    A probe may be unavailable in certain circumstances. For example, a
+    supporting executable may be unavailable (missing software). This is pretty
+    normal (consider a host without software raid devices --
+    :manpage:`mdadm(8)` is not required and most probably not installed). The
+    availability of the probe may be checked with class method
+    :meth:`available` before creating an instance with :meth:`new`. Trying to
+    instantiate an unavailable probe will usually result with an exception.
     """
 
     @classmethod
@@ -38,7 +48,8 @@ class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
             keyword arguments (unspecified); the method receives all keyword
             arguments passed to :meth:`run` method as is.
 
-        :return: Path to (or name of) the CLI command that shall be used.
+        :return:
+            path to (or name of) the CLI command that shall be used.
         :rtype: str
 
         :example:
@@ -57,9 +68,10 @@ class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
 
         .. note:: This method **must** be implemented in a subclass.
 
-        :param output: an output captured from the STDOUT of the external
-                       command.
-        :return: parsed data, suitable for :attr:`.content`
+        :param str output:
+            an output captured from the STDOUT of the external command.
+        :return:
+            parsed data, suitable for :attr:`.content`
         :rtype: unspecified
         """
         pass
@@ -70,14 +82,15 @@ class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
 
         .. note:: This method **may** be customized in a subclass.
 
-        :param flags: a list of flags as passed to :meth:`run`;
-                      ignored by the default implementation,
-        :param kw:    keyword arguments as passed to
-                      :meth:`run`; ignored by the default
-                      implementation.
-        :type flags: list, None
-        :return: A list of flags to be passed to the external command. Default
-                 implementation returns an empty list ``[]`` unconditionally.
+        :param list flags:
+            optional list of flags as passed to :meth:`run`; ignored by the
+            default implementation,
+        :param \*\*kw:
+            keyword arguments, as passed to :meth:`run`; ignored by the default
+            implementation.
+        :return:
+            a list of flags to be passed to the external command; default
+            implementation returns an empty list ``[]`` unconditionally.
         :rtype: list
         """
         return []
@@ -88,11 +101,12 @@ class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
 
         .. note:: This method **may** be customized in a subclass
 
-        :param kw: keyword arguments, as passed to :meth:`run`
-        :return: Keyword arguments that shall be passed to
-                 :func:`.util.backtick`; the default implementation just
-                 selects and returns these of **kw**, that are suitable for
-                 :func:`.util.backtick`.
+        :param \*\*kw:
+            keyword arguments, as passed to :meth:`run`.
+        :return:
+            keyword arguments that shall be passed to :func:`.util.backtick`;
+            the default implementation just selects and returns these of
+            **kw**, that are suitable for :func:`.util.backtick`.
         :rtype: dict
         """
         return {k: v for k, v in kw.items() if k in _popen_args}
@@ -111,7 +125,8 @@ class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
             keyword arguments; passed to :meth:`flags` and :meth:`command`;
             arguments selected by :meth:`kwargs` are also passed to
             :func:`.util.backtick`.
-        :return: Output captured from the command (STDOUT).
+        :return:
+            output captured from the command (STDOUT).
         :rtype: str
         """
         if arguments is None:
@@ -137,7 +152,8 @@ class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
             :meth:`run`,
         :param \*\*kw:
             keyword arguments; passed unchanged to :meth:`run`.
-        :return: New instance of the subclass.
+        :return:
+            new instance of the subclass.
         """
         output = cls.run(arguments, flags, **kw)
         content = cls.parse(output)
@@ -149,9 +165,29 @@ class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
         :meth:`command` was called.
 
         :param \*\*kw:
-            keyword arguments; passed unchanged to :meth:`command`.
+            keyword arguments, **must** be same as keyword arguments for
+            :meth:`run`.
+        :return:
+            the path to the supporting executable; if no command would be
+            called, return ``None``.
+        :rtype: str, None
         """
         return shutil.which(cls.command(**kw))
+
+    @classmethod
+    def available(cls, **kw):
+        """Check if the supporting external command is available.
+
+        :param \*\*kw:
+            keyword arguments, **must** be same as keyword arguments for
+            :meth:`run`.
+
+        :return:
+            ``True``, if the supporting executable is available; otherwise
+            ``False``.
+        """
+        return bool(cls.which(kw))
+
 
 # Local Variables:
 # tab-width:4

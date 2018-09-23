@@ -1,0 +1,27 @@
+/dev/sda1:
+          Magic : a92b4efc
+        Version : 0.90.00
+           UUID : 82ca73c6:644ccaa7:9d4deba6:47ca997f
+  Creation Time : Sat Apr 21 06:56:49 2012
+     Raid Level : raid1
+  Used Dev Size : 524224 (511.94 MiB 536.81 MB)
+     Array Size : 524224 (511.94 MiB 536.81 MB)
+   Raid Devices : 2
+  Total Devices : 2
+Preferred Minor : 1
+
+    Update Time : Sun Sep 23 08:56:58 2018
+          State : clean
+ Active Devices : 2
+Working Devices : 2
+ Failed Devices : 0
+  Spare Devices : 0
+       Checksum : 209cb36e - correct
+         Events : 5271
+
+
+      Number   Major   Minor   RaidDevice State
+this     0       8        1        0      active sync   /dev/sda1
+
+   0     0       8        1        0      active sync   /dev/sda1
+   1     1       8       17        1      active sync   /dev/sdb1
