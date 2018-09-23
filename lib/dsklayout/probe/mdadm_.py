@@ -43,7 +43,8 @@ class _MdadmReportProbe(backtick_.BackTickProbe):
 
     @classmethod
     def _parse_table_header(cls, node, line):
-        m = re.match(r'^\s*(Number)\s+(Major)\s+(Minor)\s+(RaidDevice)\s+(State)\s*$', line)
+        m = re.match(r'^\s*(Number)\s+(Major)\s+(Minor)\s+(RaidDevice)' +
+                     r'\s+(State)\s*$', line)
         if not m:
             return False
         node['table'] = {
@@ -53,13 +54,9 @@ class _MdadmReportProbe(backtick_.BackTickProbe):
         return True
 
     @classmethod
-    def _parse_table_row(cls, node, line):
+    def _extract_table_row(cls, node, line):
         headers = node['table']['headers']
         colspan = node['table']['colspan']
-
-        m = re.match(r'^\s*\w+(?:\s+\w+){5,}\s*', line)
-        if not m:
-            return False
 
         row = dict()
 
@@ -82,6 +79,15 @@ class _MdadmReportProbe(backtick_.BackTickProbe):
         row['state'] = templist[:-1]
         row['device'] = templist[-1]
 
+        return row
+
+    @classmethod
+    def _parse_table_row(cls, node, line):
+        if not re.match(r'^\s*\w+(?:\s+\w+){5,}\s*', line):
+            return False
+
+        row = cls._extract_table_row(node, line)
+
         if 'rows' not in node['table']:
             node['table']['rows'] = []
         node['table']['rows'].append(row)
@@ -94,17 +100,21 @@ class _MdadmReportProbe(backtick_.BackTickProbe):
             del node['table']
 
     @classmethod
+    def _parse_table_or_keyval(cls, state, node, line):
+        if state['intable']:
+            return cls._parse_table_row(node, line)
+        elif cls._parse_table_header(node, line):
+            state['intable'] = True
+            return True
+        else:
+            return cls._parse_keyval(node, line)
+
+    @classmethod
     def _parse_line(cls, state, node, line):
         if not node.get('device_name'):
             return cls._parse_device_name(node, line)
-        elif state['intable']:
-            return cls._parse_table_row(node, line)
         else:
-            if cls._parse_table_header(node, line):
-                state['intable'] = True
-                return True
-            else:
-                return cls._parse_keyval(node, line)
+            return cls._parse_table_or_keyval(state, node, line)
 
     @classmethod
     def _parse_sheet(cls, nodes, sheet):

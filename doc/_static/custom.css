@@ -7,18 +7,18 @@ div.admonition p.admonition-title {
   font-weight: bold;
 }
 
-dl.class, dl.function {
+dl.class, dl.function, dl.exception {
   margin: 6px 0px 6px 0px;
   border: 1px solid #ccc;
 }
 
-dl.class > dt, dl.function > dt {
+dl.class > dt, dl.function > dt, dl.exception > dt {
   padding: 12px;
   border-bottom: 1px dashed #ccc;
   background: #eee;
 }
 
-dl.class > dd, dl.function > dd {
+dl.class > dd, dl.function > dd, dl.exception > dd {
   margin-right: 12px;
 }
 

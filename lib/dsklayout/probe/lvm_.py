@@ -1,14 +1,67 @@
 # -*- coding: utf8 -*-
 
+from . import backtick_
 from . import composite_
-from . import lvs_
-from . import pvs_
-from . import vgs_
 from . import lsblk_
 
 from .. import util
 
-__all__ = ('LvmProbe',)
+import abc
+
+__all__ = ('LvsProbe', 'VgsProbe', 'PvsProbe', 'LvmProbe')
+
+
+class _LvmReportProbe(backtick_.BackTickProbe):
+
+    @classmethod
+    @abc.abstractmethod
+    def cmdname(cls):
+        pass
+
+    @classmethod
+    def xflags(cls):
+        return []
+
+    @classmethod
+    def command(cls, **kw):
+        return kw.get(cls.cmdname, cls.cmdname)
+
+    @classmethod
+    def flags(cls, flags, **kw):
+        return ['--readonly', '--reportformat', 'json'] + cls.xflags() + flags
+
+    @classmethod
+    def parse(cls, output):
+        return json.loads(output)
+
+
+class LvsProbe(_LvmReportProbe):
+
+    @classmethod
+    def cmdname(cls):
+        return 'lvs'
+
+    @classmethod
+    def xflags(cls):
+        return ['-o', '+lv_all']
+
+
+class PvsProbe(_LvmReportProbe):
+
+    @classmethod
+    def cmdname(cls):
+        return 'pvs'
+
+    @classmethod
+    def xflags(cls):
+        return ['-o', '+vg_all']
+
+
+class VgsProbe(_LvmReportProbe):
+
+    @classmethod
+    def cmdname(cls):
+        return 'vgs'
 
 
 class LvmProbe(composite_.CompositeProbe):
@@ -20,20 +73,20 @@ class LvmProbe(composite_.CompositeProbe):
         graph = cls.extract_lsblk_graph(arguments, flags, kw)
 
         members = util.select_attr(graph.nodes, 'name', cls._is_member)
-        pvs = pvs_.PvsProbe.new(list(members), flags, **kw)
+        pvs = PvsProbe.new(list(members), flags, **kw)
 
         volumes = util.select_attr(graph.nodes, 'name', cls._is_volume)
-        lvs = lvs_.LvsProbe.new(list(volumes), flags, **kw)
+        lvs = LvsProbe.new(list(volumes), flags, **kw)
 
         array = lvs.content['report'][0]['lv']
         groups = set(lv['vg_name'] for lv in array)
-        vgs = vgs_.VgsProbe.new(list(groups), flags, **kw)
+        vgs = VgsProbe.new(list(groups), flags, **kw)
 
         return cls({'pvs': pvs, 'lvs': lvs, 'vgs': vgs})
 
     @classmethod
     def probes(cls, **kw):
-        internal = [lvs_.LvsProbe, pvs_.PvsProbe, vgs_.VgsProbe]
+        internal = [LvsProbe, PvsProbe, VgsProbe]
         return cls.mk_probes(internal, {'lsblkgraph': lsblk_.LsBlkProbe}, **kw)
 
     @classmethod

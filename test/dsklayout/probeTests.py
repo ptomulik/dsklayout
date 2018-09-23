@@ -18,6 +18,17 @@ class Test__probe__PackageSymbols(unittest.TestCase):
     def test__sfdisk__symbols(self):
         self.assertIs(probe.SfdiskProbe, probe.sfdisk_.SfdiskProbe)
 
+    def test__lvm__symbols(self):
+        self.assertIs(probe.LvsProbe, probe.lvm_.LvsProbe)
+        self.assertIs(probe.VgsProbe, probe.lvm_.VgsProbe)
+        self.assertIs(probe.PvsProbe, probe.lvm_.PvsProbe)
+        self.assertIs(probe.LvmProbe, probe.lvm_.LvmProbe)
+
+    def test__mdadm__symbols(self):
+        self.assertIs(probe.MdadmDetailProbe, probe.mdadm_.MdadmDetailProbe)
+        self.assertIs(probe.MdadmExamineProbe, probe.mdadm_.MdadmExamineProbe)
+        self.assertIs(probe.MdadmProbe, probe.mdadm_.MdadmProbe)
+
 if __name__ == '__main__':
     unittest.main()
 

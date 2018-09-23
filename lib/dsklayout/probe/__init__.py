@@ -14,11 +14,8 @@ util.import_all_from(__package__, [
     '.fdisk_',
     '.lsblk_',
     '.lvm_',
-    '.lvs_',
     '.mdadm_',
-    '.pvs_',
     '.sfdisk_',
-    '.vgs_',
 ])
 
 # Local Variables:
