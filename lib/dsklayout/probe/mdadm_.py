@@ -11,7 +11,50 @@ import re
 __all__ = ('MdadmDetailProbe', 'MdadmExamineProbe', 'MdadmProbe')
 
 
+class _Convert:
+
+    @classmethod
+    def events(cls, val):
+        m = re.match(r'(?P<hi>\d+)\.(?P<lo>\d+)', val)
+        if m:
+            return (int(m.group('hi')) << 32) + int(m.group('lo'))
+        else:
+            return int(val)
+
+    @classmethod
+    def ord(cls, val):
+        try:
+            return int(val)
+        except ValueError:
+            return val
+
+
 class _MdadmReportProbe(backtick_.BackTickProbe):
+
+    _converters = {
+        'raid_devices': int,
+        'total_devices': int,
+        'preferred_minor': int,
+        'active_devices': int,
+        'working_devices': int,
+        'failed_devices': int,
+        'spare_devices': int,
+        'events': _Convert.events,
+        'ord': _Convert.ord,
+        'number': int,
+        'major': int,
+        'minor': int,
+        'raid_device': int,
+    }
+
+    @classmethod
+    def convert(cls, key, val):
+        try:
+            convert = cls._converters[key]
+        except KeyError:
+            return val
+        else:
+            return convert(val)
 
     @classmethod
     def command(cls, **kw):
@@ -38,7 +81,8 @@ class _MdadmReportProbe(backtick_.BackTickProbe):
         m = re.match(r'^\s*(\w+(?:\s+\w+)*)\s*:\s*(\S+(?:\s+\S+)*)\s*$', line)
         if not m:
             return False
-        node[util.snake_case(m.group(1))] = m.group(2)
+        key = util.snake_case(m.group(1))
+        node[key] = cls.convert(key, m.group(2))
         return True
 
     @classmethod
@@ -62,17 +106,18 @@ class _MdadmReportProbe(backtick_.BackTickProbe):
 
         pre = line[:colspan[0][0]].strip()
         if pre:
-            row['ord'] = pre
+            row['ord'] = cls.convert('ord', pre)
 
-        for key in ('Number', 'Major', 'Minor', 'RaidDevice'):
+        for hdr in ('Number', 'Major', 'Minor', 'RaidDevice'):
             try:
-                i = headers.index(key)
+                i = headers.index(hdr)
             except ValueError:
                 pass
             else:
                 (beg, end) = colspan[i]
                 col = line[beg:end].strip()
-                row[util.snake_case(key)] = col
+                key = util.snake_case(hdr)
+                row[key] = cls.convert(key, col)
 
         (beg, end) = colspan[headers.index('State')]
         templist = line[beg:].split()
