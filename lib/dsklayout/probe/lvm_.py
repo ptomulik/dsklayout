@@ -7,6 +7,7 @@ from . import lsblk_
 from .. import util
 
 import abc
+import json
 
 __all__ = ('LvsProbe', 'VgsProbe', 'PvsProbe', 'LvmProbe')
 
@@ -24,7 +25,8 @@ class _LvmReportProbe(backtick_.BackTickProbe):
 
     @classmethod
     def command(cls, **kw):
-        return kw.get(cls.cmdname, cls.cmdname)
+        cmd = cls.cmdname()
+        return kw.get(cmd, cmd)
 
     @classmethod
     def flags(cls, flags, **kw):
