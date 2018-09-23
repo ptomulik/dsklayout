@@ -111,16 +111,16 @@ class FdiskProbe(backtick_.BackTickProbe):
 
     @property
     def entries(self):
-        """Device names of all content entries"""
+        """Device names of all content entries."""
         return list(e.get('name') for e in self.content)
 
     @property
     def partabs(self):
-        """Device names of entries having partition table"""
+        """Device names of entries having partition table."""
         return list(e.get('name') for e in self.content if 'partitions' in e)
 
     def entry(self, name):
-        """Returns a single entry identified by device name"""
+        """Returns a single entry identified by device name."""
         try:
             return next((e for e in self.content if e.get('name') == name))
         except StopIteration:

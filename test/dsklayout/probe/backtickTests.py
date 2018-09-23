@@ -88,6 +88,30 @@ class Test__BackTickProbe(unittest.TestCase):
             self.assertIsInstance(obj, T)
             self.assertEqual(obj.content, 'ok parsed')
 
+    def test__which__1(self):
+        class T(backtick_.BackTickProbe):
+            @classmethod
+            def command(cls, **kw):
+                return 'doit'
+            @classmethod
+            def parse(cls, output):
+                return output + ' parsed'
+        with patch('shutil.which', return_value='ok') as which:
+            self.assertIs(T.which(), 'ok')
+            which.assert_called_once_with('doit')
+
+    def test__which__2(self):
+        class T(backtick_.BackTickProbe):
+            @classmethod
+            def command(cls, **kw):
+                return 'doit' + kw['suffix']
+            @classmethod
+            def parse(cls, output):
+                return output + ' parsed'
+        with patch('shutil.which', return_value='ok') as which:
+            self.assertIs(T.which(suffix='-now'), 'ok')
+            which.assert_called_once_with('doit-now')
+
 
 if __name__ == '__main__':
     unittest.main()

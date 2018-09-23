@@ -154,6 +154,11 @@ class MdadmProbe(probe_.Probe):
                    for mem in members}
         return cls({'devices': devices, 'members': members})
 
+    @classmethod
+    def available(cls, **kw):
+        classes = (lsblk_.LsBlkProbe, _MdadmReportProbe)
+        return all(c.which(**kw) for c in classes)
+
 # Local Variables:
 # tab-width:4
 # indent-tabs-mode:nil

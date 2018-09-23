@@ -3,6 +3,7 @@
 from . import probe_
 from .. import util
 import abc
+import shutil
 
 __all__ = ('BackTickProbe',)
 
@@ -19,7 +20,7 @@ class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
     STDOUT of a *single* CLI command run.
 
     A subclass of :class:`.BackTickProbe` must override two methods:
-    :meth:`.command` and :meth:`.parse`.
+    :meth:`command` and :meth:`parse`.
 
     Note, that collecting data from multiple related programs shall be
     organized differently. Inheriting :class:`.BackTickProbe` is not the
@@ -35,7 +36,7 @@ class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
 
         :param \*\*kw:
             keyword arguments (unspecified); the method receives all keyword
-            arguments passed to :meth:`.BackTickProbe.run` method as is.
+            arguments passed to :meth:`run` method as is.
 
         :return: Path to (or name of) the CLI command that shall be used.
         :rtype: str
@@ -69,10 +70,10 @@ class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
 
         .. note:: This method **may** be customized in a subclass.
 
-        :param flags: a list of flags as passed to :meth:`.BackTickProbe.run`;
+        :param flags: a list of flags as passed to :meth:`run`;
                       ignored by the default implementation,
         :param kw:    keyword arguments as passed to
-                      :meth:`.BackTickProbe.run`; ignored by the default
+                      :meth:`run`; ignored by the default
                       implementation.
         :type flags: list, None
         :return: A list of flags to be passed to the external command. Default
@@ -87,7 +88,7 @@ class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
 
         .. note:: This method **may** be customized in a subclass
 
-        :param kw: keyword arguments, as passed to :meth:`.BackTickProbe.run`
+        :param kw: keyword arguments, as passed to :meth:`run`
         :return: Keyword arguments that shall be passed to
                  :func:`.util.backtick`; the default implementation just
                  selects and returns these of **kw**, that are suitable for
@@ -100,15 +101,16 @@ class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
     def run(cls, arguments=None, flags=None, **kw):
         """Executes an external program and returns its output as string.
 
-        :param arguments: a list of positional arguments to be passed to the
-                          external command,
-        :param flags: a list of flags (options and their arguments) to be
-                      passed to the external command,
-        :param kw: keyword arguments; passed to :meth:`.flags` and
-                   :meth:`.command`; arguments selected by :meth:`.kwargs` are
-                   also passed to :func:`.util.backtick`.
-        :type arguments: list, None
-        :type flags: list, None
+        :param list arguments:
+            a list of positional arguments to be passed to the external
+            command,
+        :param list flags:
+            optional list of flags (options and their arguments) to be passed
+            to the external command,
+        :param \*\*kw:
+            keyword arguments; passed to :meth:`flags` and :meth:`command`;
+            arguments selected by :meth:`kwargs` are also passed to
+            :func:`.util.backtick`.
         :return: Output captured from the command (STDOUT).
         :rtype: str
         """
@@ -126,19 +128,30 @@ class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
         """Creates a new instance for specified arguments by running the
         external command and interpreting its output.
 
-        :param arguments: a list of positional arguments to be passed to the
-                          external command; passed unchanged to
-                          :meth:`.BackTickProbe.run`,
-        :param flags: a list of flags (options and their arguments) to be
-                      passed to the external command; passed unchanged to
-                      :meth:`.BackTickProbe.run`,
-        :param kw: keyword arguments; passed unchanged to
-                   :meth:`.BackTickProbe.run`.
+        :param list arguments:
+            optional list of positional arguments to be passed to the external
+            command; passed unchanged to :meth:`run`,
+        :param list flags:
+            optional list of flags (options and their arguments) to be passed
+            to the external command; passed unchanged to
+            :meth:`run`,
+        :param \*\*kw:
+            keyword arguments; passed unchanged to :meth:`run`.
         :return: New instance of the subclass.
         """
         output = cls.run(arguments, flags, **kw)
         content = cls.parse(output)
         return cls(content)
+
+    @classmethod
+    def which(cls, **kw):
+        """Return the path to an executable which would be run if
+        :meth:`command` was called.
+
+        :param \*\*kw:
+            keyword arguments; passed unchanged to :meth:`command`.
+        """
+        return shutil.which(cls.command(**kw))
 
 # Local Variables:
 # tab-width:4
