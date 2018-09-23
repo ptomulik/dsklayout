@@ -30,7 +30,7 @@ class _MdadmReportProbe(backtick_.BackTickProbe):
         m = cls._match_device_name(line)
         if not m:
             return False
-        node['Device Name'] = m.group(1)
+        node['device_name'] = m.group(1)
         return True
 
     @classmethod
@@ -38,7 +38,7 @@ class _MdadmReportProbe(backtick_.BackTickProbe):
         m = re.match(r'^\s*(\w+(?:\s+\w+)*)\s*:\s*(\S+(?:\s+\S+)*)\s*$', line)
         if not m:
             return False
-        node[m.group(1)] = m.group(2)
+        node[util.snake_case(m.group(1))] = m.group(2)
         return True
 
     @classmethod
@@ -65,7 +65,7 @@ class _MdadmReportProbe(backtick_.BackTickProbe):
 
         pre = line[:colspan[0][0]].strip()
         if pre:
-            row['Ord'] = pre
+            row['ord'] = pre
 
         for key in ('Number', 'Major', 'Minor', 'RaidDevice'):
             try:
@@ -75,12 +75,12 @@ class _MdadmReportProbe(backtick_.BackTickProbe):
             else:
                 (beg, end) = colspan[i]
                 col = line[beg:end].strip()
-                row[key] = col
+                row[util.snake_case(key)] = col
 
         (beg, end) = colspan[headers.index('State')]
         templist = line[beg:].split()
-        row['State'] = templist[:-1]
-        row['Device'] = templist[-1]
+        row['state'] = templist[:-1]
+        row['device'] = templist[-1]
 
         if 'rows' not in node['table']:
             node['table']['rows'] = []
@@ -90,12 +90,12 @@ class _MdadmReportProbe(backtick_.BackTickProbe):
     @classmethod
     def _postprocess_mdadm_report_table(cls, node):
         if 'table' in node:
-            node['Device List'] = node['table']['rows']
+            node['device_list'] = node['table']['rows']
             del node['table']
 
     @classmethod
     def _parse_line(cls, state, node, line):
-        if not node.get('Device Name'):
+        if not node.get('device_name'):
             return cls._parse_device_name(node, line)
         elif state['intable']:
             return cls._parse_table_row(node, line)
@@ -130,9 +130,9 @@ class _MdadmReportProbe(backtick_.BackTickProbe):
 
     @classmethod
     def _parse(cls, report, **kw):
-        content = {'Report': report, 'Nodes': []}
+        content = {'report': report, 'nodes': []}
         for sheet in cls._split_sheets(report):
-            cls._parse_sheet(content['Nodes'], sheet)
+            cls._parse_sheet(content['nodes'], sheet)
         return content
 
 
@@ -159,10 +159,10 @@ class MdadmProbe(composite_.CompositeProbe):
            mdadm --examine."""
         graph = cls.extract_lsblk_graph(arguments, flags, kw)
 
-        devices = util.select_values_attr(graph.nodes, 'name', cls._is_raid)
+        devices = util.select_attr(graph.nodes, 'name', cls._is_raid)
         detail = MdadmDetailProbe.new(list(devices), flags, **kw)
 
-        members = util.select_values_attr(graph.nodes, 'name', cls._is_member)
+        members = util.select_attr(graph.nodes, 'name', cls._is_member)
         examine = MdadmExamineProbe.new(list(members), flags, **kw)
 
         return cls({'detail': detail, 'examine': examine})
@@ -173,12 +173,12 @@ class MdadmProbe(composite_.CompositeProbe):
         return cls.mk_probes(internal, {'lsblkgraph': lsblk_.LsBlkProbe}, **kw)
 
     @classmethod
-    def _is_raid(cls, node):
-        return re.match(r'^raid(?:\d{1,2})$', node.type)
+    def _is_raid(cls, item):
+        return re.match(r'^raid(?:\d{1,2})$', item[1].type)
 
     @classmethod
-    def _is_member(cls, node):
-        return node.fstype == 'linux_raid_member'
+    def _is_member(cls, item):
+        return item[1].fstype == 'linux_raid_member'
 
 
 # Local Variables:

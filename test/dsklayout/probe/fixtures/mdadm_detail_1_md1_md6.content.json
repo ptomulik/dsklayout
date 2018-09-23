@@ -1,93 +1,93 @@
 {
-  "Report": "/dev/md1:\n           Version : 0.90\n     Creation Time : Sat Apr 21 06:56:49 2012\n        Raid Level : raid1\n        Array Size : 524224 (511.94 MiB 536.81 MB)\n     Used Dev Size : 524224 (511.94 MiB 536.81 MB)\n      Raid Devices : 2\n     Total Devices : 2\n   Preferred Minor : 1\n       Persistence : Superblock is persistent\n\n       Update Time : Sun Sep 23 08:56:58 2018\n             State : clean \n    Active Devices : 2\n   Working Devices : 2\n    Failed Devices : 0\n     Spare Devices : 0\n\nConsistency Policy : resync\n\n              UUID : 82ca73c6:644ccaa7:9d4deba6:47ca997f\n            Events : 0.5271\n\n    Number   Major   Minor   RaidDevice State\n       0       8        1        0      active sync   /dev/sda1\n       1       8       17        1      active sync   /dev/sdb1\n/dev/md6:\n           Version : 1.2\n     Creation Time : Sat Apr 21 06:57:45 2012\n        Raid Level : raid1\n        Array Size : 67107768 (64.00 GiB 68.72 GB)\n     Used Dev Size : 67107768 (64.00 GiB 68.72 GB)\n      Raid Devices : 2\n     Total Devices : 2\n       Persistence : Superblock is persistent\n\n       Update Time : Sun Sep 23 11:45:34 2018\n             State : clean \n    Active Devices : 2\n   Working Devices : 2\n    Failed Devices : 0\n     Spare Devices : 0\n\nConsistency Policy : resync\n\n              Name : debian:6\n              UUID : d1caa66e:095cd84f:ecb540e2:d0e6191b\n            Events : 58294\n\n    Number   Major   Minor   RaidDevice State\n       2       8        6        0      active sync   /dev/sda6\n       3       8       22        1      active sync   /dev/sdb6\n",
-  "Nodes": [
+  "report": "/dev/md1:\n           Version : 0.90\n     Creation Time : Sat Apr 21 06:56:49 2012\n        Raid Level : raid1\n        Array Size : 524224 (511.94 MiB 536.81 MB)\n     Used Dev Size : 524224 (511.94 MiB 536.81 MB)\n      Raid Devices : 2\n     Total Devices : 2\n   Preferred Minor : 1\n       Persistence : Superblock is persistent\n\n       Update Time : Sun Sep 23 08:56:58 2018\n             State : clean \n    Active Devices : 2\n   Working Devices : 2\n    Failed Devices : 0\n     Spare Devices : 0\n\nConsistency Policy : resync\n\n              UUID : 82ca73c6:644ccaa7:9d4deba6:47ca997f\n            Events : 0.5271\n\n    Number   Major   Minor   RaidDevice State\n       0       8        1        0      active sync   /dev/sda1\n       1       8       17        1      active sync   /dev/sdb1\n/dev/md6:\n           Version : 1.2\n     Creation Time : Sat Apr 21 06:57:45 2012\n        Raid Level : raid1\n        Array Size : 67107768 (64.00 GiB 68.72 GB)\n     Used Dev Size : 67107768 (64.00 GiB 68.72 GB)\n      Raid Devices : 2\n     Total Devices : 2\n       Persistence : Superblock is persistent\n\n       Update Time : Sun Sep 23 11:45:34 2018\n             State : clean \n    Active Devices : 2\n   Working Devices : 2\n    Failed Devices : 0\n     Spare Devices : 0\n\nConsistency Policy : resync\n\n              Name : debian:6\n              UUID : d1caa66e:095cd84f:ecb540e2:d0e6191b\n            Events : 58294\n\n    Number   Major   Minor   RaidDevice State\n       2       8        6        0      active sync   /dev/sda6\n       3       8       22        1      active sync   /dev/sdb6\n",
+  "nodes": [
     {
-      "Device Name": "/dev/md1",
-      "Version": "0.90",
-      "Creation Time": "Sat Apr 21 06:56:49 2012",
-      "Raid Level": "raid1",
-      "Array Size": "524224 (511.94 MiB 536.81 MB)",
-      "Used Dev Size": "524224 (511.94 MiB 536.81 MB)",
-      "Raid Devices": "2",
-      "Total Devices": "2",
-      "Preferred Minor": "1",
-      "Persistence": "Superblock is persistent",
-      "Update Time": "Sun Sep 23 08:56:58 2018",
-      "State": "clean",
-      "Active Devices": "2",
-      "Working Devices": "2",
-      "Failed Devices": "0",
-      "Spare Devices": "0",
-      "Consistency Policy": "resync",
-      "UUID": "82ca73c6:644ccaa7:9d4deba6:47ca997f",
-      "Events": "0.5271",
-      "Device List": [
+      "device_name": "/dev/md1",
+      "version": "0.90",
+      "creation_time": "Sat Apr 21 06:56:49 2012",
+      "raid_level": "raid1",
+      "array_size": "524224 (511.94 MiB 536.81 MB)",
+      "used_dev_size": "524224 (511.94 MiB 536.81 MB)",
+      "raid_devices": "2",
+      "total_devices": "2",
+      "preferred_minor": "1",
+      "persistence": "Superblock is persistent",
+      "update_time": "Sun Sep 23 08:56:58 2018",
+      "state": "clean",
+      "active_devices": "2",
+      "working_devices": "2",
+      "failed_devices": "0",
+      "spare_devices": "0",
+      "consistency_policy": "resync",
+      "uuid": "82ca73c6:644ccaa7:9d4deba6:47ca997f",
+      "events": "0.5271",
+      "device_list": [
         {
-          "Number": "0",
-          "Major": "8",
-          "Minor": "1",
-          "RaidDevice": "0",
-          "State": [
+          "number": "0",
+          "major": "8",
+          "minor": "1",
+          "raid_device": "0",
+          "state": [
             "active",
             "sync"
           ],
-          "Device": "/dev/sda1"
+          "device": "/dev/sda1"
         },
         {
-          "Number": "1",
-          "Major": "8",
-          "Minor": "17",
-          "RaidDevice": "1",
-          "State": [
+          "number": "1",
+          "major": "8",
+          "minor": "17",
+          "raid_device": "1",
+          "state": [
             "active",
             "sync"
           ],
-          "Device": "/dev/sdb1"
+          "device": "/dev/sdb1"
         }
       ]
     },
     {
-      "Device Name": "/dev/md6",
-      "Version": "1.2",
-      "Creation Time": "Sat Apr 21 06:57:45 2012",
-      "Raid Level": "raid1",
-      "Array Size": "67107768 (64.00 GiB 68.72 GB)",
-      "Used Dev Size": "67107768 (64.00 GiB 68.72 GB)",
-      "Raid Devices": "2",
-      "Total Devices": "2",
-      "Persistence": "Superblock is persistent",
-      "Update Time": "Sun Sep 23 11:45:34 2018",
-      "State": "clean",
-      "Active Devices": "2",
-      "Working Devices": "2",
-      "Failed Devices": "0",
-      "Spare Devices": "0",
-      "Consistency Policy": "resync",
-      "Name": "debian:6",
-      "UUID": "d1caa66e:095cd84f:ecb540e2:d0e6191b",
-      "Events": "58294",
-      "Device List": [
+      "device_name": "/dev/md6",
+      "version": "1.2",
+      "creation_time": "Sat Apr 21 06:57:45 2012",
+      "raid_level": "raid1",
+      "array_size": "67107768 (64.00 GiB 68.72 GB)",
+      "used_dev_size": "67107768 (64.00 GiB 68.72 GB)",
+      "raid_devices": "2",
+      "total_devices": "2",
+      "persistence": "Superblock is persistent",
+      "update_time": "Sun Sep 23 11:45:34 2018",
+      "state": "clean",
+      "active_devices": "2",
+      "working_devices": "2",
+      "failed_devices": "0",
+      "spare_devices": "0",
+      "consistency_policy": "resync",
+      "name": "debian:6",
+      "uuid": "d1caa66e:095cd84f:ecb540e2:d0e6191b",
+      "events": "58294",
+      "device_list": [
         {
-          "Number": "2",
-          "Major": "8",
-          "Minor": "6",
-          "RaidDevice": "0",
-          "State": [
+          "number": "2",
+          "major": "8",
+          "minor": "6",
+          "raid_device": "0",
+          "state": [
             "active",
             "sync"
           ],
-          "Device": "/dev/sda6"
+          "device": "/dev/sda6"
         },
         {
-          "Number": "3",
-          "Major": "8",
-          "Minor": "22",
-          "RaidDevice": "1",
-          "State": [
+          "number": "3",
+          "major": "8",
+          "minor": "22",
+          "raid_device": "1",
+          "state": [
             "active",
             "sync"
           ],
-          "Device": "/dev/sdb6"
+          "device": "/dev/sdb6"
         }
       ]
     }

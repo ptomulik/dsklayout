@@ -1,48 +1,48 @@
 {
-  "Report": "/dev/md1:\n           Version : 0.90\n     Creation Time : Sat Apr 21 06:56:49 2012\n        Raid Level : raid1\n        Array Size : 524224 (511.94 MiB 536.81 MB)\n     Used Dev Size : 524224 (511.94 MiB 536.81 MB)\n      Raid Devices : 2\n     Total Devices : 2\n   Preferred Minor : 1\n       Persistence : Superblock is persistent\n\n       Update Time : Sun Sep 23 08:56:58 2018\n             State : clean \n    Active Devices : 2\n   Working Devices : 2\n    Failed Devices : 0\n     Spare Devices : 0\n\nConsistency Policy : resync\n\n              UUID : 82ca73c6:644ccaa7:9d4deba6:47ca997f\n            Events : 0.5271\n\n    Number   Major   Minor   RaidDevice State\n       0       8        1        0      active sync   /dev/sda1\n       1       8       17        1      active sync   /dev/sdb1\n",
-  "Nodes": [
+  "report": "/dev/md1:\n           Version : 0.90\n     Creation Time : Sat Apr 21 06:56:49 2012\n        Raid Level : raid1\n        Array Size : 524224 (511.94 MiB 536.81 MB)\n     Used Dev Size : 524224 (511.94 MiB 536.81 MB)\n      Raid Devices : 2\n     Total Devices : 2\n   Preferred Minor : 1\n       Persistence : Superblock is persistent\n\n       Update Time : Sun Sep 23 08:56:58 2018\n             State : clean \n    Active Devices : 2\n   Working Devices : 2\n    Failed Devices : 0\n     Spare Devices : 0\n\nConsistency Policy : resync\n\n              UUID : 82ca73c6:644ccaa7:9d4deba6:47ca997f\n            Events : 0.5271\n\n    Number   Major   Minor   RaidDevice State\n       0       8        1        0      active sync   /dev/sda1\n       1       8       17        1      active sync   /dev/sdb1\n",
+  "nodes": [
       {
-        "Device Name": "/dev/md1",
-        "Version": "0.90",
-        "Creation Time": "Sat Apr 21 06:56:49 2012",
-        "Raid Level": "raid1",
-        "Array Size": "524224 (511.94 MiB 536.81 MB)",
-        "Used Dev Size": "524224 (511.94 MiB 536.81 MB)",
-        "Raid Devices": "2",
-        "Total Devices": "2",
-        "Preferred Minor": "1",
-        "Persistence": "Superblock is persistent",
-        "Update Time": "Sun Sep 23 08:56:58 2018",
-        "State": "clean",
-        "Active Devices": "2",
-        "Working Devices": "2",
-        "Failed Devices": "0",
-        "Spare Devices": "0",
-        "Consistency Policy": "resync",
-        "UUID": "82ca73c6:644ccaa7:9d4deba6:47ca997f",
-        "Events": "0.5271",
-        "Device List": [
+        "device_name": "/dev/md1",
+        "version": "0.90",
+        "creation_time": "Sat Apr 21 06:56:49 2012",
+        "raid_level": "raid1",
+        "array_size": "524224 (511.94 MiB 536.81 MB)",
+        "used_dev_size": "524224 (511.94 MiB 536.81 MB)",
+        "raid_devices": "2",
+        "total_devices": "2",
+        "preferred_minor": "1",
+        "persistence": "Superblock is persistent",
+        "update_time": "Sun Sep 23 08:56:58 2018",
+        "state": "clean",
+        "active_devices": "2",
+        "working_devices": "2",
+        "failed_devices": "0",
+        "spare_devices": "0",
+        "consistency_policy": "resync",
+        "uuid": "82ca73c6:644ccaa7:9d4deba6:47ca997f",
+        "events": "0.5271",
+        "device_list": [
           {
-            "Number": "0",
-            "Major": "8",
-            "Minor": "1",
-            "RaidDevice": "0",
-            "State": [
+            "number": "0",
+            "major": "8",
+            "minor": "1",
+            "raid_device": "0",
+            "state": [
               "active",
               "sync"
             ],
-            "Device": "/dev/sda1"
+            "device": "/dev/sda1"
           },
           {
-            "Number": "1",
-            "Major": "8",
-            "Minor": "17",
-            "RaidDevice": "1",
-            "State": [
+            "number": "1",
+            "major": "8",
+            "minor": "17",
+            "raid_device": "1",
+            "state": [
               "active",
               "sync"
             ],
-            "Device": "/dev/sdb1"
+            "device": "/dev/sdb1"
           }
         ]
       }

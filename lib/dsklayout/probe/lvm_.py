@@ -19,10 +19,10 @@ class LvmProbe(composite_.CompositeProbe):
            running and interpreting output of pvs, lvs, and vgs commands."""
         graph = cls.extract_lsblk_graph(arguments, flags, kw)
 
-        members = util.select_values_attr(graph.nodes, 'name', cls._is_member)
+        members = util.select_attr(graph.nodes, 'name', cls._is_member)
         pvs = pvs_.PvsProbe.new(list(members), flags, **kw)
 
-        volumes = util.select_values_attr(graph.nodes, 'name', cls._is_volume)
+        volumes = util.select_attr(graph.nodes, 'name', cls._is_volume)
         lvs = lvs_.LvsProbe.new(list(volumes), flags, **kw)
 
         array = lvs.content['report'][0]['lv']
@@ -37,12 +37,12 @@ class LvmProbe(composite_.CompositeProbe):
         return cls.mk_probes(internal, {'lsblkgraph': lsblk_.LsBlkProbe}, **kw)
 
     @classmethod
-    def _is_member(cls, node):
-        return node.fstype == 'LVM_member'
+    def _is_member(cls, item):
+        return item[1].fstype == 'LVM_member'
 
     @classmethod
-    def _is_volume(cls, node):
-        return node.type == 'lvm'
+    def _is_volume(cls, item):
+        return item[1].type == 'lvm'
 
 
 # Local Variables:

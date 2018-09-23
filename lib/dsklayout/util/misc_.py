@@ -2,11 +2,14 @@
 """Miscellaneous utilities
 """
 
+import re
+
 __all__ = ('add_dict_getters',
            'select_items',
            'select_keys',
            'select_values',
-           'select_values_attr')
+           'select_attr',
+           'snake_case')
 
 
 def add_dict_getters(cls, mappings, dict):
@@ -16,22 +19,17 @@ def add_dict_getters(cls, mappings, dict):
         setattr(cls, attr, property(lambda o, k=key: getattr(o, dict).get(k)))
 
 
-def select_items(items, pred=lambda x: True, use_key=False):
-    """Generate items satisfying given condition.
+def select_items(items, pred):
+    """Select items satisfying given condition.
 
-     If ``pred(v)`` (when ``use_key=False``) or ``pred(k, v)`` (when
-     ``use_key=True``) is ``True`` for a given item ``(k,v)`` from **items**,
-     then ``(k,v)`` will be included in the result, otherwise the item will be
+     If ``pred(x)`` returns true for a given item ``x`` from ``items.items()``,
+     then ``x`` will be included in the result, otherwise ``x`` will be
      omitted.
 
     :param items:
         input sequence to be looked up,
     :param pred:
-        a function in form ``pred(n)``, if **use_key** is ``False`` (default),
-        or ``pred(k,n)`` if **use_key** is ``True``,
-    :param bool use_key:
-        if ``True``, then key is passed as the first argument to **pred**,
-        and node value as second.
+        a function in form ``pred(x)`` returning a boolean value,
     :return:
         a generator object iterating over values for selected items.
 
@@ -52,32 +50,25 @@ def select_items(items, pred=lambda x: True, use_key=False):
                  'jb': Person('John', 'Brown'),
                  'ms': Person('Mary', 'Smith')}
 
-        list(select_items(items, lambda x: x.surname == 'Smith'))
+        list(select_items(items, lambda x: x[1].surname == 'Smith'))
         # [('js', Person('John', 'Smith')), ('ms', Person('Mary', 'Smith'))]
-        list(select_items(items, lambda x: x.name == 'John'))
+        list(select_items(items, lambda x: x[1].name == 'John'))
         # [('js', Person('John', 'Smith')), ('jb', Person('John', 'Brown'))]
     """
-    if use_key:
-        return ((k, n) for k, n in items.items() if pred(k, n))
-    else:
-        return ((k, n) for k, n in items.items() if pred(n))
+    return (x for x in items.items() if pred(x))
 
-def select_keys(items, pred=lambda x: True, use_key=False):
-    """Generate node keys for items satisfying given condition.
 
-     If ``pred(v)`` (when ``use_key=False``) or ``pred(k, v)`` (when
-     ``use_key=True``) is ``True`` for a given item ``(k,v)`` from **items**,
-     then ``k`` will be included in the result, otherwise the item will be
-     omitted.
+def select_keys(items, pred):
+    """Select item keys for items satisfying given condition.
+
+     If ``pred(x)`` is ``True`` for a given item ``x`` from ``items.items()``,
+     then ``x[0]`` (a key) will be included in the result, otherwise ``x``
+     will be omitted.
 
     :param items:
         input sequence to be looked up,
     :param pred:
-        a function in form ``pred(n)``, if **use_key** is ``False`` (default),
-        or ``pred(k,n)`` if **use_key** is ``True``,
-    :param bool use_key:
-        if ``True``, then key is passed as the first argument to **pred**,
-        and node value as second.
+        a function in form ``pred(x)`` returning boolean value,
     :return:
         a generator object iterating over values for selected items.
 
@@ -98,29 +89,25 @@ def select_keys(items, pred=lambda x: True, use_key=False):
                  'jb': Person('John', 'Brown'),
                  'ms': Person('Mary', 'Smith')}
 
-        list(select_keys(items, lambda x: x.surname == 'Smith'))
+        list(select_keys(items, lambda x: x[1].surname == 'Smith'))
         # ['js', 'ms']
-        list(select_keys(items, lambda x: x.name == 'John'))
+        list(select_keys(items, lambda x: x[1].name == 'John'))
         # ['js', 'jb']
     """
-    return (k for k, _ in select_items(items, pred, use_key))
+    return (x[0] for x in select_items(items, pred))
 
-def select_values(items, pred=lambda x: True, use_key=False):
-    """Generate node values for items satisfying given condition.
 
-     If ``pred(v)`` (when ``use_key=False``) or ``pred(k, v)`` (when
-     ``use_key=True``) is ``True`` for a given item ``(k,v)`` from **items**,
-     then ``v`` will be included in the result, otherwise the item will be
-     omitted.
+def select_values(items, pred):
+    """Select item values for items satisfying given condition.
+
+     If ``pred(x)`` is ``True`` for a given item ``x`` from ``items.items()``,
+     then ``x[1]`` (a value) will be included in the result, otherwise ``x``
+     will be omitted.
 
     :param items:
         input sequence to be looked up,
     :param pred:
-        a function in form ``pred(n)``, if **use_key** is ``False`` (default),
-        or ``pred(k,n)`` if **use_key** is ``True``,
-    :param bool use_key:
-        if ``True``, then key is passed as the first argument to **pred**,
-        and node value as second.
+        a function in form ``pred(x)`` returning boolean value,
     :return:
         a generator object iterating over values for selected items.
 
@@ -141,29 +128,25 @@ def select_values(items, pred=lambda x: True, use_key=False):
                  'jb': Person('John', 'Brown'),
                  'ms': Person('Mary', 'Smith')}
 
-        list(select_values(items, lambda x: x.surname == 'Smith'))
+        list(select_values(items, lambda x: x[1].surname == 'Smith'))
         # [Person('John', 'Smith'), Person('Marry', 'Smith')]
-        list(select_values(items, lambda x: x.name == 'John'))
+        list(select_values(items, lambda x: x[1].name == 'John'))
         # [Person('John', 'Smith'), Person('John', 'Brown')]
     """
-    return (n for _, n in select_items(items, pred, use_key))
+    return (n for _, n in select_items(items, pred))
 
-def select_values_attr(items, attr, pred=lambda x: True, use_key=False):
-    """Generate attribute values for items satisfying given condition.
 
-     If ``pred(v)`` (when ``use_key=False``) or ``pred(k, v)`` (when
-     ``use_key=True``) is ``True`` for a given item ``(k,v)`` from **items**,
-     then ``getattr(v, attr)`` will be included in the result, otherwise the
-     item will be omitted.
+def select_attr(items, attr, pred):
+    """Select attribute values for items satisfying given condition.
+
+     If ``pred(x)`` is ``True`` for a given item ``x`` from ``items.items()``,
+     then ``getattr(x[1], attr)`` will be included in the result, otherwise
+     ``x`` will be omitted.
 
     :param items:
         input sequence to be looked up,
     :param pred:
-        a function in form ``pred(v)`` if **use_key** is ``False`` (default) or
-        ``pred(k, v)`` if **use_key** is ``True``,
-    :param bool use_key:
-        if ``True``, then key is passed as the first argument to **pred**,
-        and node value as second.
+        a function in form ``pred(x)`` returning boolean value,
     :return:
         a generator object iterating over attribute values for selected items.
 
@@ -171,7 +154,7 @@ def select_values_attr(items, attr, pred=lambda x: True, use_key=False):
 
     .. code:: python
 
-        from dsklayout.util import select_values_attr
+        from dsklayout.util import select_attr
 
         class Person:
             def __init__(self, name, surname):
@@ -182,13 +165,26 @@ def select_values_attr(items, attr, pred=lambda x: True, use_key=False):
                  'jb': Person('John', 'Brown'),
                  'ms': Person('Mary', 'Smith')}
 
-        list(select_values_attr(items, 'name', lambda x: x.surname == 'Smith'))
+        list(select_attr(items, 'name', lambda x: x[1].surname == 'Smith'))
         # ['John', 'Marry']
-        list(select_values_attr(items, 'surname', lambda x: x.name == 'John'))
+        list(select_attr(items, 'surname', lambda x: x[1].name == 'John'))
         # ['Smith', 'Brown']
     """
-    return (getattr(n, attr) for _, n in select_items(items, pred, use_key))
+    return (getattr(x[1], attr) for x in select_items(items, pred))
 
+
+def snake_case(string):
+    """Convert string to snake_case name.
+
+    :param str string:
+        a string to be converted.
+    :return:
+        **string** converted to snake case.
+    :rtype: str
+    """
+    string = re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', string)
+    string = re.sub(r'(?:\s|-)+', '_', string)
+    return string.lower()
 
 # Local Variables:
 # tab-width:4
