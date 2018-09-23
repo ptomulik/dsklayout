@@ -151,7 +151,7 @@ class LsBlkProbe(backtick_.BackTickProbe):
         return json.loads(output)
 
     def graph(self, **kw):
-        """Builds and returns graph with nodes representing block devices"""
+        """Builds and returns graph with nodes representing block devices."""
         return self._apply_recursive(_GraphBuilder(**kw)).graph
 
     def spec(self):

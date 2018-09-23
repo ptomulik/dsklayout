@@ -1,16 +1,12 @@
 # -*- coding: utf8 -*-
 
-from . import probe_
+from . import composite_
 from . import backtick_
 from . import lsblk_
 
 import re
 
 __all__ = ('MdadmDetailProbe', 'MdadmExamineProbe', 'MdadmProbe')
-
-
-def _select_nodes(graph, func):
-    return [graph.node(n).name for n in graph.nodes if func(graph.node(n))]
 
 
 class _MdadmReportProbe(backtick_.BackTickProbe):
@@ -152,16 +148,16 @@ class MdadmExamineProbe(_MdadmReportProbe):
         return ['--examine'] + flags
 
 
-class MdadmProbe(probe_.Probe):
+class MdadmProbe(composite_.CompositeProbe):
 
     @classmethod
     def new(cls, arguments=None, flags=None, **kw):
         """Creates a new instance of MdadmProbe for specified arguments by
            running and interpreting output of mdadm --detail, and
            mdadm --examine."""
-        graph = cls._lsblk_graph(arguments, flags, kw)
-        devices = _select_nodes(graph, cls._is_raid)
-        members = _select_nodes(graph, cls._is_raid_member)
+        graph = cls.mk_lsblk_graph(arguments, flags, kw)
+        devices = cls.select_node_names(graph.nodes, cls._is_raid)
+        members = cls.select_node_names(graph.nodes, cls._is_raid_member)
 
         detail = MdadmDetailProbe.new(devices, flags, **kw)
         examine = MdadmExamineProbe.new(members, flags, **kw)
@@ -169,17 +165,9 @@ class MdadmProbe(probe_.Probe):
         return cls({'detail': detail, 'examine': examine})
 
     @classmethod
-    def available(cls, **kw):
-        """Returns True if all the supporting probes are operational.
-
-        :param \*\*kw:
-            optional keyword arguments, **must** be same as keyword arguments
-            for :meth:`new()`.
-        """
-        probes = [_MdadmReportProbe]
-        if 'lsblkgraph' not in kw:
-            probes.append(lsblk_.LsBlkProbe)
-        return all(p.available(**kw) for p in probes)
+    def probes(cls, **kw):
+        internal = [MdadmDetailProbe, MdadmExamineProbe]
+        return cls.mk_probes(internal, {'lsblkgraph': lsblk_.LsBlkProbe}, **kw)
 
     @classmethod
     def _is_raid(cls, node):
@@ -189,14 +177,6 @@ class MdadmProbe(probe_.Probe):
     def _is_raid_member(cls, node):
         return node.fstype == 'linux_raid_member'
 
-    @classmethod
-    def _lsblk_graph(cls, arguments, flags, kw):
-        try:
-            graph = kw['lsblkgraph']
-            del kw['lsblkgraph']
-        except KeyError:
-            graph = lsblk_.LsBlkProbe.new(arguments, flags, **kw).graph()
-        return graph
 
 # Local Variables:
 # tab-width:4

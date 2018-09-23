@@ -116,7 +116,7 @@ class DotCmd(cmd_.Cmd):
 
     def _dot_build_lvm_subgraph(self, dot, lvm, sg):
         for key in ('vg', 'pv', 'lv'):
-            for node in lvm.content["%ss" % key]:
+            for node in lvm.content["%ss" % key].content['report'][0][key]:
                 add_node = getattr(self, '_dot_add_lvm_%s' % key)
                 add_node(sg, node)
 
