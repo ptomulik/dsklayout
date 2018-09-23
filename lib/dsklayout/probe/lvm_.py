@@ -6,6 +6,8 @@ from . import pvs_
 from . import vgs_
 from . import lsblk_
 
+from .. import util
+
 __all__ = ('LvmProbe',)
 
 
@@ -15,14 +17,18 @@ class LvmProbe(composite_.CompositeProbe):
     def new(cls, arguments=None, flags=None, **kw):
         """Creates a new instance of LvmProbe for specified arguments by
            running and interpreting output of pvs, lvs, and vgs commands."""
-        graph = cls.mk_lsblk_graph(arguments, flags, kw)
-        members = cls.select_node_names(graph.nodes, cls._is_member)
-        volumes = cls.select_node_names(graph.nodes, cls._is_volume)
-        pvs = pvs_.PvsProbe.new(members, flags, **kw)
-        lvs = lvs_.LvsProbe.new(volumes, flags, **kw)
+        graph = cls.extract_lsblk_graph(arguments, flags, kw)
+
+        members = util.select_values_attr(graph.nodes, 'name', cls._is_member)
+        pvs = pvs_.PvsProbe.new(list(members), flags, **kw)
+
+        volumes = util.select_values_attr(graph.nodes, 'name', cls._is_volume)
+        lvs = lvs_.LvsProbe.new(list(volumes), flags, **kw)
+
         array = lvs.content['report'][0]['lv']
-        groups = list(set(lv['vg_name'] for lv in array))
-        vgs = vgs_.VgsProbe.new(groups, flags, **kw)
+        groups = set(lv['vg_name'] for lv in array)
+        vgs = vgs_.VgsProbe.new(list(groups), flags, **kw)
+
         return cls({'pvs': pvs, 'lvs': lvs, 'vgs': vgs})
 
     @classmethod

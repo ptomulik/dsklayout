@@ -4,6 +4,8 @@ from . import composite_
 from . import backtick_
 from . import lsblk_
 
+from .. import util
+
 import re
 
 __all__ = ('MdadmDetailProbe', 'MdadmExamineProbe', 'MdadmProbe')
@@ -155,12 +157,13 @@ class MdadmProbe(composite_.CompositeProbe):
         """Creates a new instance of MdadmProbe for specified arguments by
            running and interpreting output of mdadm --detail, and
            mdadm --examine."""
-        graph = cls.mk_lsblk_graph(arguments, flags, kw)
-        devices = cls.select_node_names(graph.nodes, cls._is_raid)
-        members = cls.select_node_names(graph.nodes, cls._is_raid_member)
+        graph = cls.extract_lsblk_graph(arguments, flags, kw)
 
-        detail = MdadmDetailProbe.new(devices, flags, **kw)
-        examine = MdadmExamineProbe.new(members, flags, **kw)
+        devices = util.select_values_attr(graph.nodes, 'name', cls._is_raid)
+        detail = MdadmDetailProbe.new(list(devices), flags, **kw)
+
+        members = util.select_values_attr(graph.nodes, 'name', cls._is_member)
+        examine = MdadmExamineProbe.new(list(members), flags, **kw)
 
         return cls({'detail': detail, 'examine': examine})
 
@@ -174,7 +177,7 @@ class MdadmProbe(composite_.CompositeProbe):
         return re.match(r'^raid(?:\d{1,2})$', node.type)
 
     @classmethod
-    def _is_raid_member(cls, node):
+    def _is_member(cls, node):
         return node.fstype == 'linux_raid_member'
 
 

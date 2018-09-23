@@ -34,7 +34,7 @@ class CompositeProbe(probe_.Probe):
         :return:
             a list of probe classes used by this composite probe.
         :rtype:
-            list(probe_.Probe)
+            list
         """
         pass
 
@@ -51,22 +51,6 @@ class CompositeProbe(probe_.Probe):
             ``False``.
         """
         return all(p.available for p in cls.probes(**kw))
-
-    @classmethod
-    def select_node_names(cls, nodes, func):
-        """Select node names that fullfil certain condition.
-
-        :param .Nodes nodes:
-            the nodes to be looked up,
-        :param callable func:
-            a function in form ``func(node)``; if ``func(node)`` is ``True``
-            for a given node, then the ``node`` will be selected, otherwise
-            the node will be omitted.
-        :return:
-            a list of selected nodes.
-        :rtype: list
-        """
-        return [nodes[n].name for n in nodes if func(nodes[n])]
 
     @classmethod
     def mk_probes(cls, internal, external, **kw):
@@ -95,7 +79,7 @@ class CompositeProbe(probe_.Probe):
         return probes
 
     @classmethod
-    def mk_lsblk_graph(cls, arguments, flags, kw):
+    def extract_lsblk_graph(cls, arguments, flags, kw):
         try:
             graph = kw['lsblkgraph']
             del kw['lsblkgraph']
