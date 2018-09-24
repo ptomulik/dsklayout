@@ -12,7 +12,7 @@ import json
 __all__ = ('LvsProbe', 'VgsProbe', 'PvsProbe', 'LvmProbe')
 
 
-class _LvmReportProbe(backtick_.BackTickProbe):
+class _LvmBacktickProbe(backtick_.BackTickProbe):
 
     @classmethod
     @abc.abstractmethod
@@ -37,7 +37,7 @@ class _LvmReportProbe(backtick_.BackTickProbe):
         return json.loads(output)
 
 
-class LvsProbe(_LvmReportProbe):
+class LvsProbe(_LvmBacktickProbe):
 
     @classmethod
     def cmdname(cls):
@@ -48,7 +48,7 @@ class LvsProbe(_LvmReportProbe):
         return ['-o', '+lv_all']
 
 
-class PvsProbe(_LvmReportProbe):
+class PvsProbe(_LvmBacktickProbe):
 
     @classmethod
     def cmdname(cls):
@@ -59,7 +59,7 @@ class PvsProbe(_LvmReportProbe):
         return ['-o', '+pv_all']
 
 
-class VgsProbe(_LvmReportProbe):
+class VgsProbe(_LvmBacktickProbe):
 
     @classmethod
     def cmdname(cls):

@@ -7,6 +7,8 @@ import os
 import os.path
 import json
 
+from . import testcase_
+
 import dsklayout.probe.mdadm_ as mdadm_
 import dsklayout.probe.backtick_ as backtick_
 import dsklayout.probe.composite_ as composite_
@@ -43,93 +45,74 @@ class Test__Convert(unittest.TestCase):
     def test__hex__3(self):
         self.assertEqual(mdadm_._Convert.hex('-1f'), -0x1f)
 
-class Test__MdadmReportProbe(unittest.TestCase):
-
-    fixture_plan = [
-        ('mdadm_detail_1_md1.txt',
-         'mdadm_detail_1_md1.content.json'),
-        ('mdadm_detail_1_md1_md6.txt',
-         'mdadm_detail_1_md1_md6.content.json'),
-        ('mdadm_examine_1_sda1.txt',
-         'mdadm_examine_1_sda1.content.json'),
-        ('mdadm_examine_1_sda1_sdb1_sda6_sdb6.txt',
-         'mdadm_examine_1_sda1_sdb1_sda6_sdb6.content.json')
-    ]
-
-    def __init__(self, *args, **kw):
-        super().__init__(*args, **kw)
-        self._fixtures = dict()
-
-    def tearDown(self):
-        self._fixtures = dict() # cleanup used fixtures
+class Test__MdadmBacktickProbe(testcase_.ProbeTestCase):
 
     @property
-    def fixtures(self):
-        if not self._fixtures:
-            self.load_fixtures()
-        return self._fixtures
+    def fixture_plan(self):
+        return [
+            ('mdadm_detail_1_md1.txt',
+             'mdadm_detail_1_md1.content.json'),
+            ('mdadm_detail_1_md1_md6.txt',
+             'mdadm_detail_1_md1_md6.content.json'),
+            ('mdadm_examine_1_sda1.txt',
+             'mdadm_examine_1_sda1.content.json'),
+            ('mdadm_examine_1_sda1_sdb1_sda6_sdb6.txt',
+             'mdadm_examine_1_sda1_sdb1_sda6_sdb6.content.json')
+        ]
 
-    def load_fixtures(self):
-        for left, right in self.fixture_plan:
-            with open(self.fixture_path(left)) as f:
-                self._fixtures[left] = f.read()
-            with open(self.fixture_path(right)) as f:
-                self._fixtures[right] = json.loads(f.read())
-
-    def fixture_path(self, file):
-        mydir = os.path.dirname(__file__)
-        return os.path.join(mydir, 'fixtures', file)
+    def decode_right_fixture(self, content):
+        return json.loads(content)
 
     def test__subclass_of_BackTickProbe(self):
-        self.assertTrue(issubclass(mdadm_._MdadmReportProbe, backtick_.BackTickProbe))
+        self.assertTrue(issubclass(mdadm_._MdadmBacktickProbe, backtick_.BackTickProbe))
 
     def test__command__1(self):
-        self.assertEqual(mdadm_._MdadmReportProbe.command(), 'mdadm')
+        self.assertEqual(mdadm_._MdadmBacktickProbe.command(), 'mdadm')
 
     def test__command__2(self):
-        self.assertEqual(mdadm_._MdadmReportProbe.command(mdadm='foo'), 'foo')
+        self.assertEqual(mdadm_._MdadmBacktickProbe.command(mdadm='foo'), 'foo')
 
     def test__content(self):
-        mdadm = mdadm_._MdadmReportProbe('content')
+        mdadm = mdadm_._MdadmBacktickProbe('content')
         self.assertIs(mdadm.content, 'content')
 
     def test__run__with_no_args(self):
         with patch(backtick, return_value='ok') as mock:
-            self.assertIs(mdadm_._MdadmReportProbe.run(env=dict()), 'ok')
+            self.assertIs(mdadm_._MdadmBacktickProbe.run(env=dict()), 'ok')
             mock.assert_called_once_with(['mdadm'], env=dict())
 
     def test__run__with_device(self):
         with patch(backtick, return_value='ok') as mock:
-            self.assertIs(mdadm_._MdadmReportProbe.run('sda', env=dict()), 'ok')
+            self.assertIs(mdadm_._MdadmBacktickProbe.run('sda', env=dict()), 'ok')
             mock.assert_called_once_with(['mdadm', 'sda'], env=dict())
 
     def test__run__with_devices(self):
         with patch(backtick, return_value='ok') as mock:
-            self.assertIs(mdadm_._MdadmReportProbe.run(['sda', 'sdb'], env=dict()), 'ok')
+            self.assertIs(mdadm_._MdadmBacktickProbe.run(['sda', 'sdb'], env=dict()), 'ok')
             mock.assert_called_once_with(['mdadm', 'sda', 'sdb'], env=dict())
 
     def test__run__with_devices_and_flags(self):
         with patch(backtick, return_value='ok') as mock:
-            self.assertIs(mdadm_._MdadmReportProbe.run(['sda', 'sdb'], ['-x', '-y'], env=dict()), 'ok')
+            self.assertIs(mdadm_._MdadmBacktickProbe.run(['sda', 'sdb'], ['-x', '-y'], env=dict()), 'ok')
             mock.assert_called_once_with(['mdadm',  'sda', 'sdb'], env=dict())
 
     def test__run__with_custom_mdadm(self):
         with patch(backtick, return_value='ok') as mock:
-            self.assertIs(mdadm_._MdadmReportProbe.run(['sda', 'sdb'], ['-x', '-y'], mdadm='/opt/bin/mdadm', env=dict()), 'ok')
+            self.assertIs(mdadm_._MdadmBacktickProbe.run(['sda', 'sdb'], ['-x', '-y'], mdadm='/opt/bin/mdadm', env=dict()), 'ok')
             mock.assert_called_once_with(['/opt/bin/mdadm', 'sda', 'sdb'], env=dict())
 
     def test__parse__with_fixtures(self):
         self.maxDiff = None
         for left, right in self.fixture_plan:
-            content = mdadm_._MdadmReportProbe.parse(self.fixtures[left])
+            content = mdadm_._MdadmBacktickProbe.parse(self.fixtures[left])
             expected = self.fixtures[right]
             self.assertEqual(content, expected)
 
 
 class Test__MdadmDetailProbe(unittest.TestCase):
 
-    def test__subclass_of_MdadmReportProbe(self):
-        self.assertTrue(issubclass(mdadm_.MdadmDetailProbe, mdadm_._MdadmReportProbe))
+    def test__subclass_of_MdadmBacktickProbe(self):
+        self.assertTrue(issubclass(mdadm_.MdadmDetailProbe, mdadm_._MdadmBacktickProbe))
 
     def test__flags__1(self):
         self.assertEqual(mdadm_.MdadmDetailProbe.flags([]), ['--detail'])
@@ -140,8 +123,8 @@ class Test__MdadmDetailProbe(unittest.TestCase):
 
 class Test__MdadmExamineProbe(unittest.TestCase):
 
-    def test__subclass_of_MdadmReportProbe(self):
-        self.assertTrue(issubclass(mdadm_.MdadmExamineProbe, mdadm_._MdadmReportProbe))
+    def test__subclass_of_MdadmBacktickProbe(self):
+        self.assertTrue(issubclass(mdadm_.MdadmExamineProbe, mdadm_._MdadmBacktickProbe))
 
     def test__flags__1(self):
         self.assertEqual(mdadm_.MdadmDetailProbe.flags([]), ['--detail'])

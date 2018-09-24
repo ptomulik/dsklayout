@@ -30,7 +30,7 @@ class _Convert:
         return int(val, 16)
 
 
-class _MdadmReportProbe(backtick_.BackTickProbe):
+class _MdadmBacktickProbe(backtick_.BackTickProbe):
 
     _converters = {
         'raid_devices': int,
@@ -193,14 +193,14 @@ class _MdadmReportProbe(backtick_.BackTickProbe):
         return content
 
 
-class MdadmDetailProbe(_MdadmReportProbe):
+class MdadmDetailProbe(_MdadmBacktickProbe):
 
     @classmethod
     def flags(cls, flags, **kw):
         return ['--detail'] + flags
 
 
-class MdadmExamineProbe(_MdadmReportProbe):
+class MdadmExamineProbe(_MdadmBacktickProbe):
 
     @classmethod
     def flags(cls, flags, **kw):

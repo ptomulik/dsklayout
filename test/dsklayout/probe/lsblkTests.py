@@ -3,8 +3,9 @@
 
 import unittest
 from unittest.mock import patch
-import os.path
 import json
+
+from . import testcase_
 
 import dsklayout.probe.lsblk_ as lsblk_
 from dsklayout.graph import *
@@ -238,37 +239,21 @@ class Test__Properties(unittest.TestCase):
         self.assertIs(pro.properties['rand'], False)
 
 
-class Test__LsBlkProbe(unittest.TestCase):
-
-    fixture_plan = [
-        ('lsblk_1_all.json',        'lsblk_1_all.graph.json'),
-        ('lsblk_1_sda_sdb.json',    'lsblk_1_sda_sdb.graph.json'),
-        ('lsblk_1_sda.json',        'lsblk_1_sda.graph.json'),
-    ]
-
-    def __init__(self, *args, **kw):
-        super().__init__(*args, **kw)
-        self._fixtures = dict()
-
-    def tearDown(self):
-        self._fixtures = dict() # cleanup used fixtures
+class Test__LsBlkProbe(testcase_.ProbeTestCase):
 
     @property
-    def fixtures(self):
-        if not self._fixtures:
-            self.load_fixtures()
-        return self._fixtures
+    def fixture_plan(self):
+        return [
+            ('lsblk_1_all.json',        'lsblk_1_all.graph.json'),
+            ('lsblk_1_sda_sdb.json',    'lsblk_1_sda_sdb.graph.json'),
+            ('lsblk_1_sda.json',        'lsblk_1_sda.graph.json'),
+        ]
 
-    def load_fixtures(self):
-        for left, right in self.fixture_plan:
-            with open(self.fixture_path(left)) as f:
-                self._fixtures[left] = json.loads(f.read())
-            with open(self.fixture_path(right)) as f:
-                self._fixtures[right] = json.loads(f.read())
+    def decode_left_fixture(self, content):
+        return json.loads(content)
 
-    def fixture_path(self, file):
-        mydir = os.path.dirname(__file__)
-        return os.path.join(mydir, 'fixtures', file)
+    def decode_right_fixture(self, content):
+        return json.loads(content)
 
     def test__content(self):
         content = 'content'

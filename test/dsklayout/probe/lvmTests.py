@@ -3,9 +3,9 @@
 
 import unittest
 from unittest.mock import patch
-import os
-import os.path
 import json
+
+from . import testcase_
 
 import dsklayout.probe.lvm_ as lvm_
 import dsklayout.probe.backtick_ as backtick_
@@ -13,85 +13,66 @@ import dsklayout.probe.composite_ as composite_
 
 backtick = 'dsklayout.util.backtick'
 
-class LvmXxx(lvm_._LvmReportProbe):
+class LvmXxx(lvm_._LvmBacktickProbe):
     @classmethod
     def cmdname(cls):
         return 'xxx'
 
 
-class Test__LvmReportProbe(unittest.TestCase):
-
-    fixture_plan = [
-        ('lvs_1.json',
-         'lvs_1.content.json'),
-        ('lvs_1_teavg-rootfs.json',
-         'lvs_1_teavg-rootfs.content.json'),
-        ('pvs_1.json',
-         'pvs_1.content.json'),
-    ]
-
-    def __init__(self, *args, **kw):
-        super().__init__(*args, **kw)
-        self._fixtures = dict()
-
-    def tearDown(self):
-        self._fixtures = dict() # cleanup used fixtures
+class Test__LvmBacktickProbe(testcase_.ProbeTestCase):
 
     @property
-    def fixtures(self):
-        if not self._fixtures:
-            self.load_fixtures()
-        return self._fixtures
+    def fixture_plan(self):
+        return [
+            ('lvs_1.json',
+             'lvs_1.content.json'),
+            ('lvs_1_teavg-rootfs.json',
+             'lvs_1_teavg-rootfs.content.json'),
+            ('pvs_1.json',
+             'pvs_1.content.json'),
+        ]
 
-    def load_fixtures(self):
-        for left, right in self.fixture_plan:
-            with open(self.fixture_path(left)) as f:
-                self._fixtures[left] = f.read()
-            with open(self.fixture_path(right)) as f:
-                self._fixtures[right] = json.loads(f.read())
-
-    def fixture_path(self, file):
-        mydir = os.path.dirname(__file__)
-        return os.path.join(mydir, 'fixtures', file)
+    def decode_right_fixture(self, content):
+        return json.loads(content)
 
     def test__subclass_of_BackTickProbe(self):
-        self.assertTrue(issubclass(lvm_._LvmReportProbe, backtick_.BackTickProbe))
+        self.assertTrue(issubclass(lvm_._LvmBacktickProbe, backtick_.BackTickProbe))
 
     def test__abstract(self):
         with self.assertRaises(TypeError) as context:
-            lvm_._LvmReportProbe({})
+            lvm_._LvmBacktickProbe({})
         self.assertIn('abstract', str(context.exception))
 
     def test__cmdname(self):
-        self.assertIsNone(lvm_._LvmReportProbe.cmdname())
+        self.assertIsNone(lvm_._LvmBacktickProbe.cmdname())
 
     def test__command__1(self):
-        with patch('dsklayout.probe.lvm_._LvmReportProbe.cmdname', return_value='foo') as cmdname:
-            self.assertEqual(lvm_._LvmReportProbe.command(), 'foo')
+        with patch('dsklayout.probe.lvm_._LvmBacktickProbe.cmdname', return_value='foo') as cmdname:
+            self.assertEqual(lvm_._LvmBacktickProbe.command(), 'foo')
             cmdname.assert_called_once_with()
 
     def test__command__2(self):
-        with patch('dsklayout.probe.lvm_._LvmReportProbe.cmdname', return_value='foo') as cmdname:
-            self.assertEqual(lvm_._LvmReportProbe.command(foo='bar'), 'bar')
+        with patch('dsklayout.probe.lvm_._LvmBacktickProbe.cmdname', return_value='foo') as cmdname:
+            self.assertEqual(lvm_._LvmBacktickProbe.command(foo='bar'), 'bar')
             cmdname.assert_called_once_with()
 
     def test__xflags(self):
-        self.assertEqual([], lvm_._LvmReportProbe.xflags())
+        self.assertEqual([], lvm_._LvmBacktickProbe.xflags())
 
     def test__flags_1(self):
-        self.assertEqual(['--readonly', '--reportformat', 'json'], lvm_._LvmReportProbe.flags([]))
+        self.assertEqual(['--readonly', '--reportformat', 'json'], lvm_._LvmBacktickProbe.flags([]))
 
     def test__flags_2(self):
-        self.assertEqual(['--readonly', '--reportformat', 'json', '-x', '-y'], lvm_._LvmReportProbe.flags(['-x', '-y']))
+        self.assertEqual(['--readonly', '--reportformat', 'json', '-x', '-y'], lvm_._LvmBacktickProbe.flags(['-x', '-y']))
 
     def test__flags_3(self):
-        with patch('dsklayout.probe.lvm_._LvmReportProbe.xflags', return_value=['--foo']) as xflags:
-            self.assertEqual(['--readonly', '--reportformat', 'json', '--foo', '-x', '-y'], lvm_._LvmReportProbe.flags(['-x', '-y']))
+        with patch('dsklayout.probe.lvm_._LvmBacktickProbe.xflags', return_value=['--foo']) as xflags:
+            self.assertEqual(['--readonly', '--reportformat', 'json', '--foo', '-x', '-y'], lvm_._LvmBacktickProbe.flags(['-x', '-y']))
             xflags.assert_called_once_with()
 
     def test__parse(self):
         with patch('json.loads', return_value='ok') as loads:
-            self.assertIs(lvm_._LvmReportProbe.parse("foo"), 'ok')
+            self.assertIs(lvm_._LvmBacktickProbe.parse("foo"), 'ok')
             loads.assert_called_once_with("foo")
 
     def test__content(self):
@@ -126,15 +107,15 @@ class Test__LvmReportProbe(unittest.TestCase):
     def test__parse__with_fixtures(self):
         self.maxDiff = None
         for left, right in self.fixture_plan:
-            content = lvm_._LvmReportProbe.parse(self.fixtures[left])
+            content = lvm_._LvmBacktickProbe.parse(self.fixtures[left])
             expected = self.fixtures[right]
             self.assertEqual(content, expected)
 
 
 class Test__LvsProbe(unittest.TestCase):
 
-    def test__subclass_of_LvmReportProbe(self):
-        self.assertTrue(issubclass(lvm_.LvsProbe, lvm_._LvmReportProbe))
+    def test__subclass_of_LvmBacktickProbe(self):
+        self.assertTrue(issubclass(lvm_.LvsProbe, lvm_._LvmBacktickProbe))
 
     def test__cmdname(self):
         self.assertEqual(lvm_.LvsProbe.cmdname(), 'lvs')
@@ -145,8 +126,8 @@ class Test__LvsProbe(unittest.TestCase):
 
 class Test__PvsProbe(unittest.TestCase):
 
-    def test__subclass_of_LvmReportProbe(self):
-        self.assertTrue(issubclass(lvm_.PvsProbe, lvm_._LvmReportProbe))
+    def test__subclass_of_LvmBacktickProbe(self):
+        self.assertTrue(issubclass(lvm_.PvsProbe, lvm_._LvmBacktickProbe))
 
     def test__cmdname(self):
         self.assertEqual(lvm_.PvsProbe.cmdname(), 'pvs')
@@ -157,8 +138,8 @@ class Test__PvsProbe(unittest.TestCase):
 
 class Test__VgsProbe(unittest.TestCase):
 
-    def test__subclass_of_LvmReportProbe(self):
-        self.assertTrue(issubclass(lvm_.VgsProbe, lvm_._LvmReportProbe))
+    def test__subclass_of_LvmBacktickProbe(self):
+        self.assertTrue(issubclass(lvm_.VgsProbe, lvm_._LvmBacktickProbe))
 
     def test__cmdname(self):
         self.assertEqual(lvm_.VgsProbe.cmdname(), 'vgs')
