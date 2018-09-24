@@ -170,7 +170,7 @@ class Test__FdiskProbe(testcase_.ProbeTestCase):
         with patch.dict('os.environ', {'foo': 'FOO'}, True):
             self.assertEqual(fdisk_.FdiskProbe.kwargs(), {'env': {'foo': 'FOO', 'LC_NUMERIC':'C'}})
 
-    def test__kwargs__1(self):
+    def test__kwargs__2(self):
         with patch.dict('os.environ', {'foo': 'FOO'}, True):
             self.assertEqual(fdisk_.FdiskProbe.kwargs(env={'bar': 'BAR'}), {'env': {'bar': 'BAR', 'LC_NUMERIC':'C'}})
 
