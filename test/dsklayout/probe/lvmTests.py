@@ -22,14 +22,12 @@ class LvmXxx(lvm_._LvmReportProbe):
 class Test__LvmReportProbe(unittest.TestCase):
 
     fixture_plan = [
-        ('lvm_detail_1_md1.txt',
-         'lvm_detail_1_md1.content.json'),
-        ('lvm_detail_1_md1_md6.txt',
-         'lvm_detail_1_md1_md6.content.json'),
-        ('lvm_examine_1_sda1.txt',
-         'lvm_examine_1_sda1.content.json'),
-        ('lvm_examine_1_sda1_sdb1_sda6_sdb6.txt',
-         'lvm_examine_1_sda1_sdb1_sda6_sdb6.content.json')
+        ('lvs_1.json',
+         'lvs_1.content.json'),
+        ('lvs_1_teavg-rootfs.json',
+         'lvs_1_teavg-rootfs.content.json'),
+        ('pvs_1.json',
+         'pvs_1.content.json'),
     ]
 
     def __init__(self, *args, **kw):
@@ -125,12 +123,12 @@ class Test__LvmReportProbe(unittest.TestCase):
             self.assertIs(LvmXxx.run(['sda', 'sdb'], ['-x', '-y'], xxx='/opt/bin/xxx', env=dict()), 'ok')
             mock.assert_called_once_with(['/opt/bin/xxx', '--readonly', '--reportformat', 'json',  '-x', '-y', 'sda', 'sdb'], env=dict())
 
-##    def test__parse__with_fixtures(self):
-##        self.maxDiff = None
-##        for left, right in self.fixture_plan:
-##            content = lvm_._LvmReportProbe.parse(self.fixtures[left])
-##            expected = self.fixtures[right]
-##            self.assertEqual(content, expected)
+    def test__parse__with_fixtures(self):
+        self.maxDiff = None
+        for left, right in self.fixture_plan:
+            content = lvm_._LvmReportProbe.parse(self.fixtures[left])
+            expected = self.fixtures[right]
+            self.assertEqual(content, expected)
 
 
 class Test__LvsProbe(unittest.TestCase):
@@ -154,7 +152,7 @@ class Test__PvsProbe(unittest.TestCase):
         self.assertEqual(lvm_.PvsProbe.cmdname(), 'pvs')
 
     def test__xflags(self):
-        self.assertEqual(lvm_.PvsProbe.xflags(), ['-o', '+vg_all'])
+        self.assertEqual(lvm_.PvsProbe.xflags(), ['-o', '+pv_all'])
 
 
 class Test__VgsProbe(unittest.TestCase):
@@ -166,7 +164,7 @@ class Test__VgsProbe(unittest.TestCase):
         self.assertEqual(lvm_.VgsProbe.cmdname(), 'vgs')
 
     def test__xflags(self):
-        self.assertEqual(lvm_.VgsProbe.xflags(), [])
+        self.assertEqual(lvm_.VgsProbe.xflags(), ['-o', '+vg_all'])
 
 
 class Test__LvmProbe(unittest.TestCase):

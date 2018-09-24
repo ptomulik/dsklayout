@@ -56,7 +56,7 @@ class PvsProbe(_LvmReportProbe):
 
     @classmethod
     def xflags(cls):
-        return ['-o', '+vg_all']
+        return ['-o', '+pv_all']
 
 
 class VgsProbe(_LvmReportProbe):
@@ -64,6 +64,10 @@ class VgsProbe(_LvmReportProbe):
     @classmethod
     def cmdname(cls):
         return 'vgs'
+
+    @classmethod
+    def xflags(cls):
+        return ['-o', '+vg_all']
 
 
 class LvmProbe(composite_.CompositeProbe):
