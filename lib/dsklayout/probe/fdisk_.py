@@ -148,9 +148,9 @@ class FdiskProbe(backtick_.BackTickProbe):
         return ['-l', '--bytes'] + flags
 
     @classmethod
-    def parse(cls, output):
+    def parse(cls, text):
         content = []
-        for paragraph in re.split(r'\n\n\n+', output):
+        for paragraph in re.split(r'\n\n\n+', text):
             cls._parse_paragraph(content, paragraph)
         return content
 

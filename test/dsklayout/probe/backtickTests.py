@@ -93,9 +93,6 @@ class Test__BackTickProbe(unittest.TestCase):
             @classmethod
             def command(cls, **kw):
                 return 'doit'
-            @classmethod
-            def parse(cls, output):
-                return output + ' parsed'
         with patch('shutil.which', return_value='ok') as which:
             self.assertIs(T.which(), 'ok')
             which.assert_called_once_with('doit')
@@ -105,12 +102,28 @@ class Test__BackTickProbe(unittest.TestCase):
             @classmethod
             def command(cls, **kw):
                 return 'doit' + kw['suffix']
-            @classmethod
-            def parse(cls, output):
-                return output + ' parsed'
         with patch('shutil.which', return_value='ok') as which:
             self.assertIs(T.which(suffix='-now'), 'ok')
             which.assert_called_once_with('doit-now')
+
+    def test__available__1(self):
+        class T(backtick_.BackTickProbe):
+            @classmethod
+            def command(cls, **kw):
+                return 'doit' + kw['suffix']
+        with patch('dsklayout.probe.backtick_.BackTickProbe.which', return_value='ok') as which:
+            self.assertTrue(T.available(suffix='-now'))
+            which.assert_called_once_with(suffix='-now')
+
+    def test__available__2(self):
+        class T(backtick_.BackTickProbe):
+            @classmethod
+            def command(cls, **kw):
+                return 'doit' + kw['suffix']
+        with patch('dsklayout.probe.backtick_.BackTickProbe.which', return_value=None) as which:
+            self.assertFalse(T.available(suffix='-now'))
+            which.assert_called_once_with(suffix='-now')
+
 
 
 if __name__ == '__main__':

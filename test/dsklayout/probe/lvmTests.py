@@ -24,12 +24,9 @@ class Test__LvmBacktickProbe(testcase_.ProbeTestCase):
     @property
     def fixture_plan(self):
         return [
-            ('lvs_1.json',
-             'lvs_1.content.json'),
-            ('lvs_1_teavg-rootfs.json',
-             'lvs_1_teavg-rootfs.content.json'),
-            ('pvs_1.json',
-             'pvs_1.content.json'),
+            ('lvs_1.json',              'lvs_1.content.json'),
+            ('lvs_1_teavg-rootfs.json', 'lvs_1_teavg-rootfs.content.json'),
+            ('pvs_1.json',              'pvs_1.content.json'),
         ]
 
     def decode_right_fixture(self, content):

@@ -11,7 +11,7 @@ import abc
 __all__ = ('CompositeProbe',)
 
 
-class CompositeProbe(probe_.Probe):
+class CompositeProbe(probe_.Probe, metaclass=abc.ABCMeta):
     """Base class for all composite "probe" classes.
 
     A composite "probe" encapsulates two or more other probes.
@@ -50,7 +50,7 @@ class CompositeProbe(probe_.Probe):
             ``True``, if the supporting executable is available; otherwise
             ``False``.
         """
-        return all(p.available for p in cls.probes(**kw))
+        return all(p.available(**kw) for p in cls.probes(**kw))
 
     @classmethod
     def mk_probes(cls, internal, external, **kw):

@@ -63,8 +63,8 @@ class _MdadmBacktickProbe(backtick_.BackTickProbe):
         return kw.get('mdadm', 'mdadm')
 
     @classmethod
-    def parse(cls, output):
-        return cls._parse(output)
+    def parse(cls, text):
+        return cls._parse(text)
 
     @classmethod
     def _match_device_name(cls, line):

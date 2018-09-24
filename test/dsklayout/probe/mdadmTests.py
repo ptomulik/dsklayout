@@ -50,14 +50,10 @@ class Test__MdadmBacktickProbe(testcase_.ProbeTestCase):
     @property
     def fixture_plan(self):
         return [
-            ('mdadm_detail_1_md1.txt',
-             'mdadm_detail_1_md1.content.json'),
-            ('mdadm_detail_1_md1_md6.txt',
-             'mdadm_detail_1_md1_md6.content.json'),
-            ('mdadm_examine_1_sda1.txt',
-             'mdadm_examine_1_sda1.content.json'),
-            ('mdadm_examine_1_sda1_sdb1_sda6_sdb6.txt',
-             'mdadm_examine_1_sda1_sdb1_sda6_sdb6.content.json')
+            ('mdadm_detail_1_md1.txt',                  'mdadm_detail_1_md1.content.json'),
+            ('mdadm_detail_1_md1_md6.txt',              'mdadm_detail_1_md1_md6.content.json'),
+            ('mdadm_examine_1_sda1.txt',                'mdadm_examine_1_sda1.content.json'),
+            ('mdadm_examine_1_sda1_sdb1_sda6_sdb6.txt', 'mdadm_examine_1_sda1_sdb1_sda6_sdb6.content.json')
         ]
 
     def decode_right_fixture(self, content):

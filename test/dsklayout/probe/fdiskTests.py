@@ -3,6 +3,9 @@
 
 import unittest
 from unittest.mock import patch
+
+from . import testcase_
+
 import os
 import os.path
 import json
@@ -11,42 +14,165 @@ import dsklayout.probe.fdisk_ as fdisk_
 
 backtick = 'dsklayout.util.backtick'
 
-class Test__FdiskProbe(unittest.TestCase):
-
-    fixture_plan = [
-        ('fdisk_1_sda_sdb.txt',    'fdisk_1_sda_sdb.content.json'),
-        ('fdisk_1_sda.txt',        'fdisk_1_sda.content.json'),
-        ('fdisk_2_sda_sdb.txt',    'fdisk_2_sda_sdb.content.json'),
-    ]
-
-    def __init__(self, *args, **kw):
-        super().__init__(*args, **kw)
-        self._fixtures = dict()
-
-    def tearDown(self):
-        self._fixtures = dict() # cleanup used fixtures
+class Test__FdiskProbe(testcase_.ProbeTestCase):
 
     @property
-    def fixtures(self):
-        if not self._fixtures:
-            self.load_fixtures()
-        return self._fixtures
+    def fixture_plan(self):
+        return [
+            ('fdisk_1_sda_sdb.txt',    'fdisk_1_sda_sdb.content.json'),
+            ('fdisk_1_sda.txt',        'fdisk_1_sda.content.json'),
+            ('fdisk_2_sda_sdb.txt',    'fdisk_2_sda_sdb.content.json'),
+        ]
 
-    def load_fixtures(self):
-        for left, right in self.fixture_plan:
-            with open(self.fixture_path(left)) as f:
-                self._fixtures[left] = f.read()
-            with open(self.fixture_path(right)) as f:
-                self._fixtures[right] = json.loads(f.read())
-
-    def fixture_path(self, file):
-        mydir = os.path.dirname(__file__)
-        return os.path.join(mydir, 'fixtures', file)
+    def decode_right_fixture(self, content):
+        return json.loads(content)
 
     def test__content(self):
         content = 'content'
         fdisk = fdisk_.FdiskProbe(content)
         self.assertIs(fdisk.content, content)
+
+    def test__entries(self):
+        content = [{'name': '/dev/sda', 'foo': 'FOO'},
+                   {'name': '/dev/sdb', 'bar': 'BAR'},
+                   {'geez': 'Geez'}]
+        self.assertEqual(fdisk_.FdiskProbe(content).entries, ['/dev/sda', '/dev/sdb', None])
+
+    def test__partabs(self):
+        content = [{'name': '/dev/sda', 'partitions': []},
+                   {'name': '/dev/sdb', 'bar': 'BAR'},
+                   {'name': '/dev/sdc', 'partitions': []}]
+        self.assertEqual(fdisk_.FdiskProbe(content).partabs, ['/dev/sda', '/dev/sdc'])
+
+    def test__entry(self):
+        content = [{'name': '/dev/sda', 'foo': 'FOO'},
+                   {'name': '/dev/sdb', 'bar': 'BAR'}]
+        fdisk = fdisk_.FdiskProbe(content)
+        self.assertIs(fdisk.entry('/dev/sda'), content[0])
+        self.assertIs(fdisk.entry('/dev/sdb'), content[1])
+        with self.assertRaises(ValueError) as context:
+            fdisk.entry('/dev/sdc')
+        self.assertEqual(("invalid device name: %s" % repr('/dev/sdc')), str(context.exception))
+
+    def test__partab(self):
+        sda1_i = {'device': '/dev/sda1',
+                  'start': 'START A1',
+                  'end': 'END A1',
+                  'sectors': 'SECTORS A1',
+                  'uuid': 'UUID A1',
+                  'type-uuid': 'TYPE UUID A1',
+                  'name': 'NAME A1',
+                  'type': 'TYPE A1'}
+        sda1_o = {'device': '/dev/sda1',
+                  'start': 'START A1',
+                  'end': 'END A1',
+                  'size': 'SECTORS A1',
+                  'uuid': 'UUID A1',
+                  'type': 'TYPE UUID A1',
+                  'name': 'NAME A1',
+                  'typename': 'TYPE A1'}
+        sda2_i = {'device': '/dev/sda2',
+                  'start': 'START A2',
+                  'end': 'END A2',
+                  'sectors': 'SECTORS A2',
+                  'uuid': 'UUID A2',
+                  'id': 'ID A2',
+                  'name': 'NAME A2',
+                  'type': 'TYPE A2'}
+        sda2_o = {'device': '/dev/sda2',
+                  'start': 'START A2',
+                  'end': 'END A2',
+                  'size': 'SECTORS A2',
+                  'uuid': 'UUID A2',
+                  'type': 'ID A2',
+                  'name': 'NAME A2',
+                  'typename': 'TYPE A2'}
+        sdb1_i = {'device': '/dev/sdb1',
+                  'start': 'START B1',
+                  'end': 'END B1',
+                  'sectors': 'SECTORS B1',
+                  'uuid': 'UUID B1',
+                  'type-uuid': 'TYPE UUID B1',
+                  'name': 'NAME B1',
+                  'type': 'TYPE B1'}
+        sdb1_o = {'device': '/dev/sdb1',
+                  'start': 'START B1',
+                  'end': 'END B1',
+                  'size': 'SECTORS B1',
+                  'uuid': 'UUID B1',
+                  'type': 'TYPE UUID B1',
+                  'name': 'NAME B1',
+                  'typename': 'TYPE B1'}
+
+        sda_i = {'name': '/dev/sda',
+                 'disklabel_type': 'DISKLABEL TYPE A',
+                 'disk_identifier': 'DISK IDENTIFIER A',
+                 'units': 'UNITS A',
+                 'bytes': 'BYTES A',
+                 'columns': 'COLUMNS A',
+                 'partitions': [sda1_i, sda2_i]}
+
+        sda_o = {'device': '/dev/sda',
+                 'label': 'DISKLABEL TYPE A',
+                 'id': 'DISK IDENTIFIER A',
+                 'units': 'UNITS A',
+                 'bytes': 'BYTES A',
+                 'partitions': [sda1_o, sda2_o]}
+
+        sdb_i = {'name': '/dev/sdb',
+                 'disklabel_type': 'DISKLABEL TYPE B',
+                 'disk_identifier': 'DISK IDENTIFIER B',
+                 'units': 'UNITS B',
+                 'bytes': 'BYTES B',
+                 'columns': 'COLUMNS B',
+                 'partitions': [sdb1_i]}
+
+        sdb_o = {'device': '/dev/sdb',
+                 'label': 'DISKLABEL TYPE B',
+                 'id': 'DISK IDENTIFIER B',
+                 'units': 'UNITS B',
+                 'bytes': 'BYTES B',
+                 'partitions': [sdb1_o]}
+
+        sdc_i = {'name': '/dev/sdc',
+                 'disklabel_type': 'DISKLABEL TYPE C',
+                 'disk_identifier': 'DISK IDENTIFIER C',
+                 'units': 'UNITS C',
+                 'bytes': 'BYTES C',
+                 'columns': 'COLUMNS C'}
+
+
+        fdisk = fdisk_.FdiskProbe([sda_i, sdb_i, sdc_i])
+        self.maxDiff = None
+        self.assertEqual(fdisk.partab('/dev/sda'), sda_o)
+        self.assertEqual(fdisk.partab('/dev/sdb'), sdb_o)
+
+        with self.assertRaises(ValueError) as context:
+            fdisk.partab('/dev/sdc')
+        self.assertEqual(("entry %s has no partition table" % repr('/dev/sdc')), str(context.exception))
+        with self.assertRaises(ValueError) as context:
+            fdisk.partab('/dev/sdd')
+        self.assertEqual(("invalid device name: %s" % repr('/dev/sdd')), str(context.exception))
+
+    def test__command_1(self):
+        self.assertEqual(fdisk_.FdiskProbe.command(), 'fdisk')
+
+    def test__command_2(self):
+        self.assertEqual(fdisk_.FdiskProbe.command(fdisk='/opt/bin/fdisk'), '/opt/bin/fdisk')
+
+    def test__flags__1(self):
+        self.assertEqual(fdisk_.FdiskProbe.flags([]), ['-l', '--bytes'])
+
+    def test__flags__2(self):
+        self.assertEqual(fdisk_.FdiskProbe.flags(['-x']), ['-l', '--bytes', '-x'])
+
+    def test__kwargs__1(self):
+        with patch.dict('os.environ', {'foo': 'FOO'}, True):
+            self.assertEqual(fdisk_.FdiskProbe.kwargs(), {'env': {'foo': 'FOO', 'LC_NUMERIC':'C'}})
+
+    def test__kwargs__1(self):
+        with patch.dict('os.environ', {'foo': 'FOO'}, True):
+            self.assertEqual(fdisk_.FdiskProbe.kwargs(env={'bar': 'BAR'}), {'env': {'bar': 'BAR', 'LC_NUMERIC':'C'}})
 
     def test__run__with_no_args(self):
         with patch(backtick, return_value='ok') as mock:
@@ -114,6 +240,9 @@ class Test__FdiskProbe(unittest.TestCase):
             content = fdisk_.FdiskProbe.parse(self.fixtures[left])
             expected = self.fixtures[right]
             self.assertEqual(content, expected)
+
+    def test__parse__1(self):
+        self.assertEqual(fdisk_.FdiskProbe.parse('bleah'), [{}])
 
 if __name__ == '__main__':
     unittest.main()

@@ -33,8 +33,8 @@ class _LvmBacktickProbe(backtick_.BackTickProbe):
         return ['--readonly', '--reportformat', 'json'] + cls.xflags() + flags
 
     @classmethod
-    def parse(cls, output):
-        return json.loads(output)
+    def parse(cls, text):
+        return json.loads(text)
 
 
 class LvsProbe(_LvmBacktickProbe):

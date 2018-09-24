@@ -63,13 +63,13 @@ class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
 
     @classmethod
     @abc.abstractmethod
-    def parse(cls, output):
-        """Parse output retrieved from the external program
+    def parse(cls, text):
+        """Parse text retrieved from the external program
 
         .. note:: This method **must** be implemented in a subclass.
 
-        :param str output:
-            an output captured from the STDOUT of the external command.
+        :param str text:
+            a text captured from the STDOUT of the external command.
         :return:
             parsed data, suitable for :attr:`.content`
         :rtype: unspecified
@@ -186,7 +186,7 @@ class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
             ``True``, if the supporting executable is available; otherwise
             ``False``.
         """
-        return bool(cls.which(kw))
+        return bool(cls.which(**kw))
 
 
 # Local Variables:

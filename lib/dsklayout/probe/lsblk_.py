@@ -147,8 +147,8 @@ class LsBlkProbe(backtick_.BackTickProbe):
         return ['-J', '-O', '-p'] + flags
 
     @classmethod
-    def parse(cls, output):
-        return json.loads(output)
+    def parse(cls, text):
+        return json.loads(text)
 
     def graph(self, **kw):
         """Builds and returns graph with nodes representing block devices."""

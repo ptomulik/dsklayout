@@ -66,8 +66,8 @@ class SfdiskProbe(backtick_.BackTickProbe):
         return ['-J'] + flags
 
     @classmethod
-    def parse(cls, output):
-        return json.loads(output)
+    def parse(cls, text):
+        return json.loads(text)
 
     @staticmethod
     def _compute_partition_end(part):
