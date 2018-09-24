@@ -17,16 +17,17 @@ class _Convert:
     def events(cls, val):
         m = re.match(r'(?P<hi>\d+)\.(?P<lo>\d+)', val)
         if m:
-            return (int(m.group('hi')) << 32) + int(m.group('lo'))
+            return (int(m.group('hi')) << 32) | int(m.group('lo'))
         else:
             return int(val)
 
     @classmethod
     def ord(cls, val):
-        try:
-            return int(val)
-        except ValueError:
-            return val
+        return val if val == "this" else int(val)
+
+    @classmethod
+    def hex(cls, val):
+        return int(val, 16)
 
 
 class _MdadmReportProbe(backtick_.BackTickProbe):
@@ -45,6 +46,7 @@ class _MdadmReportProbe(backtick_.BackTickProbe):
         'major': int,
         'minor': int,
         'raid_device': int,
+        'feature_map': _Convert.hex,
     }
 
     @classmethod

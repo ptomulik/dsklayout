@@ -9,9 +9,39 @@ import json
 
 import dsklayout.probe.mdadm_ as mdadm_
 import dsklayout.probe.backtick_ as backtick_
-import dsklayout.probe.probe_ as probe_
+import dsklayout.probe.composite_ as composite_
 
 backtick = 'dsklayout.util.backtick'
+
+class Test__Convert(unittest.TestCase):
+
+    def test__events__1(self):
+        self.assertEqual(mdadm_._Convert.events('123'), 123)
+
+    def test__events__2(self):
+        self.assertEqual(mdadm_._Convert.events('-123'), -123)
+
+    def test__events__3(self):
+        self.assertEqual(mdadm_._Convert.events('2.34'), (2<<32)|34)
+
+    def test__ord__1(self):
+        self.assertEqual(mdadm_._Convert.ord('123'), 123)
+
+    def test__ord__2(self):
+        self.assertEqual(mdadm_._Convert.ord('this'), 'this')
+
+    def test__ord__1(self):
+        with self.assertRaises(ValueError):
+            mdadm_._Convert.ord('foo')
+
+    def test__hex__1(self):
+        self.assertEqual(mdadm_._Convert.hex('0x1f'), 0x1f)
+
+    def test__hex__2(self):
+        self.assertEqual(mdadm_._Convert.hex('-0x1f'), -0x1f)
+
+    def test__hex__3(self):
+        self.assertEqual(mdadm_._Convert.hex('-1f'), -0x1f)
 
 class Test__MdadmReportProbe(unittest.TestCase):
 
@@ -60,9 +90,8 @@ class Test__MdadmReportProbe(unittest.TestCase):
         self.assertEqual(mdadm_._MdadmReportProbe.command(mdadm='foo'), 'foo')
 
     def test__content(self):
-        content = 'content'
-        mdadm = mdadm_.MdadmProbe(content)
-        self.assertIs(mdadm.content, content)
+        mdadm = mdadm_._MdadmReportProbe('content')
+        self.assertIs(mdadm.content, 'content')
 
     def test__run__with_no_args(self):
         with patch(backtick, return_value='ok') as mock:
@@ -123,11 +152,8 @@ class Test__MdadmExamineProbe(unittest.TestCase):
 
 class Test__MdadmProbe(unittest.TestCase):
 
-    def test__subclass_of_Probe(self):
-        self.assertTrue(issubclass(mdadm_.MdadmProbe, probe_.Probe))
-
-    def test__not_subclass_of_BacktickProbe(self):
-        self.assertFalse(issubclass(mdadm_.MdadmProbe, backtick_.BackTickProbe))
+    def test__subclass_of_CompositeProbe(self):
+        self.assertTrue(issubclass(mdadm_.MdadmProbe, composite_.CompositeProbe))
 
 
 if __name__ == '__main__':

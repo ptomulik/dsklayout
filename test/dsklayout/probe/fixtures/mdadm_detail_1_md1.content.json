@@ -8,25 +8,25 @@
         "raid_level": "raid1",
         "array_size": "524224 (511.94 MiB 536.81 MB)",
         "used_dev_size": "524224 (511.94 MiB 536.81 MB)",
-        "raid_devices": "2",
-        "total_devices": "2",
-        "preferred_minor": "1",
+        "raid_devices": 2,
+        "total_devices": 2,
+        "preferred_minor": 1,
         "persistence": "Superblock is persistent",
         "update_time": "Sun Sep 23 08:56:58 2018",
         "state": "clean",
-        "active_devices": "2",
-        "working_devices": "2",
-        "failed_devices": "0",
-        "spare_devices": "0",
+        "active_devices": 2,
+        "working_devices": 2,
+        "failed_devices": 0,
+        "spare_devices": 0,
         "consistency_policy": "resync",
         "uuid": "82ca73c6:644ccaa7:9d4deba6:47ca997f",
-        "events": "0.5271",
+        "events": 5271,
         "device_list": [
           {
-            "number": "0",
-            "major": "8",
-            "minor": "1",
-            "raid_device": "0",
+            "number": 0,
+            "major": 8,
+            "minor": 1,
+            "raid_device": 0,
             "state": [
               "active",
               "sync"
@@ -34,10 +34,10 @@
             "device": "/dev/sda1"
           },
           {
-            "number": "1",
-            "major": "8",
-            "minor": "17",
-            "raid_device": "1",
+            "number": 1,
+            "major": 8,
+            "minor": 17,
+            "raid_device": 1,
             "state": [
               "active",
               "sync"

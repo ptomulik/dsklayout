@@ -10,24 +10,24 @@
       "raid_level": "raid1",
       "used_dev_size": "524224 (511.94 MiB 536.81 MB)",
       "array_size": "524224 (511.94 MiB 536.81 MB)",
-      "raid_devices": "2",
-      "total_devices": "2",
-      "preferred_minor": "1",
+      "raid_devices": 2,
+      "total_devices": 2,
+      "preferred_minor": 1,
       "update_time": "Sun Sep 23 08:56:58 2018",
       "state": "clean",
-      "active_devices": "2",
-      "working_devices": "2",
-      "failed_devices": "0",
-      "spare_devices": "0",
+      "active_devices": 2,
+      "working_devices": 2,
+      "failed_devices": 0,
+      "spare_devices": 0,
       "checksum": "209cb36e - correct",
-      "events": "5271",
+      "events": 5271,
       "device_list": [
         {
           "ord": "this",
-          "number": "0",
-          "major": "8",
-          "minor": "1",
-          "raid_device": "0",
+          "number": 0,
+          "major": 8,
+          "minor": 1,
+          "raid_device": 0,
           "state": [
             "active",
             "sync"
@@ -35,11 +35,11 @@
           "device": "/dev/sda1"
         },
         {
-          "ord": "0",
-          "number": "0",
-          "major": "8",
-          "minor": "1",
-          "raid_device": "0",
+          "ord": 0,
+          "number": 0,
+          "major": 8,
+          "minor": 1,
+          "raid_device": 0,
           "state": [
             "active",
             "sync"
@@ -47,11 +47,11 @@
           "device": "/dev/sda1"
         },
         {
-          "ord": "1",
-          "number": "1",
-          "major": "8",
-          "minor": "17",
-          "raid_device": "1",
+          "ord": 1,
+          "number": 1,
+          "major": 8,
+          "minor": 17,
+          "raid_device": 1,
           "state": [
             "active",
             "sync"
