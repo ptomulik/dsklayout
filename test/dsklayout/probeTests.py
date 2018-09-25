@@ -9,6 +9,9 @@ class Test__probe__PackageSymbols(unittest.TestCase):
     def test__backtick__symbols(self):
         self.assertIs(probe.BackTickProbe, probe.backtick_.BackTickProbe)
 
+    def test__composite__symbols(self):
+        self.assertIs(probe.CompositeProbe, probe.composite_.CompositeProbe)
+
     def test__fdisk__symbols(self):
         self.assertIs(probe.FdiskProbe, probe.fdisk_.FdiskProbe)
 

@@ -59,8 +59,8 @@ class _MdadmBacktickProbe(backtick_.BackTickProbe):
             return convert(val)
 
     @classmethod
-    def command(cls, **kw):
-        return kw.get('mdadm', 'mdadm')
+    def cmdname(cls):
+        return 'mdadm'
 
     @classmethod
     def parse(cls, text):

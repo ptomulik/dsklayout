@@ -39,7 +39,6 @@ class Probe:
         return cls(content)
 
 
-
 # Local Variables:
 # tab-width:4
 # indent-tabs-mode:nil

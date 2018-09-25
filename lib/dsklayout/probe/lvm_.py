@@ -15,18 +15,8 @@ __all__ = ('LvsProbe', 'VgsProbe', 'PvsProbe', 'LvmProbe')
 class _LvmBacktickProbe(backtick_.BackTickProbe):
 
     @classmethod
-    @abc.abstractmethod
-    def cmdname(cls):
-        pass
-
-    @classmethod
     def xflags(cls):
         return []
-
-    @classmethod
-    def command(cls, **kw):
-        cmd = cls.cmdname()
-        return kw.get(cmd, cmd)
 
     @classmethod
     def flags(cls, flags, **kw):

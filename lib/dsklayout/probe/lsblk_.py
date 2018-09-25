@@ -139,8 +139,8 @@ class _Properties:
 class LsBlkProbe(backtick_.BackTickProbe):
 
     @classmethod
-    def command(cls, **kw):
-        return kw.get('lsblk', 'lsblk')
+    def cmdname(cls):
+        return 'lsblk'
 
     @classmethod
     def flags(cls, flags, **kw):

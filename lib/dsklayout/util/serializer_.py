@@ -21,15 +21,6 @@ def load_object(data):
     return obj
 
 
-def _dump_other_object(obj):
-    if isinstance(obj, dict):
-        return {k: dump_object(v) for k, v in obj.items()}
-    elif isinstance(obj, list):
-        return [dump_object(v) for v in obj]
-    else:
-        return obj
-
-
 def _dump_object_with_attributes(obj):
     cls = obj.__class__
     return {'_module': cls.__module__,
@@ -53,13 +44,21 @@ def _load_object_with_attributes(data):
             return cls(**attribs)
 
 
+def _dump_other_object(obj):
+    return _dump_or_load_other_object(obj, dump_object)
+
+
 def _load_other_object(data):
-    if isinstance(data, dict):
-        return {k: load_object(v) for k, v in data.items()}
-    elif isinstance(data, list):
-        return [load_object(v) for v in data]
+    return _dump_or_load_other_object(data, load_object)
+
+
+def _dump_or_load_other_object(subj, func):
+    if isinstance(subj, dict):
+        return {k: func(v) for k, v in subj.items()}
+    elif isinstance(subj, list):
+        return [func(v) for v in subj]
     else:
-        return data
+        return subj
 
 
 # Local Variables:

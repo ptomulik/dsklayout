@@ -5,6 +5,7 @@ div.body > .section p {
 div.admonition p.admonition-title {
   font-size: 14px;
   font-weight: bold;
+  display: block;
 }
 
 dl.class, dl.function, dl.exception {

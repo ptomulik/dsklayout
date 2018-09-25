@@ -11,6 +11,7 @@ from .. import util
 util.import_all_from(__package__, [
     '.probe_',
     '.backtick_',
+    '.composite_',
     '.fdisk_',
     '.lsblk_',
     '.lvm_',

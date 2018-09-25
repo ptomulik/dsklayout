@@ -36,7 +36,7 @@ def main():
 
     :example: Usage of :func:`.main` (a code snippet for ``setup.py``)
 
-    .. code:: python
+    .. code-block:: python
 
         from setuptools import setup
 

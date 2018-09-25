@@ -5,6 +5,7 @@
 import re
 
 __all__ = ('add_dict_getters',
+           'rekey',
            'select_items',
            'select_keys',
            'select_values',
@@ -17,6 +18,46 @@ def add_dict_getters(cls, mappings, dict):
     in an internal dictionary."""
     for attr, key in mappings.items():
         setattr(cls, attr, property(lambda o, k=key: getattr(o, dict).get(k)))
+
+
+def rekey(items, mapping=dict(), exclude=(), strict=False):
+    """Remap keys from **items** according to **mapping**.
+
+    :param items:
+        an input collection, usually :class:`dict`; for each item ``x`` from
+        ``items.items()`` the key ``k = x[0]`` must be hashable,
+    :param dict mapping:
+        a definition of key mappings; if **strict** is ``True``, **mapping**
+        must contain all keys from **items** (except these listed in
+        **exclude**), otherwise some keys may be missing,
+    :param exclude:
+        a keys in **items** to be excluded from processing,
+    :param bool strict:
+        if **strict** is ``False``, then ``mapping.get(k, k)`` is used for
+        remapping key ``k``, otherwise ``mapping[k]`` is used, which may raise
+        :class:`KeyError`.
+    :return:
+        a generator object yielding items from ``items.items()`` with keys
+        remapped according to **mapping** and without items whose keys are
+        listed in **exclude**.
+
+    :example:
+
+    .. code-block:: python
+
+        from dsklayout.util import rekey
+
+        letters = {'a': 'A', 'b': 'B', 'c': 'C'}
+        mapping = {'a': '1'}
+        dict(rekey(letters, mapping, ('c')))
+        # {'1': 'A', 'b': 'B'}
+    """
+    if not strict:
+        return ((mapping.get(x[0], x[0]), *x[1:]) for x in items.items()
+                if x[0] not in exclude)
+    else:
+        return ((mapping[x[0]], *x[1:]) for x in items.items()
+                if x[0] not in exclude)
 
 
 def select_items(items, pred):
@@ -35,7 +76,7 @@ def select_items(items, pred):
 
     :example:
 
-    .. code:: python
+    .. code-block:: python
 
         from dsklayout.util import select_items
 
@@ -74,7 +115,7 @@ def select_keys(items, pred):
 
     :example:
 
-    .. code:: python
+    .. code-block:: python
 
         from dsklayout.util import select_keys
 
@@ -113,7 +154,7 @@ def select_values(items, pred):
 
     :example:
 
-    .. code:: python
+    .. code-block:: python
 
         from dsklayout.util import select_values
 
@@ -152,7 +193,7 @@ def select_attr(items, attr, pred):
 
     :example:
 
-    .. code:: python
+    .. code-block:: python
 
         from dsklayout.util import select_attr
 

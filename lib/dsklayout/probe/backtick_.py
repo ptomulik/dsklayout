@@ -20,12 +20,13 @@ class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
     STDOUT of a *single* CLI command run.
 
     .. note::
-        Collecting data from multiple related programs shall be
-        organized differently. Inheriting :class:`BackTickProbe` is not the
-        proper way of implementing composite probes.
+        A subclass of :class:`BackTickProbe` must override :meth:`cmdname` and
+        :meth:`parse`.
 
-    A subclass of :class:`BackTickProbe` must override two methods:
-    :meth:`command` and :meth:`parse`.
+    .. note::
+        To implement a probe that collects data from multiple sources inherit
+        :class:`.CompositeProbe`, not :class:`BackTickProbe`.
+
 
     New instances should be created by user with the class method :meth:`new`.
     A probe may be unavailable in certain circumstances. For example, a
@@ -39,10 +40,20 @@ class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
 
     @classmethod
     @abc.abstractmethod
-    def command(cls, **kw):
-        """Returns the command (path or name) used by this class.
+    def cmdname(cls):
+        """Returns the command name.
 
         .. note:: This method **must** be implemented in a subclass.
+
+        :return:
+            name of the CLI command that used by the probe.
+        :rtype: str
+        """
+        pass
+
+    @classmethod
+    def command(cls, **kw):
+        """Returns the command (path or name) used by this class.
 
         :param \*\*kw:
             keyword arguments (unspecified); the method receives all keyword
@@ -51,15 +62,9 @@ class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
         :return:
             path to (or name of) the CLI command that shall be used.
         :rtype: str
-
-        :example:
-
-        .. code-block:: python
-
-           def command(cls, **kw):
-               return kw.get('fdisk', 'fdisk')
         """
-        pass
+        key = cls.cmdname()
+        return kw.get(key, key)
 
     @classmethod
     @abc.abstractmethod
