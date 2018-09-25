@@ -236,7 +236,7 @@ class FdiskProbe(backtick_.BackTickProbe):
     where ``DEV`` are block device names.
     """
 
-    # Partition table metadata (fdisk to dsklayout field mappings)
+    # fdisk to dsklayout field mappings: partition table metadata
     _pt_map = {
       'disklabel_type': 'label',
       'disk_identifier': 'id',
@@ -245,7 +245,7 @@ class FdiskProbe(backtick_.BackTickProbe):
       'bytes': 'bytes',
     }
 
-    # Partition metadata keys (fdisk to dsklayout field mappings)
+    # fdisk to dsklayout field mappings: partition metadata
     _pt_p_map = {
         'device': 'device',
         'start': 'start',

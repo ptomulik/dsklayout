@@ -20,7 +20,7 @@ class SfdiskProbe(backtick_.BackTickProbe):
     where ``DEV`` is a block device name.
     """
 
-    # Partition table metadata (sfdisk to dsklayout field mappings)
+    # sfdisk to dsklayout field mappings: partition table metadata
     _pt_map = {
         'label': 'label',
         'id': 'id',
@@ -28,7 +28,7 @@ class SfdiskProbe(backtick_.BackTickProbe):
         'unit': 'units',
     }
 
-    # Partition metadata (sfdisk to dsklayout field mappings)
+    # sfdisk to dsklayout field mappings: partition metadata
     _pt_p_map = {
         'node': 'device',
         'start': 'start',
