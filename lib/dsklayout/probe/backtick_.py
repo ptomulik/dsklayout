@@ -46,7 +46,7 @@ class BackTickProbe(probe_.Probe, metaclass=abc.ABCMeta):
         .. note:: This method **must** be implemented in a subclass.
 
         :return:
-            name of the CLI command that used by the probe.
+            name of the command used by the probe.
         :rtype: str
         """
         pass
