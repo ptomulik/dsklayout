@@ -11,10 +11,11 @@ import os.path
 import json
 
 import dsklayout.probe.fdisk_ as fdisk_
+import dsklayout.probe.backtick_ as backtick_
 
 backtick = 'dsklayout.util.backtick'
 
-class Test__FdiskProbe(testcase_.ProbeTestCase):
+class Test__Parser(testcase_.ProbeTestCase):
 
     @property
     def fixture_plan(self):
@@ -26,6 +27,23 @@ class Test__FdiskProbe(testcase_.ProbeTestCase):
 
     def decode_right_fixture(self, content):
         return json.loads(content)
+
+    def test__parse__with_fixtures(self):
+        self.maxDiff = None
+        for left, right in self.fixture_plan:
+            content = fdisk_._Parser().parse(self.fixtures[left])
+            expected = self.fixtures[right]
+            self.assertEqual(content, expected)
+
+    def test__parse__1(self):
+        self.assertEqual(fdisk_._Parser().parse('bleah'), [{}])
+
+    def test__parse__2(self):
+        text = 'Disk /dev/sda: 931.5 GiB, 1000204886016 bytes, 1953525168 sectors'
+        content = [{"name":  "/dev/sda", "size": "931.5 GiB", "bytes": 1000204886016, "sectors": 1953525168}]
+        self.assertEqual(fdisk_._Parser().parse(text), content)
+
+class Test__FdiskProbe(testcase_.ProbeTestCase):
 
     def test__content(self):
         content = 'content'
@@ -174,6 +192,9 @@ class Test__FdiskProbe(testcase_.ProbeTestCase):
         with patch.dict('os.environ', {'foo': 'FOO'}, True):
             self.assertEqual(fdisk_.FdiskProbe.kwargs(env={'bar': 'BAR'}), {'env': {'bar': 'BAR', 'LC_NUMERIC':'C'}})
 
+    def test__run__is_inherited(self):
+        self.assertIs(fdisk_.FdiskProbe.run.__code__, backtick_.BackTickProbe.run.__code__, "BackTick.run() is overriden in FdiskProbe")
+
     def test__run__with_no_args(self):
         with patch(backtick, return_value='ok') as mock:
             self.assertIs(fdisk_.FdiskProbe.run(env=dict()), 'ok')
@@ -199,50 +220,14 @@ class Test__FdiskProbe(testcase_.ProbeTestCase):
             self.assertIs(fdisk_.FdiskProbe.run(['sda', 'sdb'], ['-x', '-y'], fdisk='/opt/bin/fdisk', env=dict()), 'ok')
             mock.assert_called_once_with(['/opt/bin/fdisk', '-l', '--bytes', '-x', '-y',  'sda', 'sdb'], env={'LC_NUMERIC': 'C'})
 
-    def test__new__with_no_args(self):
-        with patch(backtick, return_value='Disk /dev/sda: 931.5 GiB, 1000204886016 bytes, 1953525168 sectors') as mock:
-            fdisk = fdisk_.FdiskProbe.new(env=dict())
-            self.assertIsInstance(fdisk, fdisk_.FdiskProbe)
-            self.assertEqual(fdisk.content, [{"name":  "/dev/sda", "size": "931.5 GiB", "bytes": 1000204886016, "sectors": 1953525168}])
-            mock.assert_called_once_with(['fdisk', '-l', '--bytes'], env={'LC_NUMERIC': 'C'})
+    def test__new__is_inherited(self):
+        self.assertIs(fdisk_.FdiskProbe.new.__code__, backtick_.BackTickProbe.new.__code__, "BackTick.new() is overriden in FdiskProbe")
 
-    def test__new__with_device(self):
-        with patch(backtick, return_value='Disk /dev/sda: 931.5 GiB, 1000204886016 bytes, 1953525168 sectors') as mock:
-            fdisk = fdisk_.FdiskProbe.new('sda', env=dict())
-            self.assertIsInstance(fdisk, fdisk_.FdiskProbe)
-            self.assertEqual(fdisk.content, [{"name":  "/dev/sda", "size": "931.5 GiB", "bytes": 1000204886016, "sectors": 1953525168}])
-            mock.assert_called_once_with(['fdisk', '-l', '--bytes', 'sda'], env={'LC_NUMERIC': 'C'})
+    def test__parse(self):
+        with patch.object(fdisk_._Parser, 'parse', return_value='ok') as parse:
+            self.assertIs(fdisk_.FdiskProbe.parse('foo'), 'ok')
+            parse.assert_called_once_with('foo')
 
-    def test__new__with_devices(self):
-        with patch(backtick, return_value='Disk /dev/sda: 931.5 GiB, 1000204886016 bytes, 1953525168 sectors') as mock:
-            fdisk = fdisk_.FdiskProbe.new(['sda', 'sdb'], env=dict())
-            self.assertIsInstance(fdisk, fdisk_.FdiskProbe)
-            self.assertEqual(fdisk.content, [{"name":  "/dev/sda", "size": "931.5 GiB", "bytes": 1000204886016, "sectors": 1953525168}])
-            mock.assert_called_once_with(['fdisk', '-l', '--bytes', 'sda', 'sdb'], env={'LC_NUMERIC': 'C'})
-
-    def test__new__with_devices_and_flags(self):
-        with patch(backtick, return_value='Disk /dev/sda: 931.5 GiB, 1000204886016 bytes, 1953525168 sectors') as mock:
-            fdisk = fdisk_.FdiskProbe.new(['sda', 'sdb'], ['-x', '-y'], env=dict())
-            self.assertIsInstance(fdisk, fdisk_.FdiskProbe)
-            self.assertEqual(fdisk.content, [{"name":  "/dev/sda", "size": "931.5 GiB", "bytes": 1000204886016, "sectors": 1953525168}])
-            mock.assert_called_once_with(['fdisk', '-l', '--bytes', '-x', '-y',  'sda', 'sdb'], env={'LC_NUMERIC': 'C'})
-
-    def test__new__with_custom_fdisk(self):
-        with patch(backtick, return_value='Disk /dev/sda: 931.5 GiB, 1000204886016 bytes, 1953525168 sectors') as mock:
-            fdisk = fdisk_.FdiskProbe.new(['sda', 'sdb'], ['-x', '-y'], fdisk='/opt/bin/fdisk', env=dict())
-            self.assertIsInstance(fdisk, fdisk_.FdiskProbe)
-            self.assertEqual(fdisk.content, [{"name":  "/dev/sda", "size": "931.5 GiB", "bytes": 1000204886016, "sectors": 1953525168}])
-            mock.assert_called_once_with(['/opt/bin/fdisk', '-l', '--bytes', '-x', '-y',  'sda', 'sdb'], env={'LC_NUMERIC': 'C'})
-
-    def test__parse__with_fixtures(self):
-        self.maxDiff = None
-        for left, right in self.fixture_plan:
-            content = fdisk_.FdiskProbe.parse(self.fixtures[left])
-            expected = self.fixtures[right]
-            self.assertEqual(content, expected)
-
-    def test__parse__1(self):
-        self.assertEqual(fdisk_.FdiskProbe.parse('bleah'), [{}])
 
 if __name__ == '__main__':
     unittest.main()

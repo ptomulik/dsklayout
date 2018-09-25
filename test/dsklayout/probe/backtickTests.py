@@ -8,6 +8,12 @@ from unittest.mock import patch
 
 backtick = 'dsklayout.util.backtick'
 
+def there(member=None):
+    if member is None:
+        return 'dsklayout.probe.backtick_.BackTickProbe'
+    else:
+        return 'dsklayout.probe.backtick_.BackTickProbe.%s' % member
+
 class Test__BackTickProbe(unittest.TestCase):
 
     def test__is_subclass_of_Probe(self):
@@ -63,14 +69,14 @@ class Test__BackTickProbe(unittest.TestCase):
 
     def test__run__1(self):
         with patch(backtick, return_value='ok') as mock, \
-             patch.object(backtick_.BackTickProbe, 'command', return_value='doit') as command:
+             patch(there('cmdname'), return_value='doit') as command:
             content = backtick_.BackTickProbe.run()
             mock.assert_called_once_with(['doit'])
             self.assertEqual(content, 'ok')
 
     def test__run__2(self):
         with patch(backtick, return_value='ok') as mock, \
-             patch.object(backtick_.BackTickProbe, 'command', return_value='doit') as command:
+             patch(there('cmdname'), return_value='doit') as command:
             content = backtick_.BackTickProbe.run(['arg1', 'arg2'], ['-f1', '-f2'])
             mock.assert_called_once_with(['doit', 'arg1', 'arg2'])
             self.assertEqual(content, 'ok')
