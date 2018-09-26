@@ -4,46 +4,13 @@
 import unittest
 from unittest.mock import patch
 
-from . import testcase_
-
-import os
-import os.path
-import json
-
 import dsklayout.probe.fdisk_ as fdisk_
+import dsklayout.probe.fdiskparser_ as fdiskparser_
 import dsklayout.probe.backtick_ as backtick_
 
 backtick = 'dsklayout.util.backtick'
 
-class Test__Parser(testcase_.ProbeTestCase):
-
-    @property
-    def fixture_plan(self):
-        return [
-            ('fdisk_1_sda_sdb.txt',    'fdisk_1_sda_sdb.content.json'),
-            ('fdisk_1_sda.txt',        'fdisk_1_sda.content.json'),
-            ('fdisk_2_sda_sdb.txt',    'fdisk_2_sda_sdb.content.json'),
-        ]
-
-    def decode_right_fixture(self, content):
-        return json.loads(content)
-
-    def test__parse__with_fixtures(self):
-        self.maxDiff = None
-        for left, right in self.fixture_plan:
-            content = fdisk_._Parser().parse(self.fixtures[left])
-            expected = self.fixtures[right]
-            self.assertEqual(content, expected)
-
-    def test__parse__1(self):
-        self.assertEqual(fdisk_._Parser().parse('bleah'), [{}])
-
-    def test__parse__2(self):
-        text = 'Disk /dev/sda: 931.5 GiB, 1000204886016 bytes, 1953525168 sectors'
-        content = [{"name":  "/dev/sda", "size": "931.5 GiB", "bytes": 1000204886016, "sectors": 1953525168}]
-        self.assertEqual(fdisk_._Parser().parse(text), content)
-
-class Test__FdiskProbe(testcase_.ProbeTestCase):
+class Test__FdiskProbe(unittest.TestCase):
 
     def test__content(self):
         content = 'content'
@@ -127,7 +94,6 @@ class Test__FdiskProbe(testcase_.ProbeTestCase):
                  'disk_identifier': 'DISK IDENTIFIER A',
                  'units': 'UNITS A',
                  'bytes': 'BYTES A',
-                 'columns': 'COLUMNS A',
                  'partitions': [sda1_i, sda2_i]}
 
         sda_o = {'device': '/dev/sda',
@@ -142,7 +108,6 @@ class Test__FdiskProbe(testcase_.ProbeTestCase):
                  'disk_identifier': 'DISK IDENTIFIER B',
                  'units': 'UNITS B',
                  'bytes': 'BYTES B',
-                 'columns': 'COLUMNS B',
                  'partitions': [sdb1_i]}
 
         sdb_o = {'device': '/dev/sdb',
@@ -156,8 +121,7 @@ class Test__FdiskProbe(testcase_.ProbeTestCase):
                  'disklabel_type': 'DISKLABEL TYPE C',
                  'disk_identifier': 'DISK IDENTIFIER C',
                  'units': 'UNITS C',
-                 'bytes': 'BYTES C',
-                 'columns': 'COLUMNS C'}
+                 'bytes': 'BYTES C'}
 
 
         fdisk = fdisk_.FdiskProbe([sda_i, sdb_i, sdc_i])
@@ -224,7 +188,7 @@ class Test__FdiskProbe(testcase_.ProbeTestCase):
         self.assertIs(fdisk_.FdiskProbe.new.__code__, backtick_.BackTickProbe.new.__code__, "BackTick.new() is overriden in FdiskProbe")
 
     def test__parse(self):
-        with patch.object(fdisk_._Parser, 'parse', return_value='ok') as parse:
+        with patch.object(fdiskparser_.FdiskParser, 'parse', return_value='ok') as parse:
             self.assertIs(fdisk_.FdiskProbe.parse('foo'), 'ok')
             parse.assert_called_once_with('foo')
 

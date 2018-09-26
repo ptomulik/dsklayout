@@ -15,6 +15,9 @@ class Test__probe__PackageSymbols(unittest.TestCase):
     def test__fdisk__symbols(self):
         self.assertIs(probe.FdiskProbe, probe.fdisk_.FdiskProbe)
 
+    def test__fdiskparser__symbols(self):
+        self.assertIs(probe.FdiskParser, probe.fdiskparser_.FdiskParser)
+
     def test__lsblk__symbols(self):
         self.assertIs(probe.LsBlkProbe, probe.lsblk_.LsBlkProbe)
 

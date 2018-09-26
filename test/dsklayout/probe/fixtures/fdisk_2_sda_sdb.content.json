@@ -12,7 +12,6 @@
     "io_opt_size": 512,
     "disklabel_type": "dos",
     "disk_identifier": "0x5f572a40",
-    "columns": ["Device", "Boot", "Start", "End", "Sectors", "Size", "Id", "Type"],
     "partitions": [
       {
         "device": "/dev/sda1",
@@ -79,7 +78,6 @@
     "io_opt_size": 512,
     "disklabel_type": "dos",
     "disk_identifier": "0x5f572a40",
-    "columns": ["Device", "Boot", "Start", "End", "Sectors", "Size", "Id", "Type"],
     "partitions": [
       {
         "device": "/dev/sdb1",

@@ -13,6 +13,7 @@ util.import_all_from(__package__, [
     '.backtick_',
     '.composite_',
     '.fdisk_',
+    '.fdiskparser_',
     '.lsblk_',
     '.lvm_',
     '.mdadm_',
