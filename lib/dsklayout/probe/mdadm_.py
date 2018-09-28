@@ -225,9 +225,9 @@ class MdadmProbe(composite_.CompositeProbe):
         return cls({'detail': detail, 'examine': examine})
 
     @classmethod
-    def probes(cls, **kw):
+    def uses(cls, **kw):
         internal = [MdadmDetailProbe, MdadmExamineProbe]
-        return cls.mk_probes(internal, {'lsblkgraph': lsblk_.LsBlkProbe}, **kw)
+        return cls.mk_uses(internal, {'lsblkgraph': lsblk_.LsBlkProbe}, **kw)
 
     @classmethod
     def _is_raid(cls, item):

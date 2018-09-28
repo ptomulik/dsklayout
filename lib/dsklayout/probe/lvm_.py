@@ -81,9 +81,9 @@ class LvmProbe(composite_.CompositeProbe):
         return cls({'pvs': pvs, 'lvs': lvs, 'vgs': vgs})
 
     @classmethod
-    def probes(cls, **kw):
+    def uses(cls, **kw):
         internal = [LvsProbe, PvsProbe, VgsProbe]
-        return cls.mk_probes(internal, {'lsblkgraph': lsblk_.LsBlkProbe}, **kw)
+        return cls.mk_uses(internal, {'lsblkgraph': lsblk_.LsBlkProbe}, **kw)
 
     @classmethod
     def _is_member(cls, item):

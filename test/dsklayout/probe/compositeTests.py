@@ -34,22 +34,22 @@ class Test__CompositeProbe(unittest.TestCase):
     def test__subclassing(self):
         class T(composite_.CompositeProbe):
             @classmethod
-            def probes(cls, **kw):
+            def uses(cls, **kw):
                 return []
         self.assertIsInstance(T({}), composite_.CompositeProbe)
 
-    def test__probes__1(self):
-        self.assertIsNone(composite_.CompositeProbe.probes())
+    def test__uses__1(self):
+        self.assertIsNone(composite_.CompositeProbe.uses())
 
-    def test__probes__2(self):
-        self.assertIsNone(composite_.CompositeProbe.probes(foo='FOO',bar='BAR'))
+    def test__uses__2(self):
+        self.assertIsNone(composite_.CompositeProbe.uses(foo='FOO',bar='BAR'))
 
     def test__available__1(self):
         A = mock.Mock()
         A.available = mock.Mock(return_value=True)
         B = mock.Mock()
         B.available = mock.Mock(return_value=True)
-        with patch(there('CompositeProbe.probes'), return_value=[A, B]) as probes:
+        with patch(there('CompositeProbe.uses'), return_value=[A, B]) as uses:
             self.assertTrue(composite_.CompositeProbe.available(foo='FOO'))
         A.available.assert_called_once_with(foo='FOO')
         B.available.assert_called_once_with(foo='FOO')
@@ -59,7 +59,7 @@ class Test__CompositeProbe(unittest.TestCase):
         A.available = mock.Mock(return_value=False)
         B = mock.Mock()
         B.available = mock.Mock(return_value=True)
-        with patch(there('CompositeProbe.probes'), return_value=[A, B]) as probes:
+        with patch(there('CompositeProbe.uses'), return_value=[A, B]) as uses:
             self.assertFalse(composite_.CompositeProbe.available(foo='FOO'))
         A.available.assert_called_once_with(foo='FOO')
         # B.available not called because A.available returned False
@@ -69,22 +69,22 @@ class Test__CompositeProbe(unittest.TestCase):
         A.available = mock.Mock(return_value=True)
         B = mock.Mock()
         B.available = mock.Mock(return_value=False)
-        with patch(there('CompositeProbe.probes'), return_value=[A, B]) as probes:
+        with patch(there('CompositeProbe.uses'), return_value=[A, B]) as uses:
             self.assertFalse(composite_.CompositeProbe.available(foo='FOO'))
         A.available.assert_called_once_with(foo='FOO')
         B.available.assert_called_once_with(foo='FOO')
 
-    def test__mk_probes(self):
+    def test__mk_uses(self):
         A = mock.Mock()
         B = mock.Mock()
         C = mock.Mock()
         class T(composite_.CompositeProbe):
             @classmethod
-            def probes(cls, **kw):
-                return cls.mk_probes([A, B], {'c': C}, **kw)
+            def uses(cls, **kw):
+                return cls.mk_uses([A, B], {'c': C}, **kw)
 
-        self.assertEqual(T.probes(), [A, B, C])
-        self.assertEqual(T.probes(c=C()), [A, B])
+        self.assertEqual(T.uses(), [A, B, C])
+        self.assertEqual(T.uses(c=C()), [A, B])
 
     def test__extract_lsblk_graph__1(self):
         lsblk = mock.Mock()

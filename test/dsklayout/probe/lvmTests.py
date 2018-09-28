@@ -11,6 +11,7 @@ from . import testcase_
 import dsklayout.probe.lvm_ as lvm_
 import dsklayout.probe.backtick_ as backtick_
 import dsklayout.probe.composite_ as composite_
+import dsklayout.probe.lsblk_ as lsblk_
 
 backtick = 'dsklayout.util.backtick'
 
@@ -179,6 +180,12 @@ class Test__LvmProbe(unittest.TestCase):
             self.assertIs(probe.content['lvs'], lvs)
             self.assertIs(probe.content['vgs'], vgs)
 
+
+    def test__uses__1(self):
+        self.assertEqual(lvm_.LvmProbe.uses(), [lvm_.LvsProbe, lvm_.PvsProbe, lvm_.VgsProbe, lsblk_.LsBlkProbe])
+
+    def test__uses__2(self):
+        self.assertEqual(lvm_.LvmProbe.uses(lsblkgraph='G'), [lvm_.LvsProbe, lvm_.PvsProbe, lvm_.VgsProbe])
 
     def test__is_member__1(self):
         item = ('foo', mock.Mock())

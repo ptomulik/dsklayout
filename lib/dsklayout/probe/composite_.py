@@ -19,10 +19,10 @@ class CompositeProbe(probe_.Probe, metaclass=abc.ABCMeta):
 
     @classmethod
     @abc.abstractmethod
-    def probes(cls, **kw):
+    def uses(cls, **kw):
         """A list of probe classes required by this composite probe.
 
-        Classes from the :meth:`probes` list are examined by :meth:`available`
+        Classes from the :meth:`uses` list are examined by :meth:`available`
         for their availability.
 
         .. note::
@@ -50,13 +50,13 @@ class CompositeProbe(probe_.Probe, metaclass=abc.ABCMeta):
             ``True``, if the supporting executable is available; otherwise
             ``False``.
         """
-        return all(p.available(**kw) for p in cls.probes(**kw))
+        return all(p.available(**kw) for p in cls.uses(**kw))
 
     @classmethod
-    def mk_probes(cls, internal, external, **kw):
+    def mk_uses(cls, internal, external, **kw):
         """Make list of required probes.
 
-        This utility method helps implementing :meth:`probes` in subclasses.
+        This utility method helps implementing :meth:`uses` in subclasses.
         The returned list contains all classes from **internal** and all
         classes from **external** that are not found in **\*\*kw**.
 
@@ -72,11 +72,11 @@ class CompositeProbe(probe_.Probe, metaclass=abc.ABCMeta):
             a list of probe classes.
         :rtype: list
         """
-        probes = internal[:]
+        uses = internal[:]
         for key, klass in external.items():
             if key not in kw:
-                probes.append(klass)
-        return probes
+                uses.append(klass)
+        return uses
 
     @classmethod
     def extract_lsblk_graph(cls, arguments, flags, kw):
