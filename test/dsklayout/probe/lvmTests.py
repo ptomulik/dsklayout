@@ -2,6 +2,7 @@
 # -*- coding: utf8 -*-
 
 import unittest
+import unittest.mock as mock
 from unittest.mock import patch
 import json
 
@@ -17,7 +18,6 @@ class LvmXxx(lvm_._LvmBacktickProbe):
     @classmethod
     def cmdname(cls):
         return 'xxx'
-
 
 class Test__LvmBacktickProbe(testcase_.ProbeTestCase):
 
@@ -149,6 +149,56 @@ class Test__LvmProbe(unittest.TestCase):
 
     def test__subclass_of_CompositeProbe(self):
         self.assertTrue(issubclass(lvm_.LvmProbe, composite_.CompositeProbe))
+
+    def test__new(self):
+        graph = mock.Mock()
+        graph.nodes = {
+                'vol1': mock.Mock(type='lvm'),
+                'vol2': mock.Mock(type='lvm'),
+                'mem1': mock.Mock(fstype='LVM_member'),
+                'mem2': mock.Mock(fstype='LVM_member')
+        }
+        graph.nodes['vol1'].name = 'vol1'
+        graph.nodes['vol2'].name = 'vol2'
+        graph.nodes['mem1'].name = 'mem1'
+        graph.nodes['mem2'].name = 'mem2'
+        pvs = mock.Mock()
+        lvs = mock.Mock(content={'report': [{'lv': [{'lv_name': 'vol1', 'vg_name': 'vg1'}, {'lv_name': 'vol2', 'vg_name': 'vg2'}]}]})
+        vgs = mock.Mock()
+        with patch('dsklayout.probe.composite_.CompositeProbe.extract_lsblk_graph', return_value=graph) as extract_lsblk_graph, \
+             patch('dsklayout.probe.lvm_.PvsProbe.new', return_value=pvs) as pvs_new, \
+             patch('dsklayout.probe.lvm_.LvsProbe.new', return_value=lvs) as lvs_new, \
+             patch('dsklayout.probe.lvm_.VgsProbe.new', return_value=vgs) as vgs_new:
+            probe = lvm_.LvmProbe.new()
+            self.assertIsInstance(probe, lvm_.LvmProbe)
+            extract_lsblk_graph.assert_called_once_with(None, None, dict())
+            pvs_new.assert_called_once_with(['mem1', 'mem2'], None)
+            lvs_new.assert_called_once_with(['vol1', 'vol2'], None)
+            vgs_new.assert_called_once_with(list(set(['vg1', 'vg2'])), None)
+            self.assertIs(probe.content['pvs'], pvs)
+            self.assertIs(probe.content['lvs'], lvs)
+            self.assertIs(probe.content['vgs'], vgs)
+
+
+    def test__is_member__1(self):
+        item = ('foo', mock.Mock())
+        item[1].fstype = 'FOO'
+        self.assertFalse(lvm_.LvmProbe._is_member(item))
+
+    def test__is_member__2(self):
+        item = ('foo', mock.Mock())
+        item[1].fstype = 'LVM_member'
+        self.assertTrue(lvm_.LvmProbe._is_member(item))
+
+    def test__is_volume__1(self):
+        item = ('foo', mock.Mock())
+        item[1].type = 'FOO'
+        self.assertFalse(lvm_.LvmProbe._is_volume(item))
+
+    def test__is_volume__2(self):
+        item = ('foo', mock.Mock())
+        item[1].type = 'lvm'
+        self.assertTrue(lvm_.LvmProbe._is_volume(item))
 
 
 if __name__ == '__main__':
