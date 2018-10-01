@@ -30,7 +30,7 @@ class _Convert:
         return int(val, 16)
 
 
-class _MdadmBacktickProbe(backtick_.BackTickProbe):
+class _MdadmParser:
 
     _converters = {
         'raid_devices': int,
@@ -59,14 +59,6 @@ class _MdadmBacktickProbe(backtick_.BackTickProbe):
             return convert(val)
 
     @classmethod
-    def cmdname(cls):
-        return 'mdadm'
-
-    @classmethod
-    def parse(cls, text):
-        return cls._parse(text)
-
-    @classmethod
     def _match_device_name(cls, line):
         return re.match(r'^\s*(/+\w+(?:/+\w+)*):\s*$', line)
 
@@ -84,7 +76,10 @@ class _MdadmBacktickProbe(backtick_.BackTickProbe):
         if not m:
             return False
         key = util.snake_case(m.group(1))
-        node[key] = cls.convert(key, m.group(2))
+        try:
+            node[key] = cls.convert(key, m.group(2))
+        except ValueError:
+            return False
         return True
 
     @classmethod
@@ -185,12 +180,22 @@ class _MdadmBacktickProbe(backtick_.BackTickProbe):
                 return []
         return sheets
 
-    @classmethod
-    def _parse(cls, report, **kw):
+    def parse(self, report, **kw):
         content = {'report': report, 'nodes': []}
-        for sheet in cls._split_sheets(report):
-            cls._parse_sheet(content['nodes'], sheet)
+        for sheet in self._split_sheets(report):
+            self._parse_sheet(content['nodes'], sheet)
         return content
+
+
+class _MdadmBacktickProbe(backtick_.BackTickProbe):
+
+    @classmethod
+    def cmdname(cls):
+        return 'mdadm'
+
+    @classmethod
+    def parse(cls, text):
+        return _MdadmParser().parse(text)
 
 
 class MdadmDetailProbe(_MdadmBacktickProbe):
