@@ -5,7 +5,6 @@ from .imports_ import *
 __all__ = imports_.__all__
 
 import_all_from(__package__, [
-        '.dispatch_',
         '.misc_',
         '.serializer_',
         '.subprocess_'
