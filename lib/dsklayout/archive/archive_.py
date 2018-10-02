@@ -96,8 +96,8 @@ class Archive:
     def __getattr__(self, name):
         if name in self._zipfile_attributes:
             return getattr(self.zipfile, name)
-        raise KeyError("%s object has no attribute %s" %
-                       (repr(self.__class__.__name__), repr(name)))
+        raise AttributeError("%s object has no attribute %s" %
+                             (repr(self.__class__.__name__), repr(name)))
 
     @property
     def zipfile(self):
