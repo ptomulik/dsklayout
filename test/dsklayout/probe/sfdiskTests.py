@@ -43,6 +43,101 @@ class Test__SfdiskProbe(testcase_.ProbeTestCase):
     def test__kwargs(self):
         self.assertIs(sfdisk_.SfdiskProbe.kwargs.__code__, backtick_.BackTickProbe.kwargs.__code__)
 
+    def test__entries__1(self):
+        device = mock.Mock(spec=True)
+        probe = sfdisk_.SfdiskProbe({'partitiontable': {'device': device}})
+        self.assertEqual(probe.entries, [device])
+        self.assertIs(probe.entries[0], device)
+
+    def test__entries__2(self):
+        probe = sfdisk_.SfdiskProbe({'partitiontable': dict()})
+        self.assertEqual(probe.entries, [None])
+
+    def test__entries__3(self):
+        probe = sfdisk_.SfdiskProbe(dict())
+        with self.assertRaises(KeyError) as context:
+            probe.entries
+        self.assertIn('partitiontable', str(context.exception))
+
+    def test__partabs__1(self):
+        device = mock.Mock(spec=True)
+        probe = sfdisk_.SfdiskProbe({'partitiontable': {'device': device}})
+        self.assertEqual(probe.partabs, [device])
+        self.assertIs(probe.partabs[0], device)
+
+    def test__partabs__2(self):
+        probe = sfdisk_.SfdiskProbe({'partitiontable': dict()})
+        self.assertEqual(probe.partabs, [None])
+
+    def test__partabs__3(self):
+        probe = sfdisk_.SfdiskProbe(dict())
+        with self.assertRaises(KeyError) as context:
+            probe.partabs
+        self.assertIn('partitiontable', str(context.exception))
+
+    def test__entry__1(self):
+        entry = {'device': '/dev/sda', 'foo': 'bar'}
+        probe = sfdisk_.SfdiskProbe({'partitiontable': entry})
+        self.assertIs(probe.entry('/dev/sda'), entry)
+
+    def test__entry__2(self):
+        entry = {'device': '/dev/sdb', 'foo': 'bar'}
+        probe = sfdisk_.SfdiskProbe({'partitiontable': entry})
+        with self.assertRaises(ValueError) as context:
+            self.assertIs(probe.entry('/dev/sda'), entry)
+        self.assertEqual(str(context.exception), "invalid device name: %s" % repr('/dev/sda'))
+
+    def test__entry__3(self):
+        entry = {'foo': 'bar'}
+        probe = sfdisk_.SfdiskProbe({'partitiontable': entry})
+        with self.assertRaises(ValueError) as context:
+            self.assertIs(probe.entry('/dev/sda'), entry)
+        self.assertEqual(str(context.exception), "invalid device name: %s" % repr('/dev/sda'))
+
+    def test__partab__1(self):
+        entry = {'device': '/dev/sda', 'foo': 'bar'}
+        probe = sfdisk_.SfdiskProbe({'partitiontable': entry})
+        with self.assertRaises(KeyError) as context:
+            probe.partab('/dev/sda')
+        self.assertIn('partitions', str(context.exception))
+
+    def test__partab__2(self):
+        partitions = []
+        entry = {'device': '/dev/sda', 'partitions': partitions}
+        probe = sfdisk_.SfdiskProbe({'partitiontable': entry})
+        pt = probe.partab('/dev/sda')
+        self.assertEqual(pt, entry)
+        self.assertIsNot(pt, entry)
+
+    def test__partab__3(self):
+        partitions = [{'node': 'NODE A1',
+                       'start': 'START A1',
+                       'size': 'SIZE A1',
+                       'uuid': 'UUID A1',
+                       'type': 'TYPE A1',
+                       'name': 'NAME A1'}]
+        entry = {'device': '/dev/sda',
+                 'label': 'LABEL A',
+                 'id': 'ID A',
+                 'unit': 'UNIT A',
+                 'partitions': partitions}
+        probe = sfdisk_.SfdiskProbe({'partitiontable': entry})
+        pt = probe.partab('/dev/sda')
+        self.assertEqual(pt, {'device': '/dev/sda',
+                              'label': 'LABEL A',
+                              'id': 'ID A',
+                              'units': 'UNIT A',
+                              'partitions': [
+                                  {'device': 'NODE A1',
+                                   'start': 'START A1',
+                                   'size': 'SIZE A1',
+                                   'uuid': 'UUID A1',
+                                   'type': 'TYPE A1',
+                                   'name': 'NAME A1'}
+                                  ]
+                              })
+        self.assertIsNot(pt, entry)
+
     def test__cmdname(self):
         self.assertEqual(sfdisk_.SfdiskProbe.cmdname(), 'sfdisk')
 

@@ -73,16 +73,6 @@ class SfdiskProbe(backtick_.BackTickProbe):
     def parse(cls, text):
         return json.loads(text)
 
-    @staticmethod
-    def _compute_partition_end(part):
-        try:
-            start = part['start']
-            size = part['size']
-        except KeyError:
-            pass
-        else:
-            part['end'] = int(start) + int(size) - 1
-
 
 # Local Variables:
 # tab-width:4
