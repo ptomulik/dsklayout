@@ -362,7 +362,6 @@ class Test__MdadmProbe(unittest.TestCase):
             examine_new.assert_called_once_with(['/dev/sda1'], None)
 
 
-
 if __name__ == '__main__':
     unittest.main()
 
