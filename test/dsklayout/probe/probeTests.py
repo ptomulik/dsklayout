@@ -11,6 +11,16 @@ class Test__Probe(unittest.TestCase):
         probe = probe_.Probe(content)
         self.assertIs(probe.content, content)
 
+    def test__dump_attributes(self):
+        probe = probe_.Probe(['item1', 'item2'])
+        self.assertEqual(probe.dump_attributes(), {'content': ['item1', 'item2']})
+
+    def test__load_attributes(self):
+        class X(probe_.Probe): pass
+        probe = X.load_attributes({'content': ['item1', 'item2']})
+        self.assertIsInstance(probe, X)
+        self.assertEqual(probe.content, ['item1', 'item2'])
+
 
 if __name__ == '__main__':
     unittest.main()
