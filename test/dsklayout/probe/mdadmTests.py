@@ -202,11 +202,6 @@ class Test__MdadmParser(testcase_.ProbeTestCase):
         self.assertEqual(node, {'table': {'headers': ('Number', 'Major', 'Minor', 'RaidDevice', 'State'), 'colspan': [(2,8), (10,15), (17,22), (24,34), (36,41)]}})
 
     def test__parse_table_row__1(self):
-        node = dict()
-        self.assertFalse(mdadm_._MdadmParser._parse_table_row(node, '  Foo  Bar Geez  '))
-        self.assertEqual(node, dict())
-
-    def test__parse_table_row__2(self):
         node = {'table': {
             'headers': ('Number', 'Major', 'Minor', 'RaidDevice', 'State'),
             'colspan': [(2,8), (10,15), (17,22), (24,34), (36,41)]
@@ -218,6 +213,19 @@ class Test__MdadmParser(testcase_.ProbeTestCase):
         self.assertEqual(node['table']['rows'][-1], {'number': 0, 'major': 8, 'minor': 18, 'raid_device': 0, 'state': ['active', 'sync'], 'device': '/dev/sdb1'})
         self.assertTrue(mdadm_._MdadmParser._parse_table_row(node, '    1       8      2         1      active sync   /dev/sda1'))
         self.assertEqual(node['table']['rows'][-1], {'number': 1, 'major': 8, 'minor': 2, 'raid_device': 1, 'state': ['active', 'sync'], 'device': '/dev/sda1'})
+
+    def test__parse_table_row__2(self):
+        node = dict()
+        self.assertFalse(mdadm_._MdadmParser._parse_table_row(node, '  Foo  Bar Geez  '))
+        self.assertEqual(node, dict())
+
+    def test__parse_table_row__3(self):
+        node = {'table': {
+            'headers': ('Number', 'Bleah', 'Minor', 'RaidDevice', 'State'),
+            'colspan': [(2,8), (10,15), (17,22), (24,34), (36,41)]
+        }}
+        self.assertTrue(mdadm_._MdadmParser._parse_table_row(node, '    0       8     18         0      active sync   /dev/sdb1'))
+        self.assertEqual(node['table']['rows'][-1], {'number': 0, 'minor': 18, 'raid_device': 0, 'state': ['active', 'sync'], 'device': '/dev/sdb1'})
 
     def test__parse__with_fixtures(self):
         self.maxDiff = None
