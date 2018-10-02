@@ -2,6 +2,7 @@
 # -*- coding: utf8 -*-
 
 import unittest
+import unittest.mock as mock
 from unittest.mock import patch
 import os
 import os.path
@@ -12,8 +13,10 @@ from . import testcase_
 import dsklayout.probe.mdadm_ as mdadm_
 import dsklayout.probe.backtick_ as backtick_
 import dsklayout.probe.composite_ as composite_
+import dsklayout.probe.lsblk_ as lsblk_
 
 backtick = 'dsklayout.util.backtick'
+
 
 class Test__Convert(unittest.TestCase):
 
@@ -299,6 +302,65 @@ class Test__MdadmProbe(unittest.TestCase):
 
     def test__subclass_of_CompositeProbe(self):
         self.assertTrue(issubclass(mdadm_.MdadmProbe, composite_.CompositeProbe))
+
+    def test__available(self):
+        self.assertIs(mdadm_.MdadmProbe.available.__code__, composite_.CompositeProbe.available.__code__)
+
+    def test__mk_uses(self):
+        self.assertIs(mdadm_.MdadmProbe.mk_uses.__code__, composite_.CompositeProbe.mk_uses.__code__)
+
+    def test__extract_lsblk_graph(self):
+        self.assertIs(mdadm_.MdadmProbe.extract_lsblk_graph.__code__, composite_.CompositeProbe.extract_lsblk_graph.__code__)
+
+    def test__uses__1(self):
+        self.assertEqual(mdadm_.MdadmProbe.uses(), [mdadm_.MdadmDetailProbe, mdadm_.MdadmExamineProbe, lsblk_.LsBlkProbe])
+
+    def test__uses__2(self):
+        self.assertEqual(mdadm_.MdadmProbe.uses(lsblkgraph='foo'), [mdadm_.MdadmDetailProbe, mdadm_.MdadmExamineProbe])
+
+    def test__is_raid__0(self):
+        item = ('md1', mock.Mock(spec=True))
+        self.assertFalse(mdadm_.MdadmProbe._is_raid(item))
+
+    def test__is_raid__1(self):
+        item = ('md1', mock.Mock(spec=True, type='raid1'))
+        self.assertTrue(mdadm_.MdadmProbe._is_raid(item))
+
+    def test__is_raid__2(self):
+        item = ('md1', mock.Mock(spec=True, type='foo'))
+        self.assertFalse(mdadm_.MdadmProbe._is_raid(item))
+
+    def test__is_member__0(self):
+        item = ('sda1', mock.Mock(spec=True))
+        self.assertFalse(mdadm_.MdadmProbe._is_member(item))
+
+    def test__is_member__1(self):
+        item = ('sda1', mock.Mock(spec=True, fstype='linux_raid_member'))
+        self.assertTrue(mdadm_.MdadmProbe._is_member(item))
+
+    def test__is_member__2(self):
+        item = ('sda1', mock.Mock(spec=True, fstype='foo'))
+        self.assertFalse(mdadm_.MdadmProbe._is_member(item))
+
+    def test__new(self):
+        nodes = {'md1':  mock.Mock(spec=True, type='raid1'),
+                 'sda1': mock.Mock(spec=True, fstype='linux_raid_member'),
+                 'sda': mock.Mock(spec=True)}
+        nodes['md1'].name = '/dev/md1'
+        nodes['sda1'].name = '/dev/sda1'
+        nodes['sda'].name = '/dev/sda'
+        graph = mock.Mock(nodes=nodes)
+        with patch('dsklayout.probe.composite_.CompositeProbe.extract_lsblk_graph', return_value=graph) as extract, \
+             patch('dsklayout.probe.mdadm_.MdadmDetailProbe.new', return_value='new_detail') as detail_new, \
+             patch('dsklayout.probe.mdadm_.MdadmExamineProbe.new', return_value='new_examine') as examine_new:
+            probe = mdadm_.MdadmProbe.new()
+            self.assertIsInstance(probe, mdadm_.MdadmProbe)
+            self.assertEqual(probe.content['detail'], 'new_detail')
+            self.assertEqual(probe.content['examine'], 'new_examine')
+            extract.assert_called_once_with(None, None, dict())
+            detail_new.assert_called_once_with(['/dev/md1'], None)
+            examine_new.assert_called_once_with(['/dev/sda1'], None)
+
 
 
 if __name__ == '__main__':

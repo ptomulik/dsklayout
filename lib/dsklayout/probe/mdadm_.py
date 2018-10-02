@@ -236,11 +236,23 @@ class MdadmProbe(composite_.CompositeProbe):
 
     @classmethod
     def _is_raid(cls, item):
-        return re.match(r'^raid(?:\d{1,2})$', item[1].type)
+        x = item[1]
+        try:
+            _type = x.type
+        except AttributeError:
+            return False
+        else:
+            return re.match(r'^raid(?:\d{1,2})$', _type)
 
     @classmethod
     def _is_member(cls, item):
-        return item[1].fstype == 'linux_raid_member'
+        x = item[1]
+        try:
+            fstype = x.fstype
+        except AttributeError:
+            return False
+        else:
+            return fstype == 'linux_raid_member'
 
 
 # Local Variables:
