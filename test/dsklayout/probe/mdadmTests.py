@@ -227,6 +227,9 @@ class Test__MdadmParser(testcase_.ProbeTestCase):
         self.assertTrue(mdadm_._MdadmParser._parse_table_row(node, '    0       8     18         0      active sync   /dev/sdb1'))
         self.assertEqual(node['table']['rows'][-1], {'number': 0, 'minor': 18, 'raid_device': 0, 'state': ['active', 'sync'], 'device': '/dev/sdb1'})
 
+    def test__split_sheets__1(self):
+        self.assertEqual(mdadm_._MdadmParser._split_sheets("first line\nsecond line"), [])
+
     def test__parse__with_fixtures(self):
         self.maxDiff = None
         for left, right in self.fixture_plan:
@@ -286,10 +289,10 @@ class Test__MdadmExamineProbe(unittest.TestCase):
         self.assertTrue(issubclass(mdadm_.MdadmExamineProbe, mdadm_._MdadmBacktickProbe))
 
     def test__flags__1(self):
-        self.assertEqual(mdadm_.MdadmDetailProbe.flags([]), ['--detail'])
+        self.assertEqual(mdadm_.MdadmExamineProbe.flags([]), ['--examine'])
 
     def test__flags__2(self):
-        self.assertEqual(mdadm_.MdadmDetailProbe.flags(['-x', '-y']), ['--detail', '-x', '-y'])
+        self.assertEqual(mdadm_.MdadmExamineProbe.flags(['-x', '-y']), ['--examine', '-x', '-y'])
 
 
 class Test__MdadmProbe(unittest.TestCase):
