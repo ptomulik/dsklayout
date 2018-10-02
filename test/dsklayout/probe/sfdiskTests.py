@@ -2,80 +2,65 @@
 # -*- coding: utf8 -*-
 
 import unittest
+import unittest.mock as mock
 from unittest.mock import patch
 import os.path
 import json
 
 import dsklayout.probe.sfdisk_ as sfdisk_
+import dsklayout.probe.backtick_ as backtick_
+
+import test.dsklayout.probe.testcase_ as testcase_
 
 backtick = 'dsklayout.util.backtick'
 
-class Test__SfdiskProbe(unittest.TestCase):
+class Test__SfdiskProbe(testcase_.ProbeTestCase):
+
+    @property
+    def fixture_plan(self):
+        return [ ('sfdisk_1_sda.json', 'sfdisk_1_sda.content.json') ]
+
+    def decode_right_fixture(self, content):
+        return json.loads(content)
+
+    def test__is_subclass_of_BacktickProbe(self):
+        self.assertTrue(issubclass(sfdisk_.SfdiskProbe, backtick_.BackTickProbe))
 
     def test__content(self):
-        content = 'content'
+        content = mock.Mock()
         sfdisk = sfdisk_.SfdiskProbe(content)
         self.assertIs(sfdisk.content, content)
 
-    def test__run__with_no_args(self):
-        with patch(backtick, return_value='ok') as mock:
-            self.assertIs(sfdisk_.SfdiskProbe.run(), 'ok')
-            mock.assert_called_once_with(['sfdisk', '-J'])
+    def test__run(self):
+        self.assertIs(sfdisk_.SfdiskProbe.run.__code__, backtick_.BackTickProbe.run.__code__)
 
-    def test__run__with_device(self):
-        with patch(backtick, return_value='ok') as mock:
-            self.assertIs(sfdisk_.SfdiskProbe.run('sda'), 'ok')
-            mock.assert_called_once_with(['sfdisk', '-J', 'sda'])
+    def test__new(self):
+        self.assertIs(sfdisk_.SfdiskProbe.new.__code__, backtick_.BackTickProbe.new.__code__)
 
-    def test__run__with_devices(self):
-        with patch(backtick, return_value='ok') as mock:
-            self.assertIs(sfdisk_.SfdiskProbe.run(['sda', 'sdb']), 'ok')
-            mock.assert_called_once_with(['sfdisk', '-J', 'sda', 'sdb'])
+    def test__command(self):
+        self.assertIs(sfdisk_.SfdiskProbe.command.__code__, backtick_.BackTickProbe.command.__code__)
 
-    def test__run__with_devices_and_flags(self):
-        with patch(backtick, return_value='ok') as mock:
-            self.assertIs(sfdisk_.SfdiskProbe.run(['sda', 'sdb'], ['-x', '-y']), 'ok')
-            mock.assert_called_once_with(['sfdisk', '-J', '-x', '-y',  'sda', 'sdb'])
+    def test__kwargs(self):
+        self.assertIs(sfdisk_.SfdiskProbe.kwargs.__code__, backtick_.BackTickProbe.kwargs.__code__)
 
-    def test__run__with_custom_sfdisk(self):
-        with patch(backtick, return_value='ok') as mock:
-            self.assertIs(sfdisk_.SfdiskProbe.run(['sda', 'sdb'], ['-x', '-y'], sfdisk='/opt/bin/sfdisk'), 'ok')
-            mock.assert_called_once_with(['/opt/bin/sfdisk', '-J', '-x', '-y',  'sda', 'sdb'])
+    def test__cmdname(self):
+        self.assertEqual(sfdisk_.SfdiskProbe.cmdname(), 'sfdisk')
 
-    def test__new__with_no_args(self):
-        with patch(backtick, return_value='{"foo":"bar"}') as mock:
-            sfdisk = sfdisk_.SfdiskProbe.new()
-            self.assertIsInstance(sfdisk, sfdisk_.SfdiskProbe)
-            self.assertEqual(sfdisk.content, {"foo":  "bar"})
-            mock.assert_called_once_with(['sfdisk', '-J'])
+    def test__flags__1(self):
+        self.assertEqual(sfdisk_.SfdiskProbe.flags([]), ['-J'])
 
-    def test__new__with_device(self):
-        with patch(backtick, return_value='{"foo":"bar"}') as mock:
-            sfdisk = sfdisk_.SfdiskProbe.new('sda')
-            self.assertIsInstance(sfdisk, sfdisk_.SfdiskProbe)
-            self.assertEqual(sfdisk.content, {"foo":  "bar"})
-            mock.assert_called_once_with(['sfdisk', '-J', 'sda'])
+    def test__flags__2(self):
+        self.assertEqual(sfdisk_.SfdiskProbe.flags(['-x', '-y']), ['-J', '-x', '-y'])
 
-    def test__new__with_devices(self):
-        with patch(backtick, return_value='{"foo":"bar"}') as mock:
-            sfdisk = sfdisk_.SfdiskProbe.new(['sda', 'sdb'])
-            self.assertIsInstance(sfdisk, sfdisk_.SfdiskProbe)
-            self.assertEqual(sfdisk.content, {"foo":  "bar"})
-            mock.assert_called_once_with(['sfdisk', '-J', 'sda', 'sdb'])
+    def test__parse__1(self):
+        self.assertEqual(sfdisk_.SfdiskProbe.parse('{"foo": ["bar1", "bar2"]}'), {"foo": ["bar1", "bar2"]})
 
-    def test__new__with_devices_and_flags(self):
-        with patch(backtick, return_value='{"foo":"bar"}') as mock:
-            sfdisk = sfdisk_.SfdiskProbe.new(['sda', 'sdb'], ['-x', '-y'])
-            self.assertIsInstance(sfdisk, sfdisk_.SfdiskProbe)
-            self.assertEqual(sfdisk.content, {"foo":  "bar"})
-            mock.assert_called_once_with(['sfdisk', '-J', '-x', '-y',  'sda', 'sdb'])
-
-    def test__new__with_custom_sfdisk(self):
-        with patch(backtick, return_value='{"foo":"bar"}') as mock:
-            sfdisk = sfdisk_.SfdiskProbe.new(['sda', 'sdb'], ['-x', '-y'], sfdisk='/opt/bin/sfdisk')
-            self.assertIsInstance(sfdisk, sfdisk_.SfdiskProbe)
-            self.assertEqual(sfdisk.content, {"foo":  "bar"})
-            mock.assert_called_once_with(['/opt/bin/sfdisk', '-J', '-x', '-y',  'sda', 'sdb'])
+    def test__parse__with_fixtures(self):
+        self.maxDiff = None
+        for left, right in self.fixture_plan:
+            content = sfdisk_.SfdiskProbe.parse(self.fixtures[left])
+            expected = self.fixtures[right]
+            self.assertEqual(content, expected)
 
 
 if __name__ == '__main__':
